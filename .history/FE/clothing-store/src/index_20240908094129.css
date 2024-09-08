@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    scrollbar-width: thin;
+}
+
+@layer components {
+    .transition-base {
+        @apply transition-all duration-200 ease-in-out;
+    }
+
+    .hover-main {
+        @apply text-text-color hover:text-text-white hover:bg-text-color rounded;
+    }
+
+    .hover-sub {
+        @apply text-bgr-color hover:text-text-white hover:bg-bgr-color rounded;
+    }
+
+    .flex-center {
+        @apply justify-center items-center;
+    }
+}
+
+.container {
+    width: 100%;
+}
+@media (min-width: 640px) {
+    .container {
+        max-width: 640px;
+    }
+}
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+    }
+    @media (min-width: 1024px) {
+        .container {
+            max-width: 1024px;
+        }
+    }
+    @media (min-width: 1280px) {
+        .container {
+            max-width: 1280px;
+        }
+    }
+    @media (min-width: 1400px) {
+        .container,
+        .container-lg,
+        .container-md,
+        .container-sm,
+        .container-xl,
+        .container-xxl {
+            max-width: 1320px;
+        }
+    }
+}

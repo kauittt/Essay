@@ -1,0 +1,14 @@
+{
+    "unknown": "Unknown error",
+    "popup_closed_by_user": "Popup was closed by user",
+    "validation": {
+        "emptyUsername": "Username field shouldn’t be empty",
+        "emptyEmail": "Email field shouldn’t be empty",
+        "invalidEmail": "Invalid email address",
+        "emptyUrl": "Url field shouldn’t be empty",
+        "invalidUrl": "Invalid url",
+        "emptyPassword": "Password field shouldn’t be empty",
+        "incorrectPassword": "The password is incorrect",
+        "emptySelect": "Please select the option"
+    }
+}
