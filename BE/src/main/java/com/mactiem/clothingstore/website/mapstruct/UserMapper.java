@@ -2,19 +2,26 @@ package com.mactiem.clothingstore.website.mapstruct;
 
 
 import com.mactiem.clothingstore.website.DTO.AuthorityDTO;
+import com.mactiem.clothingstore.website.DTO.CartResponseDTO;
 import com.mactiem.clothingstore.website.DTO.UserRegistryDTO;
 import com.mactiem.clothingstore.website.DTO.UserResponseDTO;
 import com.mactiem.clothingstore.website.entity.Authority;
 import com.mactiem.clothingstore.website.entity.GenerateID;
 import com.mactiem.clothingstore.website.entity.User;
 import com.mactiem.clothingstore.website.service.AuthorityService;
+import com.mactiem.clothingstore.website.service.OrderService;
 import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {AuthorityMapper.class, AuthorityService.class})
+@Mapper(componentModel = "spring", uses = {AuthorityMapper.class
+        , AuthorityService.class
+        , CartMapper.class
+        , OrderMapper.class})
 @Component
 public interface UserMapper {
     //- DTO
@@ -26,10 +33,23 @@ public interface UserMapper {
     }
 
     @AfterMapping
-    default void mapAuthoritiesForDTO(@MappingTarget UserResponseDTO userResponseDTO, User user
+    default void mapAuthorities(@MappingTarget UserResponseDTO userResponseDTO, User user
             , AuthorityMapper authorityMapper) {
         List<AuthorityDTO> authorityDTOS = authorityMapper.toListDTOs(user.getAuthorities());
         userResponseDTO.setAuthorities(authorityDTOS);
+    }
+
+    @AfterMapping
+    default void mapCart(@MappingTarget UserResponseDTO userResponseDTO, User user
+            , CartMapper cartMapper) {
+        CartResponseDTO cartResponseDTOs = cartMapper.toDTO(user.getCart());
+        userResponseDTO.setCart(cartResponseDTOs);
+    }
+
+    @AfterMapping
+    default void mapOrders(@MappingTarget UserResponseDTO userResponseDTO, User user
+            , OrderMapper orderMapper) {
+        userResponseDTO.setOrders(orderMapper.toListDTOs(user.getOrders()));
     }
 
 
@@ -38,8 +58,8 @@ public interface UserMapper {
     User toEntity(UserRegistryDTO userRegistryDTO, @Context String type);
 
     @AfterMapping
-    default void mapAuthoritiesForEntity(@MappingTarget User user, UserRegistryDTO userRegistryDTO,
-                                         AuthorityService authorityService) {
+    default void mapAuthorities(@MappingTarget User user, UserRegistryDTO userRegistryDTO,
+                                AuthorityService authorityService) {
         if (userRegistryDTO.getAuthorities() != null) {
             List<Authority> authorities = authorityService.getAuthoritiesByNames(userRegistryDTO.getAuthorities());
             user.setAuthorities(authorities);

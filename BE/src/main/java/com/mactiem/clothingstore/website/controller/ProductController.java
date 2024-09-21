@@ -7,6 +7,7 @@ import com.mactiem.clothingstore.website.entity.Response;
 import com.mactiem.clothingstore.website.mapstruct.ProductMapper;
 import com.mactiem.clothingstore.website.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class ProductController {
     private final ProductMapper productMapper;
 
     @Autowired
+    @Lazy
     public ProductController(ProductMapper productMapper, ProductService productService) {
         this.productMapper = productMapper;
         this.productService = productService;

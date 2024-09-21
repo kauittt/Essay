@@ -7,6 +7,7 @@ import com.mactiem.clothingstore.website.mapstruct.CartMapper;
 import com.mactiem.clothingstore.website.repository.CartRepository;
 import com.mactiem.clothingstore.website.validator.CartValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class CartService {
     private final ProductService productService;
 
     @Autowired
+    @Lazy
     public CartService(CartMapper cartMapper, CartRepository cartRepository, CartValidator cartValidator, ProductService productService) {
         this.cartMapper = cartMapper;
         this.cartRepository = cartRepository;

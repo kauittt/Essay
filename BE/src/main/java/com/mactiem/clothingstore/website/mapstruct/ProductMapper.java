@@ -14,11 +14,19 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {FeedBackMapper.class})
 @Component
 public interface ProductMapper {
     //- DTO
     ProductResponseDTO toDTO(Product product);
+
+
+    @AfterMapping
+    default void mapFeedBack(@MappingTarget ProductResponseDTO productResponseDTO, Product product
+            , FeedBackMapper feedBackMapper) {
+        productResponseDTO.setFeedBacks(feedBackMapper.toListDTOs(product.getFeedBacks()));
+    }
+
 
     default List<ProductResponseDTO> toListDTOs(List<Product> products) {
         return products.stream().map(this::toDTO).toList();

@@ -1,14 +1,12 @@
 package com.mactiem.clothingstore.website.controller;
 
+import com.mactiem.clothingstore.website.DTO.OrderRequestDTO;
+import com.mactiem.clothingstore.website.DTO.OrderResponseDTO;
 import com.mactiem.clothingstore.website.DTO.ProductRequestDTO;
 import com.mactiem.clothingstore.website.DTO.ProductResponseDTO;
-import com.mactiem.clothingstore.website.DTO.VoucherRequestDTO;
-import com.mactiem.clothingstore.website.DTO.VoucherResponseDTO;
 import com.mactiem.clothingstore.website.entity.Response;
-import com.mactiem.clothingstore.website.mapstruct.VoucherMapper;
-import com.mactiem.clothingstore.website.service.VoucherService;
+import com.mactiem.clothingstore.website.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,27 +14,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/vouchers")
-public class VoucherController {
-    private final VoucherService voucherService;
-    private final VoucherMapper voucherMapper;
+@RequestMapping("/orders")
+public class OrderController {
+    private final OrderService orderService;
 
     @Autowired
-    @Lazy
-    public VoucherController(VoucherMapper voucherMapper, VoucherService voucherService) {
-        this.voucherMapper = voucherMapper;
-        this.voucherService = voucherService;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     @GetMapping
-    public ResponseEntity<List<VoucherResponseDTO>> getAllVouchers() {
-        return ResponseEntity.ok(voucherService.getAllVouchers());
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrders() {
+        List<OrderResponseDTO> orderResponseDTOS = orderService.getAllOrders();
+        return ResponseEntity.ok(orderResponseDTOS);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getVoucherById(@PathVariable String id) {
+    public ResponseEntity<?> getOrderById(@PathVariable String id) {
         try {
-            return ResponseEntity.ok(voucherService.getVoucherById(id));
+            return ResponseEntity.ok(orderService.getOrderById(id));
         } catch (Exception ex) {
             Response response = Response.of(HttpStatus.NOT_FOUND, ex.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -44,9 +40,9 @@ public class VoucherController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createVoucher(@RequestBody VoucherRequestDTO voucherRequestDTO) {
+    public ResponseEntity<?> create(@RequestBody OrderRequestDTO orderRequestDTO) {
         try {
-            return ResponseEntity.ok(voucherService.createVoucher(voucherRequestDTO));
+            return ResponseEntity.ok(orderService.createOrder(orderRequestDTO));
         } catch (Exception ex) {
             Response response = Response.of(HttpStatus.BAD_REQUEST, ex.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -54,9 +50,9 @@ public class VoucherController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateVoucher(@PathVariable String id, @RequestBody VoucherRequestDTO voucherRequestDTO) {
+    public ResponseEntity<?> update(@PathVariable String id, @RequestBody OrderRequestDTO orderRequestDTO) {
         try {
-            return ResponseEntity.ok(voucherService.updateVoucher(id, voucherRequestDTO));
+            return ResponseEntity.ok(orderService.update(id, orderRequestDTO));
         } catch (Exception ex) {
             Response response = Response.of(HttpStatus.BAD_REQUEST, ex.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -64,15 +60,14 @@ public class VoucherController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteVoucher(@PathVariable String id) {
+    public ResponseEntity<?> delete(@PathVariable String id) {
         try {
-            voucherService.deleteVoucher(id);
-            Response response = Response.of(HttpStatus.OK, "Deleted Voucher Successfully");
+            orderService.delete(id);
+            Response response = Response.of(HttpStatus.OK, "Deleted Order Successfully");
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
             Response response = Response.of(HttpStatus.NOT_FOUND, ex.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
-
 }

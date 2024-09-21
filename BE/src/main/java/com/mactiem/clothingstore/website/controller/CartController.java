@@ -5,12 +5,11 @@ import com.mactiem.clothingstore.website.DTO.CartResponseDTO;
 import com.mactiem.clothingstore.website.entity.Response;
 import com.mactiem.clothingstore.website.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
 
 @RestController
 @RequestMapping("/carts")
@@ -18,6 +17,7 @@ public class CartController {
     private final CartService cartService;
 
     @Autowired
+    @Lazy
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }

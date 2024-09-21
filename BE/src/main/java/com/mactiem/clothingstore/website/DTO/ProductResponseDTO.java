@@ -1,6 +1,9 @@
 package com.mactiem.clothingstore.website.DTO;
 
+import com.mactiem.clothingstore.website.entity.FeedBack;
 import lombok.*;
+
+import java.util.List;
 
 
 @Data
@@ -16,9 +19,7 @@ public class ProductResponseDTO {
     private String image;
     private String category;
     private Integer stock;
-
-//    private List<Voucher> vouchers;
-//    private List<FeedBack> feedBacks;
+    private List<FeedBackResponseDTO> feedBacks;
 
 
 }

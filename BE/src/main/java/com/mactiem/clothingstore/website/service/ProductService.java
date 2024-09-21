@@ -9,6 +9,7 @@ import com.mactiem.clothingstore.website.mapstruct.ProductMapper;
 import com.mactiem.clothingstore.website.repository.ProductRepository;
 import com.mactiem.clothingstore.website.validator.ProductValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class ProductService {
     private final ProductValidator productValidator;
 
     @Autowired
+    @Lazy
     public ProductService(ProductMapper productMapper, ProductRepository productRepository, ProductValidator productValidator) {
         this.productMapper = productMapper;
         this.productRepository = productRepository;

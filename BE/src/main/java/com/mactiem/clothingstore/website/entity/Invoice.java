@@ -27,8 +27,8 @@ public class Invoice {
     @Column(name = "create_date")
     private LocalDate createDate;
 
-    @Column(name = "status")
-    private String status;
+//    @Column(name = "status")
+//    private String status;
 
     @Column(name = "total_amount")
     private double totalAmount;

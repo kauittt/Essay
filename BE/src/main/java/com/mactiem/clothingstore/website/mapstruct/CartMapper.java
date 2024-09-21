@@ -20,7 +20,7 @@ public interface CartMapper {
 
     @AfterMapping
     default CartResponseDTO map(@MappingTarget CartResponseDTO cartResponseDTO, Cart cart, ProductMapper productMapper) {
-        for(CartProduct cartProduct : cart.getCartProducts()) {
+        for (CartProduct cartProduct : cart.getCartProducts()) {
             CartProductDTO dto = new CartProductDTO();
             dto.setQuantity(cartProduct.getQuantity());
             dto.setProduct(productMapper.toDTO(cartProduct.getProduct()));

@@ -9,7 +9,9 @@ import com.mactiem.clothingstore.website.entity.User;
 import com.mactiem.clothingstore.website.mapstruct.UserMapper;
 import com.mactiem.clothingstore.website.repository.UserRepository;
 import com.mactiem.clothingstore.website.validator.UserValidator;
+import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ public class UserService {
 //    private final OrderService orderService;
 
     @Autowired
+    @Lazy
     public UserService( UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, AuthorityService authorityService, UserValidator userValidator) {
         this.authorityService = authorityService;
         this.userRepository = userRepository;
@@ -41,6 +44,7 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    @Named("byId")
     public User findUserById(String id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(Response.notFound("User", id)));
