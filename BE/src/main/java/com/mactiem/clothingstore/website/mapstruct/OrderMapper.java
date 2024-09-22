@@ -26,7 +26,7 @@ public interface OrderMapper {
     OrderResponseDTO toDTO(Order order);
 
     @AfterMapping
-    default void mapProduct(@MappingTarget OrderResponseDTO orderResponseDTO, Order order, ProductMapper productMapper) {
+    default void mapOrderProducts(@MappingTarget OrderResponseDTO orderResponseDTO, Order order, ProductMapper productMapper) {
         for (OrderProduct orderProduct : order.getOrderProducts()) {
             OrderProductDTO dto = new OrderProductDTO();
             dto.setQuantity(orderProduct.getQuantity());
@@ -53,7 +53,6 @@ public interface OrderMapper {
         order.setId(GenerateID.generateID());
         order.setCreateDate(LocalDate.now());
         order.setUpdateDate(LocalDate.now());
-        order.setStatus("DELIVERING");
     }
 
     @AfterMapping
@@ -62,7 +61,7 @@ public interface OrderMapper {
     }
 
     @AfterMapping
-    default void mapProducts(@MappingTarget Order order, OrderRequestDTO orderRequestDTO
+    default void mapOrderProducts(@MappingTarget Order order, OrderRequestDTO orderRequestDTO
             , ProductMapper productMapper, ProductService productService) {
 
         List<OrderProduct> orderProducts = new ArrayList<>();

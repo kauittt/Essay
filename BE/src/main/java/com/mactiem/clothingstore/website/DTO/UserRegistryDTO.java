@@ -18,3 +18,4 @@ public class UserRegistryDTO {
     private String address;
     private List<String> authorities;
 }
+

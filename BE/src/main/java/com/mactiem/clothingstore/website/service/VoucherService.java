@@ -68,17 +68,15 @@ public class VoucherService {
 
     @Transactional
     public VoucherResponseDTO updateVoucher(String id, VoucherRequestDTO voucherRequestDTO) {
-        if (voucherRequestDTO.getProducts() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Products is required");
-        }
-
         Voucher voucher = findVoucherById(id);
+
+        voucherValidator.validateForUpdate(voucherRequestDTO, voucher);
 
         Field[] fields = voucherRequestDTO.getClass().getDeclaredFields();
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
-                if (!field.getName().equals("products")) {
+                if (!field.getName().equals("products") && !field.getName().equals("startDate")) {
                     Object value = field.get(voucherRequestDTO);
                     if (value != null) {
                         Field dbField = User.class.getDeclaredField(field.getName());
@@ -87,20 +85,20 @@ public class VoucherService {
                     }
                 }
             }
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException("Error updating fields", e);
+        }
 
-            if (voucherRequestDTO.getDiscountPercentage() != null) {
-                voucher.setDiscountPercentage(voucherRequestDTO.getDiscountPercentage() / 100);
-            }
+        if (voucherRequestDTO.getDiscountPercentage() != null) {
+            voucher.setDiscountPercentage(voucherRequestDTO.getDiscountPercentage() / 100);
+        }
 
-            if (voucherRequestDTO.getProducts() != null && !voucherRequestDTO.getProducts().isEmpty()) {
+        if (voucherRequestDTO.getProducts() != null) {
+            if (!voucherRequestDTO.getProducts().isEmpty()) {
                 voucher.setProducts(productService.findProductsByIds(voucherRequestDTO.getProducts()));
             } else {
                 voucher.setProducts(productService.findAllProducts());
             }
-
-
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException("Error updating fields", e);
         }
 
         return voucherMapper.toDTO(voucherRepository.save(voucher));

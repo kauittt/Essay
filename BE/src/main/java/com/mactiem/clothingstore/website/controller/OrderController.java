@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Statement;
 import java.util.List;
 
 @RestController
@@ -52,7 +53,14 @@ public class OrderController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody OrderRequestDTO orderRequestDTO) {
         try {
-            return ResponseEntity.ok(orderService.update(id, orderRequestDTO));
+            OrderResponseDTO orderResponseDTO = orderService.update(id, orderRequestDTO);
+            if (orderResponseDTO != null) {
+                return ResponseEntity.ok(orderResponseDTO);
+            } else {
+                Response response = Response.of(HttpStatus.OK
+                        , "This Order is completed, Can't update this order");
+                return ResponseEntity.ok(response);
+            }
         } catch (Exception ex) {
             Response response = Response.of(HttpStatus.BAD_REQUEST, ex.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

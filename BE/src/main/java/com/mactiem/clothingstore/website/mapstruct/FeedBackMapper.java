@@ -43,8 +43,9 @@ public interface FeedBackMapper {
     }
 
     @AfterMapping
-    default void mapOtherFields(@MappingTarget FeedBack feedBack, FeedBackRequestDTO feedBackRequestDTO) {
+    default void mapBasicFields(@MappingTarget FeedBack feedBack, FeedBackRequestDTO feedBackRequestDTO) {
         feedBack.setId(GenerateID.generateID());
         feedBack.setCreateDate(LocalDate.now());
+        feedBack.setUpdateDate(LocalDate.now());
     }
 }

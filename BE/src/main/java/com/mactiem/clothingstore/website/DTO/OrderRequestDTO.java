@@ -25,7 +25,7 @@ public class OrderRequestDTO {
     private String address;
     private String status; //- Update
 
-    //    private String id;
+//    private String id;
 //    private LocalDate createDate;
 //    private LocalDate updateDate;
 

@@ -68,7 +68,10 @@ public class OrderService {
     public OrderResponseDTO update(String id, OrderRequestDTO orderRequestDTO) {
         Order order = findOrderById(id);
 
-        order.setUpdateDate(LocalDate.now());
+        if(order.getStatus().equals("DONE")) return null;
+
+        orderValidator.validateUpdate(orderRequestDTO);
+
         if(orderRequestDTO.getName() != null && !orderRequestDTO.getName().isEmpty()) {
             order.setName(orderRequestDTO.getName());
         }
@@ -81,6 +84,7 @@ public class OrderService {
             order.setStatus(orderRequestDTO.getStatus());
         }
 
+        order.setUpdateDate(LocalDate.now());
         return orderMapper.toDTO(orderRepository.save(order));
     }
 

@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class FeedBackResponseDTO {
     private String id;
     private LocalDate createDate;
+    private LocalDate updateDate;
     private Double point;
     private String description;
     private String user;

@@ -54,20 +54,17 @@ public interface UserMapper {
 
 
     //- Entity
-    @Mapping(source = "authorities", target = "authorities")
     User toEntity(UserRegistryDTO userRegistryDTO, @Context String type);
 
     @AfterMapping
     default void mapAuthorities(@MappingTarget User user, UserRegistryDTO userRegistryDTO,
                                 AuthorityService authorityService) {
-        if (userRegistryDTO.getAuthorities() != null) {
-            List<Authority> authorities = authorityService.getAuthoritiesByNames(userRegistryDTO.getAuthorities());
-            user.setAuthorities(authorities);
-        }
+        List<Authority> authorities = authorityService.getAuthoritiesByNames(userRegistryDTO.getAuthorities());
+        user.setAuthorities(authorities);
     }
 
     @AfterMapping
-    default void mapOthers(@MappingTarget User user, @Context String type) {
+    default void mapBasicFields(@MappingTarget User user, @Context String type) {
         switch (type) {
             case "create":
                 user.setId(GenerateID.generateID());

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 
 @Service
 public class FeedBackService {
@@ -38,7 +39,6 @@ public class FeedBackService {
     @Transactional
     public FeedBackResponseDTO createFeedBack(FeedBackRequestDTO feedBackRequestDTO) {
         feedBackValidator.validateFeedBackRequest(feedBackRequestDTO);
-        feedBackValidator.validateExistence(feedBackRequestDTO);
 
         //- Mapping
         FeedBack feedBack = feedBackMapper.toEntity(feedBackRequestDTO);
@@ -50,9 +50,9 @@ public class FeedBackService {
 
     @Transactional
     public FeedBackResponseDTO updateFeedBack(String id, FeedBackRequestDTO feedBackRequestDTO) {
-        feedBackValidator.validatePoint(feedBackRequestDTO);
-
         FeedBack feedBack = findFeedBackById(id);
+
+        feedBackValidator.validateUpdate(feedBackRequestDTO);
 
         Field[] fields = feedBackRequestDTO.getClass().getDeclaredFields();
         try {
@@ -71,6 +71,8 @@ public class FeedBackService {
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException("Error updating fields", e);
         }
+
+        feedBack.setUpdateDate(LocalDate.now());
 
         return feedBackMapper.toDTO(feedBackRepository.save(feedBack));
     }

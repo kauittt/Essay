@@ -1,6 +1,7 @@
 package com.mactiem.clothingstore.website.validator;
 
 import com.mactiem.clothingstore.website.DTO.FeedBackRequestDTO;
+import com.mactiem.clothingstore.website.DTO.OrderRequestDTO;
 import com.mactiem.clothingstore.website.service.ProductService;
 import com.mactiem.clothingstore.website.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,39 +20,56 @@ public class FeedBackValidator {
         this.userService = userService;
     }
 
-    public void validatePoint(FeedBackRequestDTO feedBackRequestDTO) {
+    public void validateUpdate(FeedBackRequestDTO feedBackRequestDTO) {
         if (feedBackRequestDTO.getPoint() != null) {
-            if (feedBackRequestDTO.getPoint() < 1.0 || feedBackRequestDTO.getPoint() > 5.0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Point must be between 1.0 and 5.0");
-            }
+            validatePointValue(feedBackRequestDTO.getPoint());
         }
     }
 
+    // Validate the entire feedback request
     public void validateFeedBackRequest(FeedBackRequestDTO feedBackRequestDTO) {
-        if (feedBackRequestDTO.getPoint() == null || feedBackRequestDTO.getPoint() < 1.0 || feedBackRequestDTO.getPoint() > 5.0) {
+        validatePoint(feedBackRequestDTO.getPoint());
+        validateDescription(feedBackRequestDTO.getDescription());
+        validateUser(feedBackRequestDTO.getUser());
+        validateProduct(feedBackRequestDTO.getProduct());
+    }
+
+    // Validate point
+    public void validatePoint(Double point) {
+        if (point == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Point cannot be empty");
+        }
+
+        validatePointValue(point);
+    }
+
+    public void validatePointValue(Double point) {
+        if (point < 1.0 || point > 5.0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Point must be between 1.0 and 5.0");
         }
+    }
 
-        if (feedBackRequestDTO.getDescription() == null || feedBackRequestDTO.getDescription().trim().isEmpty()) {
+    // Validate description
+    public void validateDescription(String description) {
+        if (description == null || description.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Description cannot be empty");
-        }
-
-        if (feedBackRequestDTO.getUser() == null || feedBackRequestDTO.getUser().trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID cannot be empty");
-        }
-
-        if (feedBackRequestDTO.getProduct() == null || feedBackRequestDTO.getProduct().trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product ID cannot be empty");
         }
     }
 
-    public void validateExistence(FeedBackRequestDTO feedBackRequestDTO) {
-        if (userService.findUserById(feedBackRequestDTO.getUser()) == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with ID " + feedBackRequestDTO.getUser() + " does not exist");
+    // Validate user ID
+    public void validateUser(String user) {
+        if (user == null || user.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID cannot be empty");
+        }
+        userService.findUserById(user);
+    }
+
+    // Validate product ID
+    public void validateProduct(String product) {
+        if (product == null || product.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product ID cannot be empty");
         }
 
-        if (productService.findProductById(feedBackRequestDTO.getProduct()) == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product with ID " + feedBackRequestDTO.getProduct() + " does not exist");
-        }
+        productService.findProductById(product);
     }
 }

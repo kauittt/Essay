@@ -35,6 +35,7 @@ public class CartValidator {
         for (String quantity : cartRequestDTO.getQuantities()) {
             try {
                 int qty = Integer.parseInt(quantity);
+                //- Update thì quantity có thểm Âm/Dương
                 if (qty == 0) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity cannot be zero");
                 }

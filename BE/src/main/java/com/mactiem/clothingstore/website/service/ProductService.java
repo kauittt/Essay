@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.print.Book;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -81,24 +83,26 @@ public class ProductService {
     public ProductResponseDTO updateProduct(String id, ProductRequestDTO productRequestDTO) {
         Product product = findProductById(id);
 
+        productValidator.validateUpdate(productRequestDTO);
+
         Field[] fields = productRequestDTO.getClass().getDeclaredFields();
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
-                    Object value = field.get(productRequestDTO);
-                    if (value != null) {
-                        Field dbField = User.class.getDeclaredField(field.getName());
-                        dbField.setAccessible(true);
-                        dbField.set(product, value);
-                    }
+                Object value = field.get(productRequestDTO);
+                if (value != null) {
+
+                    Field dbField = User.class.getDeclaredField(field.getName());
+                    dbField.setAccessible(true);
+                    dbField.set(product, value);
+                }
             }
 
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+        } catch (IllegalAccessException | NoSuchFieldException  e) {
             throw new RuntimeException("Error updating fields", e);
         }
 
         return productMapper.toDTO(productRepository.save(product));
-
     }
 
     @Transactional
@@ -106,7 +110,5 @@ public class ProductService {
         Product product = findProductById(id);
         productRepository.delete(product);
     }
-
-
 
 }

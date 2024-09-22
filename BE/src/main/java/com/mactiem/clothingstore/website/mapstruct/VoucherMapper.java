@@ -21,7 +21,7 @@ public interface VoucherMapper {
     VoucherResponseDTO toDTO(Voucher voucher);
 
     @AfterMapping
-    default void mapProductsToDTOs(@MappingTarget VoucherResponseDTO voucherResponseDTO, Voucher voucher, ProductMapper productMapper) {
+    default void mapProducts(@MappingTarget VoucherResponseDTO voucherResponseDTO, Voucher voucher, ProductMapper productMapper) {
         voucherResponseDTO.setProducts(productMapper.toListDTOs(voucher.getProducts()));
     }
 
@@ -34,7 +34,7 @@ public interface VoucherMapper {
 
     @AfterMapping
     default void mapStringToProducts(@MappingTarget Voucher voucher, VoucherRequestDTO voucherRequestDTO, ProductService productService) {
-        if (voucherRequestDTO.getProducts() != null && !voucherRequestDTO.getProducts().isEmpty()) {
+        if (!voucherRequestDTO.getProducts().isEmpty()) {
             voucher.setProducts(productService.findProductsByIds(voucherRequestDTO.getProducts()));
         } else {
             voucher.setProducts(productService.findAllProducts());

@@ -12,6 +12,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {OrderService.class})
@@ -29,9 +30,10 @@ public interface InvoiceMapper {
     Invoice toEntity(InvoiceRequestDTO invoiceRequestDTO);
 
     @AfterMapping
-    default void mapFields(@MappingTarget Invoice invoice, InvoiceRequestDTO invoiceRequestDTO
+    default void mapBasicFields(@MappingTarget Invoice invoice, InvoiceRequestDTO invoiceRequestDTO
             , OrderService orderService) {
         invoice.setOrder(orderService.findOrderById(invoiceRequestDTO.getOrder()));
         invoice.setId(GenerateID.generateID());
+        invoice.setCreateDate(LocalDate.now());
     }
 }

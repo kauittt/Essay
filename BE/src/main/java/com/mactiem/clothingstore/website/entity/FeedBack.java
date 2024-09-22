@@ -33,6 +33,9 @@ public class FeedBack {
     @Column(name = "create_date")
     private LocalDate createDate;
 
+    @Column(name = "update_date")
+    private LocalDate updateDate;
+
     @Column(name = "point")
     private double point;
 

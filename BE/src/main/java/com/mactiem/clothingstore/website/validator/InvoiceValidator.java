@@ -16,29 +16,31 @@ public class InvoiceValidator {
         this.orderService = orderService;
     }
 
-    // Validate the details of the invoice
+    // Validate the basic details of the invoice
     public void validateInvoiceRequest(InvoiceRequestDTO invoiceRequestDTO) {
         validateOrder(invoiceRequestDTO.getOrder());
-        validateNotEmpty(invoiceRequestDTO.getPaymentMethod(), "Payment Method");
-        validateAmounts(invoiceRequestDTO.getTotalAmount(), "Total Amount");
-        validateAmounts(invoiceRequestDTO.getDiscountAmount(), "Discount Amount");
-    }
-
-    // Validate non-empty fields
-    private void validateNotEmpty(String value, String fieldName) {
-        if (value == null || value.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, fieldName + " cannot be empty");
-        }
+        validatePaymentMethod(invoiceRequestDTO.getPaymentMethod());
+        validateAmount(invoiceRequestDTO.getTotalAmount(), "Total Amount");
+        validateAmount(invoiceRequestDTO.getDiscountAmount(), "Discount Amount");
     }
 
     // Validate order exists
     private void validateOrder(String order) {
-        validateNotEmpty(order, "Order");
+        if (order == null || order.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order cannot be empty");
+        }
         orderService.findOrderById(order);
     }
 
+    // Validate payment method
+    private void validatePaymentMethod(String paymentMethod) {
+        if (paymentMethod == null || paymentMethod.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment Method cannot be empty");
+        }
+    }
+
     // Validate numeric amounts
-    private void validateAmounts(Double amount, String fieldName) {
+    private void validateAmount(Double amount, String fieldName) {
         if (amount == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, fieldName + " cannot be null");
         }

@@ -24,41 +24,92 @@ public class UserValidator {
         this.authorityService = authorityService;
     }
 
-    public void validateRequiredFields(UserRegistryDTO userRequestDTO) {
-        if (userRequestDTO.getUsername() == null || userRequestDTO.getUsername().isEmpty()) {
+    public void validateUpdate(UserRegistryDTO userRequestDTO) {
+        if (userRequestDTO.getPassword() != null) {
+            validatePassword(userRequestDTO.getPassword());
+        }
+
+        if (userRequestDTO.getEmail() != null) {
+            validateEmail(userRequestDTO.getEmail());
+        }
+
+        if (userRequestDTO.getPhone() != null) {
+            validatePhone(userRequestDTO.getPhone());
+        }
+
+        if (userRequestDTO.getAuthorities() != null) {
+            validateAuthorities(userRequestDTO.getAuthorities());
+        }
+    }
+
+    public void validateUserRegistration(UserRegistryDTO userRequestDTO) {
+        validateUsername(userRequestDTO.getUsername());
+        validatePassword(userRequestDTO.getPassword());
+        validateEmail(userRequestDTO.getEmail());
+        validateName(userRequestDTO.getName());
+        validatePhone(userRequestDTO.getPhone());
+        validateAddress(userRequestDTO.getAddress());
+        validateAuthorities(userRequestDTO.getAuthorities());
+    }
+
+    public void validateUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
         }
-
-        if (userRequestDTO.getPassword() == null || userRequestDTO.getPassword().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is required");
-        }
-
-        if (userRequestDTO.getAuthorities() == null || userRequestDTO.getAuthorities().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Authorities cannot be null or empty");
-        }
-    }
-
-    public void validatePasswordStrength(String password) {
-        if (password.length() < 8) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 8 characters long");
-        }
-
-        String passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$";
-        if (!Pattern.matches(passwordPattern, password)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character");
-        }
-    }
-
-    public void validateUniqueUsername(UserRegistryDTO userRequestDTO) {
-        if (userRepository.findByUsername(userRequestDTO.getUsername()) != null) {
+        if (userRepository.findByUsername(username) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         }
     }
 
-    public void validateAuthoritiesExistence(List<String> authorityIds) {
-        List<Authority> authorities = authorityService.getAuthoritiesByNames(authorityIds);
+    //- Password Strength
+    public void validatePassword(String password) {
+        if (password == null || password.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is required");
+        }
+//        String passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$";
+//        if (password.length() < 8 || !Pattern.matches(passwordPattern, password)) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 8 characters and include at least one digit, one lowercase letter, one uppercase letter, and one special character");
+//        }
+    }
 
-        if (authorities == null || authorities.size() != authorityIds.size()) {
+    public void validateEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
+        }
+        String emailPattern = "^[A-Za-z0-9+_.-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,6}$";
+        if (!Pattern.matches(emailPattern, email)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email format");
+        }
+    }
+
+    public void validateName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");
+        }
+    }
+
+    public void validatePhone(String phone) {
+        if (phone == null || phone.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone is required");
+        }
+        String phonePattern = "^0[0-9]{9}$";
+        if (!Pattern.matches(phonePattern, phone)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid phone format");
+        }
+    }
+
+    public void validateAddress(String address) {
+        if (address == null || address.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Address is required");
+        }
+    }
+
+    public void validateAuthorities(List<String> authorityIds) {
+        if (authorityIds == null || authorityIds.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Authorities cannot be null or empty");
+        }
+        List<Authority> authorities = authorityService.getAuthoritiesByNames(authorityIds);
+        if (authorities.size() != authorityIds.size()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not all authorities are found");
         }
     }

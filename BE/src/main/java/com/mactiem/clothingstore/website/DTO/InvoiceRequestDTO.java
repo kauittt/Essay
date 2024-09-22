@@ -15,8 +15,8 @@ public class InvoiceRequestDTO {
 //    private String id;
 //    private LocalDate createDate;
     private String order;
-//    private String status;
     private String paymentMethod;
     private Double totalAmount;
     private Double discountAmount;
+//    private String status;
 }

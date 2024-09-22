@@ -15,12 +15,12 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderResponseDTO {
     private String id;
-    private List<OrderProductDTO> orderProducts;
     private String name;
     private String phone;
     private String address;
     private String status;
     private LocalDate createDate;
     private LocalDate updateDate;
+    private List<OrderProductDTO> orderProducts;
     private InvoiceResponseDTO invoice;
 }

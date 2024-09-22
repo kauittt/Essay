@@ -36,7 +36,7 @@ public interface ProductMapper {
     Product toEntity(ProductRequestDTO productRequestDTO);
 
     @AfterMapping
-    default void mapOthers(@MappingTarget Product product, ProductRequestDTO productRequestDTO) {
+    default void mapBasicFields(@MappingTarget Product product, ProductRequestDTO productRequestDTO) {
         product.setId(GenerateID.generateID());
     }
 }

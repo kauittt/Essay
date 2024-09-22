@@ -7,32 +7,68 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Component
 public class ProductValidator {
+    // Validate the basic details of the product
     public void validateProductRequest(ProductRequestDTO productRequestDTO) {
-        if (productRequestDTO.getName() == null || productRequestDTO.getName().isEmpty()) {
+        validateProductName(productRequestDTO.getName());
+        validateProductDescription(productRequestDTO.getDescription());
+        validateProductPrice(productRequestDTO.getPrice());
+        validateProductImage(productRequestDTO.getImage());
+        validateProductCategory(productRequestDTO.getCategory());
+        validateProductStock(productRequestDTO.getStock());
+    }
+
+    public void validateUpdate(ProductRequestDTO productRequestDTO) {
+        if (productRequestDTO.getPrice() != null) {
+            validateProductPrice(productRequestDTO.getPrice());
+        }
+
+        if (productRequestDTO.getStock() != null) {
+            validateProductStock(productRequestDTO.getStock());
+        }
+    }
+
+    // Validate product name
+    public void validateProductName(String name) {
+        if (name == null || name.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product name is required");
         }
+    }
 
-        if (productRequestDTO.getDescription() == null || productRequestDTO.getDescription().isEmpty()) {
+    // Validate product description
+    public void validateProductDescription(String description) {
+        if (description == null || description.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product description is required");
         }
+    }
 
-        if (productRequestDTO.getPrice() == null) {
+    // Validate product price
+    public void validateProductPrice(Double price) {
+        if (price == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product price is required");
-        } else if (productRequestDTO.getPrice() <= 0) {
+        } else if (price <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product price must be positive");
         }
+    }
 
-        if (productRequestDTO.getImage() == null || productRequestDTO.getImage().isEmpty()) {
+    // Validate product image
+    public void validateProductImage(String image) {
+        if (image == null || image.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product image is required");
         }
+    }
 
-        if (productRequestDTO.getCategory() == null || productRequestDTO.getCategory().isEmpty()) {
+    // Validate product category
+    public void validateProductCategory(String category) {
+        if (category == null || category.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product category is required");
         }
+    }
 
-        if (productRequestDTO.getStock() == null) {
+    // Validate product stock
+    public void validateProductStock(Integer stock) {
+        if (stock == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product stock is required");
-        } else if (productRequestDTO.getStock() <= 0) {
+        } else if (stock <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product stock must be positive");
         }
     }
