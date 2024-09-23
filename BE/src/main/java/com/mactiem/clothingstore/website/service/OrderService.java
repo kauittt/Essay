@@ -1,17 +1,13 @@
 package com.mactiem.clothingstore.website.service;
 
-import com.mactiem.clothingstore.website.DTO.OrderRequestDTO;
-import com.mactiem.clothingstore.website.DTO.OrderResponseDTO;
-import com.mactiem.clothingstore.website.DTO.ProductRequestDTO;
-import com.mactiem.clothingstore.website.DTO.ProductResponseDTO;
-import com.mactiem.clothingstore.website.entity.Order;
-import com.mactiem.clothingstore.website.entity.Product;
-import com.mactiem.clothingstore.website.entity.Response;
-import com.mactiem.clothingstore.website.entity.User;
+import com.mactiem.clothingstore.website.DTO.*;
+import com.mactiem.clothingstore.website.entity.*;
 import com.mactiem.clothingstore.website.mapstruct.OrderMapper;
+import com.mactiem.clothingstore.website.mapstruct.ProductMapper;
 import com.mactiem.clothingstore.website.repository.OrderRepository;
 import com.mactiem.clothingstore.website.validator.OrderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -26,13 +22,18 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final OrderValidator orderValidator;
+    private final ProductService productService;
+    private final InvoiceService invoiceService;
 
     @Autowired
     @Lazy
-    public OrderService(OrderMapper orderMapper, OrderRepository orderRepository, OrderValidator orderValidator) {
+    public OrderService(OrderMapper orderMapper, OrderRepository orderRepository
+            , OrderValidator orderValidator, ProductService productService, InvoiceService invoiceService) {
         this.orderMapper = orderMapper;
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
+        this.invoiceService = invoiceService;
+        this.productService = productService;
     }
 
     //- Helper
@@ -61,6 +62,8 @@ public class OrderService {
         orderValidator.validateOrderRequest(orderRequestDTO);
 
         Order order = orderMapper.toEntity(orderRequestDTO);
+        orderMapper.mapOrderProductsEntity(order, orderRequestDTO, productService);
+
         return orderMapper.toDTO(orderRepository.save(order));
     }
 
@@ -68,19 +71,19 @@ public class OrderService {
     public OrderResponseDTO update(String id, OrderRequestDTO orderRequestDTO) {
         Order order = findOrderById(id);
 
-        if(order.getStatus().equals("DONE")) return null;
+        if (order.getStatus().equals("DONE")) return null;
 
         orderValidator.validateUpdate(orderRequestDTO);
 
-        if(orderRequestDTO.getName() != null && !orderRequestDTO.getName().isEmpty()) {
+        if (orderRequestDTO.getName() != null && !orderRequestDTO.getName().isEmpty()) {
             order.setName(orderRequestDTO.getName());
         }
 
-        if(orderRequestDTO.getPhone() != null && !orderRequestDTO.getPhone().isEmpty()) {
+        if (orderRequestDTO.getPhone() != null && !orderRequestDTO.getPhone().isEmpty()) {
             order.setPhone(orderRequestDTO.getPhone());
         }
 
-        if(orderRequestDTO.getStatus() != null && !orderRequestDTO.getStatus().isEmpty()) {
+        if (orderRequestDTO.getStatus() != null && !orderRequestDTO.getStatus().isEmpty()) {
             order.setStatus(orderRequestDTO.getStatus());
         }
 

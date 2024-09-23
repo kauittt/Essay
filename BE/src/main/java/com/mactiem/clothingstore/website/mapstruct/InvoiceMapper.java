@@ -10,6 +10,7 @@ import com.mactiem.clothingstore.website.service.OrderService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -30,10 +31,14 @@ public interface InvoiceMapper {
     Invoice toEntity(InvoiceRequestDTO invoiceRequestDTO);
 
     @AfterMapping
-    default void mapBasicFields(@MappingTarget Invoice invoice, InvoiceRequestDTO invoiceRequestDTO
-            , OrderService orderService) {
-        invoice.setOrder(orderService.findOrderById(invoiceRequestDTO.getOrder()));
+    default void mapBasicFields(@MappingTarget Invoice invoice, InvoiceRequestDTO invoiceRequestDTO) {
         invoice.setId(GenerateID.generateID());
         invoice.setCreateDate(LocalDate.now());
+    }
+
+    @AfterMapping
+    default void mapOrder(@MappingTarget Invoice invoice, InvoiceRequestDTO invoiceRequestDTO
+            , OrderService orderService) {
+        invoice.setOrder(orderService.findOrderById(invoiceRequestDTO.getOrder()));
     }
 }

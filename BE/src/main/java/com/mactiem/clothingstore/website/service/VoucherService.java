@@ -63,6 +63,22 @@ public class VoucherService {
         voucherValidator.validateVoucherRequest(voucherRequestDTO);
 
         Voucher voucher = voucherMapper.toEntity(voucherRequestDTO);
+        voucher.setDiscountPercentage(voucherRequestDTO.getDiscountPercentage() / 100); //- input: 10 -> save: 0.1
+
+        List<Product> products;
+
+        if (!voucherRequestDTO.getProducts().isEmpty()) {
+            products = productService.findProductsByIds(voucherRequestDTO.getProducts());
+        } else {
+            products = productService.findAllProducts();
+        }
+
+        voucher.setProducts(products);
+
+        for (Product product : products) {
+            product.getVouchers().add(voucher);
+        }
+
         return voucherMapper.toDTO(voucherRepository.save(voucher));
     }
 
@@ -79,7 +95,7 @@ public class VoucherService {
                 if (!field.getName().equals("products") && !field.getName().equals("startDate")) {
                     Object value = field.get(voucherRequestDTO);
                     if (value != null) {
-                        Field dbField = User.class.getDeclaredField(field.getName());
+                        Field dbField = Voucher.class.getDeclaredField(field.getName());
                         dbField.setAccessible(true);
                         dbField.set(voucher, value);
                     }

@@ -21,11 +21,12 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {AuthorityMapper.class
         , AuthorityService.class
         , CartMapper.class
-        , OrderMapper.class})
+        , OrderMapper.class
+        ,ProductMapper.class})
 @Component
 public interface UserMapper {
     //- DTO
-    @Mapping(source = "authorities", target = "authorities")
+    @Mapping(target = "cart", ignore = true)
     UserResponseDTO toDTO(User user);
 
     default List<UserResponseDTO> toListDTOs(List<User> users) {
@@ -40,21 +41,20 @@ public interface UserMapper {
     }
 
     @AfterMapping
-    default void mapCart(@MappingTarget UserResponseDTO userResponseDTO, User user
-            , CartMapper cartMapper) {
-        CartResponseDTO cartResponseDTOs = cartMapper.toDTO(user.getCart());
-        userResponseDTO.setCart(cartResponseDTOs);
-    }
-
-    @AfterMapping
     default void mapOrders(@MappingTarget UserResponseDTO userResponseDTO, User user
             , OrderMapper orderMapper) {
         userResponseDTO.setOrders(orderMapper.toListDTOs(user.getOrders()));
     }
 
+    //- Old
+//    @AfterMapping
+//    default void mapCart(@MappingTarget UserResponseDTO userResponseDTO, User user
+//            , CartMapper cartMapper, ProductMapper productMapper) {
+//        cartMapper.toCartForUser(userResponseDTO, user.getCart(), productMapper);
+//    }
 
     //- Entity
-    User toEntity(UserRegistryDTO userRegistryDTO, @Context String type);
+    User toEntity(UserRegistryDTO userRegistryDTO);
 
     @AfterMapping
     default void mapAuthorities(@MappingTarget User user, UserRegistryDTO userRegistryDTO,
@@ -64,18 +64,12 @@ public interface UserMapper {
     }
 
     @AfterMapping
-    default void mapBasicFields(@MappingTarget User user, @Context String type) {
-        switch (type) {
-            case "create":
-                user.setId(GenerateID.generateID());
-                user.setCreateDate(LocalDate.now());
-                user.setUpdateDate(LocalDate.now());
-                user.setEnabled(1);
-                break;
-            case "update":
-                user.setUpdateDate(LocalDate.now());
-                break;
-            default:
-        }
+    default void mapBasicFields(@MappingTarget User user) {
+        user.setId(GenerateID.generateID());
+        user.setCreateDate(LocalDate.now());
+        user.setUpdateDate(LocalDate.now());
+        user.setEnabled(1);
     }
+
+    //- 7 - 14
 }

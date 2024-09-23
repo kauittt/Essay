@@ -67,8 +67,8 @@ public class ClothingStoreConfig {
                 .and()
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/users/login", "/users/register").permitAll();
-                    authorize.anyRequest().permitAll();
-//                    authorize.anyRequest().authenticated();
+//                    authorize.anyRequest().permitAll();
+                    authorize.anyRequest().authenticated();
                 });
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

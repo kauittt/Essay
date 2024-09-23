@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,26 +18,29 @@ import java.time.LocalDate;
 public class Invoice {
     @Id
     @Column(name = "id")
-    private String id;
+    private String id;//-==...
 
     @OneToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Order order;//-==...
 
     @Column(name = "create_date")
-    private LocalDate createDate;
-
-//    @Column(name = "status")
-//    private String status;
+    private LocalDate createDate;//-==...
 
     @Column(name = "total_amount")
-    private double totalAmount;
+    private double totalAmount;//-==...
 
     @Column(name = "discount_amount")
-    private double discountAmount;
+    private double discountAmount;//-==...
 
     @Column(name = "payment_method")
-    private String paymentMethod;
+    private String paymentMethod;//-==...
 
+    public Order getOrder() {
+        if (order == null) {
+            order = new Order();
+        }
+        return order;
+    }
 }

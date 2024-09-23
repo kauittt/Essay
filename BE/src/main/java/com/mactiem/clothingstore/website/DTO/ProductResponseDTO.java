@@ -3,6 +3,7 @@ package com.mactiem.clothingstore.website.DTO;
 import com.mactiem.clothingstore.website.entity.FeedBack;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,4 +23,10 @@ public class ProductResponseDTO {
     private List<FeedBackResponseDTO> feedBacks;
 
 
+    public List<FeedBackResponseDTO> getFeedBacks() {
+        if (feedBacks == null) {
+            feedBacks = new ArrayList<>();
+        }
+        return feedBacks;
+    }
 }

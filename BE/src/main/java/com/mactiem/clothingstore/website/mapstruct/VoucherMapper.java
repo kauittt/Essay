@@ -9,6 +9,7 @@ import com.mactiem.clothingstore.website.entity.Voucher;
 import com.mactiem.clothingstore.website.service.ProductService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,8 @@ public interface VoucherMapper {
     VoucherResponseDTO toDTO(Voucher voucher);
 
     @AfterMapping
-    default void mapProducts(@MappingTarget VoucherResponseDTO voucherResponseDTO, Voucher voucher, ProductMapper productMapper) {
+    default void mapProducts(@MappingTarget VoucherResponseDTO voucherResponseDTO
+            , Voucher voucher, ProductMapper productMapper, ProductService productService) {
         voucherResponseDTO.setProducts(productMapper.toListDTOs(voucher.getProducts()));
     }
 
@@ -30,20 +32,21 @@ public interface VoucherMapper {
     }
 
     //- Entity
+    @Mapping(target = "products", ignore = true)
+    @Mapping(target = "discountPercentage", ignore = true)
     Voucher toEntity(VoucherRequestDTO voucherRequestDTO);
 
-    @AfterMapping
-    default void mapStringToProducts(@MappingTarget Voucher voucher, VoucherRequestDTO voucherRequestDTO, ProductService productService) {
-        if (!voucherRequestDTO.getProducts().isEmpty()) {
-            voucher.setProducts(productService.findProductsByIds(voucherRequestDTO.getProducts()));
-        } else {
-            voucher.setProducts(productService.findAllProducts());
-        }
-    }
+//    @AfterMapping
+//    default void mapProducts(@MappingTarget Voucher voucher, VoucherRequestDTO voucherRequestDTO, ProductService productService) {
+//        if (!voucherRequestDTO.getProducts().isEmpty()) {
+//            voucher.setProducts(productService.findProductsByIds(voucherRequestDTO.getProducts()));
+//        } else {
+//            voucher.setProducts(productService.findAllProducts());
+//        }
+//    }
 
     @AfterMapping
-    default void mapOtherFields(@MappingTarget Voucher voucher, VoucherRequestDTO voucherRequestDTO) {
+    default void mapBasicFields(@MappingTarget Voucher voucher, VoucherRequestDTO voucherRequestDTO) {
         voucher.setId(GenerateID.generateID());
-        voucher.setDiscountPercentage(voucherRequestDTO.getDiscountPercentage() / 100); //- input: 10 -> save: 0.1
     }
 }

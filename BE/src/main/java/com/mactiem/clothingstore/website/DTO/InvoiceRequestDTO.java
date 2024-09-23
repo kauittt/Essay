@@ -18,5 +18,4 @@ public class InvoiceRequestDTO {
     private String paymentMethod;
     private Double totalAmount;
     private Double discountAmount;
-//    private String status;
 }

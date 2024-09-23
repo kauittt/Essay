@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -18,27 +19,41 @@ import java.util.List;
 public class FeedBack {
     @Id
     @Column(name = "id")
-    private String id;
+    private String id;//-==...
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user;//-==...
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "product_id")
-    private Product product;
+    private Product product;//-==...
 
     @Column(name = "create_date")
-    private LocalDate createDate;
+    private LocalDate createDate;//-==...
 
     @Column(name = "update_date")
-    private LocalDate updateDate;
+    private LocalDate updateDate;//-==...
 
     @Column(name = "point")
-    private double point;
+    private double point;//-==...
 
     @Column(name = "description")
-    private String description;
+    private String description;//-==...
+
+    public User getUser() {
+        if (user == null) {
+            user = new User();
+        }
+        return user;
+    }
+
+    public Product getProduct() {
+        if (product == null) {
+            product = new Product();
+        }
+        return product;
+    }
 }

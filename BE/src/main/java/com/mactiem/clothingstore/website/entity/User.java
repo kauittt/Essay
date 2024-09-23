@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -18,7 +19,7 @@ import java.util.List;
 public class User {
     @Id
     @Column(name = "id")
-    private String id;
+    private String id;//---
 
     //-------------------------------
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
@@ -27,10 +28,10 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
-    private List<Authority> authorities;
+    private List<Authority> authorities;//---
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Cart cart;
+    private Cart cart;//-
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
@@ -40,29 +41,57 @@ public class User {
 
     //-------------------------------
     @Column(name = "username")
-    private String username;
+    private String username;//---
 
     @Column(name = "password")
-    private String password;
+    private String password;//---
 
     @Column(name = "enabled")
-    private Integer enabled;
+    private Integer enabled;//---
 
     @Column(name = "email")
-    private String email;
+    private String email;//---
 
     @Column(name = "name")
-    private String name;
+    private String name;//---
 
     @Column(name = "phone")
-    private String phone;
+    private String phone;//---
 
     @Column(name = "address")
-    private String address;
+    private String address;//---
 
     @Column(name = "create_date")
-    private LocalDate createDate;
+    private LocalDate createDate;//---
 
     @Column(name = "update_date")
-    private LocalDate updateDate;
+    private LocalDate updateDate;//---
+
+    public List<Authority> getAuthorities() {
+        if (authorities == null) {
+            authorities = new ArrayList<>();
+        }
+        return authorities;
+    }
+
+    public Cart getCart() {
+        if (cart == null) {
+            cart = new Cart();
+        }
+        return cart;
+    }
+
+    public List<Order> getOrders() {
+        if (orders == null) {
+            orders = new ArrayList<>();
+        }
+        return orders;
+    }
+
+    public List<FeedBack> getFeedBacks() {
+        if (feedBacks == null) {
+            feedBacks = new ArrayList<>();
+        }
+        return feedBacks;
+    }
 }

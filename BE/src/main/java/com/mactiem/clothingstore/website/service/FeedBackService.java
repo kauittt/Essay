@@ -20,12 +20,14 @@ public class FeedBackService {
     private final FeedBackRepository feedBackRepository;
     private final FeedBackMapper feedBackMapper;
     private final FeedBackValidator feedBackValidator;
+    private final ProductService productService;
 
     @Autowired
-    public FeedBackService(FeedBackMapper feedBackMapper, FeedBackRepository feedBackRepository, FeedBackValidator feedBackValidator) {
+    public FeedBackService(FeedBackMapper feedBackMapper, FeedBackRepository feedBackRepository, FeedBackValidator feedBackValidator, ProductService productService) {
         this.feedBackMapper = feedBackMapper;
         this.feedBackRepository = feedBackRepository;
         this.feedBackValidator = feedBackValidator;
+        this.productService = productService;
     }
 
     //- Helper
@@ -42,7 +44,7 @@ public class FeedBackService {
 
         //- Mapping
         FeedBack feedBack = feedBackMapper.toEntity(feedBackRequestDTO);
-
+        feedBack.setProduct(productService.findProductById(feedBackRequestDTO.getProduct())); //- Ra ngoài cho khỏi bị loop denpendency
 
         return feedBackMapper.toDTO(feedBackRepository.save(feedBack));
     }
@@ -61,7 +63,7 @@ public class FeedBackService {
                 if (!field.getName().equals("user") && !field.getName().equals("product")) {
                     Object value = field.get(feedBackRequestDTO);
                     if (value != null) {
-                        Field dbField = User.class.getDeclaredField(field.getName());
+                        Field dbField = FeedBack.class.getDeclaredField(field.getName());
                         dbField.setAccessible(true);
                         dbField.set(feedBack, value);
                     }

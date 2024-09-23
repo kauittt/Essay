@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @Component
@@ -36,6 +38,7 @@ public class OrderValidator {
         validateUser(orderRequestDTO.getUser());
         validateProducts(orderRequestDTO.getProducts());
         validateQuantities(orderRequestDTO.getQuantities(), orderRequestDTO.getProducts().size());
+        validateQuantitiesDoNotExceedStock(orderRequestDTO.getProducts(), orderRequestDTO.getQuantities());
         validateName(orderRequestDTO.getName());
         validatePhone(orderRequestDTO.getPhone());
         validateAddress(orderRequestDTO.getAddress());
@@ -82,6 +85,32 @@ public class OrderValidator {
 
         if (quantities.size() != expectedSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantities list must match the number of products");
+        }
+    }
+
+    private void validateQuantitiesDoNotExceedStock(List<String> productIds, List<String> quantities) {
+        List<Product> products = productService.findProductsByIds(productIds);
+        Map<String, Integer> productStockMap = new HashMap<>();
+        for (Product product : products) {
+            productStockMap.put(product.getId(), product.getStock());
+        }
+
+        for (int i = 0; i < productIds.size(); i++) {
+            String productId = productIds.get(i);
+            String quantityStr = quantities.get(i);
+
+            try {
+                int quantity = Integer.parseInt(quantityStr);
+                Integer stock = productStockMap.get(productId);
+
+                if (stock != null && quantity > stock) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Quantity for product ID " + productId + " exceeds available stock. Available stock: " + stock);
+                }
+            } catch (NumberFormatException e) {
+                // This exception should already be handled in validateQuantities, but it's good to have a fallback
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid quantity format for product ID " + productId);
+            }
         }
     }
 

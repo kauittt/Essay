@@ -15,12 +15,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/feedbacks")
 public class FeedBackController {
     private final FeedBackService feedBackService;
-    private final FeedBackMapper feedBackMapper;
 
     @Autowired
     @Lazy
-    public FeedBackController(FeedBackMapper feedBackMapper, FeedBackService feedBackService) {
-        this.feedBackMapper = feedBackMapper;
+    public FeedBackController( FeedBackService feedBackService) {
         this.feedBackService = feedBackService;
     }
 

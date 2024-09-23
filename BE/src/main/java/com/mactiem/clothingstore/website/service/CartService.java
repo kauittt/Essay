@@ -51,7 +51,6 @@ public class CartService {
     @Transactional
     public CartResponseDTO updateCartByUserId(String id, CartRequestDTO cartRequestDTO) {
         cartValidator.validateCartRequest(cartRequestDTO);
-        cartValidator.validateProductIdsExist(cartRequestDTO.getProducts());
 
         Cart cart = findCartByUserId(id);
 

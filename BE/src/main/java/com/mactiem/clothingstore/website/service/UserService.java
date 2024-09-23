@@ -4,6 +4,8 @@ package com.mactiem.clothingstore.website.service;
 import com.mactiem.clothingstore.website.DTO.UserRegistryDTO;
 import com.mactiem.clothingstore.website.DTO.UserResponseDTO;
 import com.mactiem.clothingstore.website.entity.*;
+import com.mactiem.clothingstore.website.mapstruct.CartMapper;
+import com.mactiem.clothingstore.website.mapstruct.ProductMapper;
 import com.mactiem.clothingstore.website.mapstruct.UserMapper;
 import com.mactiem.clothingstore.website.repository.CartRepository;
 import com.mactiem.clothingstore.website.repository.UserRepository;
@@ -31,19 +33,24 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserValidator userValidator;
     private final CartRepository cartRepository;
+    private final CartMapper cartMapper;
+    private final ProductMapper productMapper;
 
     @Autowired
     @Lazy
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, AuthorityService authorityService, UserValidator userValidator, CartRepository cartRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, AuthorityService authorityService, UserValidator userValidator, CartRepository cartRepository, CartMapper cartMapper, ProductMapper productMapper) {
         this.authorityService = authorityService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.userValidator = userValidator;
         this.cartRepository = cartRepository;
+        this.cartMapper = cartMapper;
+        this.productMapper = productMapper;
     }
 
     //- Helpers
+    @Named("byUsername")
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -57,12 +64,12 @@ public class UserService {
     //- Methods
     public UserResponseDTO getUserById(String id) {
         User user = findUserById(id);
-        return userMapper.toDTO(user);
+        return mapUserDTO(user);
     }
 
     public List<UserResponseDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return userMapper.toListDTOs(users);
+        return mapListUser(users);
     }
 
     @Transactional
@@ -73,11 +80,11 @@ public class UserService {
         userRequestDTO.setPassword(hashedPassword);
 
         //- Mapping
-        User user = userMapper.toEntity(userRequestDTO, "create");
+        User user = userMapper.toEntity(userRequestDTO);
         Cart cart = new Cart(GenerateID.generateID(), user, new ArrayList<>());
 
         cartRepository.save(cart);
-        return userMapper.toDTO(userRepository.save(user));
+        return mapUserDTO(userRepository.save(user));
     }
 
     @Transactional
@@ -113,12 +120,24 @@ public class UserService {
         }
         dbUser.setUpdateDate(LocalDate.now());
 
-        return userMapper.toDTO(userRepository.save(dbUser));
+        return mapUserDTO(userRepository.save(dbUser));
     }
 
     @Transactional
     public void delete(String id) {
         User dbUser = findUserById(id);
         userRepository.delete(dbUser);
+    }
+
+    public UserResponseDTO mapUserDTO(User user) {
+        UserResponseDTO userResponseDTO = userMapper.toDTO(user);
+        cartMapper.toCartForUser(userResponseDTO, user.getCart(), productMapper);
+
+
+        return userResponseDTO;
+    }
+
+    public List<UserResponseDTO> mapListUser(List<User> users) {
+        return users.stream().map(this::mapUserDTO).toList();
     }
 }

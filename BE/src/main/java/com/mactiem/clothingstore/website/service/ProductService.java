@@ -29,7 +29,6 @@ public class ProductService {
     private final ProductValidator productValidator;
 
     @Autowired
-    @Lazy
     public ProductService(ProductMapper productMapper, ProductRepository productRepository, ProductValidator productValidator) {
         this.productMapper = productMapper;
         this.productRepository = productRepository;
@@ -92,7 +91,7 @@ public class ProductService {
                 Object value = field.get(productRequestDTO);
                 if (value != null) {
 
-                    Field dbField = User.class.getDeclaredField(field.getName());
+                    Field dbField = Product.class.getDeclaredField(field.getName());
                     dbField.setAccessible(true);
                     dbField.set(product, value);
                 }

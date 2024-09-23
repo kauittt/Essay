@@ -3,6 +3,7 @@ package com.mactiem.clothingstore.website.DTO;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -29,7 +30,26 @@ public class UserResponseDTO {
 
     private List<AuthorityDTO> authorities;
 
-    private CartResponseDTO cart;
+    private List<CartProductDTO> cart;
 
     private List<OrderResponseDTO> orders;
+
+    public List<CartProductDTO> getCart() {
+        if (cart == null) {
+            cart = new ArrayList<>();
+        }
+        return cart;
+    }
+    public List<AuthorityDTO> getAuthorities() {
+        if (authorities == null) {
+            authorities = new ArrayList<>();
+        }
+        return authorities;
+    }
+    public List<OrderResponseDTO> getOrders() {
+        if (orders == null) {
+            orders = new ArrayList<>();
+        }
+        return orders;
+    }
 }

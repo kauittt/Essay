@@ -6,6 +6,7 @@ import com.mactiem.clothingstore.website.entity.OrderProduct;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,4 +24,18 @@ public class OrderResponseDTO {
     private LocalDate updateDate;
     private List<OrderProductDTO> orderProducts;
     private InvoiceResponseDTO invoice;
+
+    public InvoiceResponseDTO getInvoice() {
+        if (invoice == null) {
+            invoice = new InvoiceResponseDTO();
+        }
+        return invoice;
+    }
+
+    public List<OrderProductDTO> getOrderProducts() {
+        if (orderProducts == null) {
+            orderProducts = new ArrayList<>();
+        }
+        return orderProducts;
+    }
 }

@@ -67,6 +67,7 @@ public class OrderController {
         }
     }
 
+    //- admin xóa, user update cancel
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         try {

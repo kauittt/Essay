@@ -4,6 +4,7 @@ import com.mactiem.clothingstore.website.entity.Product;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,4 +20,12 @@ public class VoucherResponseDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer quantity;
+
+
+    public List<ProductResponseDTO> getProducts() {
+        if (products == null) {
+            products = new ArrayList<>();
+        }
+        return products;
+    }
 }

@@ -7,6 +7,7 @@ import com.mactiem.clothingstore.website.service.ProductService;
 import com.mactiem.clothingstore.website.service.UserService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Mapper(componentModel = "spring", uses = {ProductMapper.class
+@Mapper(componentModel = "spring", uses = {
+        ProductMapper.class
         , UserService.class
         , ProductService.class
         , InvoiceMapper.class})
@@ -26,7 +28,7 @@ public interface OrderMapper {
     OrderResponseDTO toDTO(Order order);
 
     @AfterMapping
-    default void mapOrderProducts(@MappingTarget OrderResponseDTO orderResponseDTO, Order order, ProductMapper productMapper) {
+    default void mapOrderProductsDTO(@MappingTarget OrderResponseDTO orderResponseDTO, Order order, ProductMapper productMapper) {
         for (OrderProduct orderProduct : order.getOrderProducts()) {
             OrderProductDTO dto = new OrderProductDTO();
             dto.setQuantity(orderProduct.getQuantity());
@@ -46,6 +48,7 @@ public interface OrderMapper {
     }
 
     //- Entity
+    @Mapping(target = "user", source = "user", qualifiedByName = "byId")
     Order toEntity(OrderRequestDTO orderRequestDTO);
 
     @AfterMapping
@@ -60,9 +63,10 @@ public interface OrderMapper {
         order.setUser(userService.findUserById(orderRequestDTO.getUser()));
     }
 
+    //- Gọi ở chổ gọi .toEntity()
     @AfterMapping
-    default void mapOrderProducts(@MappingTarget Order order, OrderRequestDTO orderRequestDTO
-            , ProductMapper productMapper, ProductService productService) {
+    default void mapOrderProductsEntity(@MappingTarget Order order, OrderRequestDTO orderRequestDTO
+            , ProductService productService) {
 
         List<OrderProduct> orderProducts = new ArrayList<>();
 

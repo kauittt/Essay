@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class CartValidator {
@@ -32,23 +34,46 @@ public class CartValidator {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between product IDs and quantities");
         }
 
-        for (String quantity : cartRequestDTO.getQuantities()) {
+        // Lấy danh sách sản phẩm từ productService
+        List<Product> products = validateProductIdsExist(cartRequestDTO.getProducts());
+
+        // Map để lưu trữ thông tin sản phẩm và tồn kho (stock)
+        Map<String, Integer> productStockMap = new HashMap<>();
+        for (Product product : products) {
+            productStockMap.put(product.getId(), product.getStock());
+        }
+
+        // Duyệt qua danh sách quantity để validate
+        for (int i = 0; i < cartRequestDTO.getProducts().size(); i++) {
+            String productId = cartRequestDTO.getProducts().get(i);
+            String quantityStr = cartRequestDTO.getQuantities().get(i);
+
             try {
-                int qty = Integer.parseInt(quantity);
-                //- Update thì quantity có thểm Âm/Dương
-                if (qty == 0) {
+                int quantity = Integer.parseInt(quantityStr);
+
+                if (quantity == 0) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity cannot be zero");
                 }
+
+                // Kiểm tra quantity có lớn hơn stock của product không
+                Integer stock = productStockMap.get(productId);
+                if (stock != null && quantity > stock) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Quantity for product ID " + productId + " exceeds available stock. Available stock: " + stock);
+                }
+
             } catch (NumberFormatException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid quantity format");
             }
         }
     }
 
-    public void validateProductIdsExist(List<String> productIds) {
+    public List<Product> validateProductIdsExist(List<String> productIds) {
         List<Product> products = productService.findProductsByIds(productIds);
         if (products.size() != productIds.size()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more product IDs do not exist");
         }
+
+        return products;
     }
 }
