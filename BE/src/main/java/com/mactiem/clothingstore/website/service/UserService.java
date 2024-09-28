@@ -82,6 +82,7 @@ public class UserService {
         //- Mapping
         User user = userMapper.toEntity(userRequestDTO);
         Cart cart = new Cart(GenerateID.generateID(), user, new ArrayList<>());
+        user.setCart(cart);
 
         cartRepository.save(cart);
         return mapUserDTO(userRepository.save(user));

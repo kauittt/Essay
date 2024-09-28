@@ -26,12 +26,10 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JWTGenerator jwtGenerator;
-    private final UserMapper userMapper;
 
     @Autowired
     @Lazy
-    public UserController(UserMapper userMapper, UserService userService, AuthenticationManager authenticationManager, JWTGenerator jwtGenerator) {
-        this.userMapper = userMapper;
+    public UserController(UserService userService, AuthenticationManager authenticationManager, JWTGenerator jwtGenerator) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtGenerator = jwtGenerator;
