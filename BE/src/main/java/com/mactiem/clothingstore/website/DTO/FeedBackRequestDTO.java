@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class FeedBackRequestDTO {
     //    private String id;
 //    private LocalDate createDate;

@@ -7,6 +7,7 @@ import jakarta.persistence.ManyToMany;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,5 +21,6 @@ public class VoucherRequestDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer quantity;
-    private List<String> products;  //- empty = all
+    private List<String> products = new ArrayList<>();
+    ;  //- empty = all
 }

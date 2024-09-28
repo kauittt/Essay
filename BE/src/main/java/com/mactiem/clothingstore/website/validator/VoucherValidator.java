@@ -3,6 +3,7 @@ package com.mactiem.clothingstore.website.validator;
 import com.mactiem.clothingstore.website.DTO.VoucherRequestDTO;
 import com.mactiem.clothingstore.website.entity.Product;
 import com.mactiem.clothingstore.website.entity.Voucher;
+import com.mactiem.clothingstore.website.repository.VoucherRepository;
 import com.mactiem.clothingstore.website.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,12 @@ import java.util.List;
 @Component
 public class VoucherValidator {
     private final ProductService productService;
+    private final VoucherRepository voucherRepository;
 
     @Autowired
-    public VoucherValidator(ProductService productService) {
+    public VoucherValidator(ProductService productService, VoucherRepository voucherRepository) {
         this.productService = productService;
+        this.voucherRepository = voucherRepository;
     }
 
     public void validateForUpdate(VoucherRequestDTO voucherRequestDTO, Voucher voucher) {
@@ -52,6 +55,9 @@ public class VoucherValidator {
     public void validateName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Voucher name is required");
+        }
+        if (voucherRepository.findVoucherByName(name).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Voucher name already exists");
         }
     }
 

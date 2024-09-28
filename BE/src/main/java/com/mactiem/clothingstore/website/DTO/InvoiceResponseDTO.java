@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class InvoiceResponseDTO {
     private String id;
 //    private Order order;

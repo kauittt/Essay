@@ -9,7 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@Builder
 public class CategoryProductsDTO {
     private String category;
-    private List<ProductResponseDTO> books;
+    private List<ProductResponseDTO> products;
 }

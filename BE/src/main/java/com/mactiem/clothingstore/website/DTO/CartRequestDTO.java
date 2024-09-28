@@ -9,6 +9,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CartRequestDTO {
     private List<String> products;
     private List<String> quantities;

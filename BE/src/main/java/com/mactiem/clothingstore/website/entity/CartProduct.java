@@ -1,10 +1,7 @@
 package com.mactiem.clothingstore.website.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @NoArgsConstructor
@@ -13,6 +10,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "carts_products")
+@Builder
 public class CartProduct {
     @EmbeddedId
     private CartProductId id;

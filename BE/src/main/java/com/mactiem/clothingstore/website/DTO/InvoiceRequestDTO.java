@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class InvoiceRequestDTO {
 //    private String id;
 //    private LocalDate createDate;

@@ -123,6 +123,13 @@ public class VoucherService {
     @Transactional
     public void deleteVoucher(String id) {
         Voucher voucher = findVoucherById(id);
+
+        List<Product> products = voucher.getProducts();
+        if (products != null) {
+            for (Product product : products) {
+                product.getVouchers().remove(voucher);
+            }
+        }
         voucherRepository.delete(voucher);
     }
 }

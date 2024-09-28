@@ -1,10 +1,7 @@
 package com.mactiem.clothingstore.website.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "products")
+@Builder
 public class Product {
     @Id
     @Column(name = "id")

@@ -2,10 +2,7 @@ package com.mactiem.clothingstore.website.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,6 +14,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "vouchers")
+@Builder
 public class Voucher {
     @Id
     @Column(name = "id")

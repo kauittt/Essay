@@ -1,12 +1,21 @@
 package com.mactiem.clothingstore.website.validator;
 
 import com.mactiem.clothingstore.website.DTO.ProductRequestDTO;
+import com.mactiem.clothingstore.website.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 @Component
 public class ProductValidator {
+    private ProductRepository productRepository;
+
+    @Autowired
+    public ProductValidator(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
     // Validate the basic details of the product
     public void validateProductRequest(ProductRequestDTO productRequestDTO) {
         validateProductName(productRequestDTO.getName());
@@ -31,6 +40,9 @@ public class ProductValidator {
     public void validateProductName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product name is required");
+        }
+        if (productRepository.findProductByName(name).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Product name already exists");
         }
     }
 
