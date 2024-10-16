@@ -1,0 +1,14 @@
+{
+    "unknown": "Lỗi không xác định",
+    "popup_closed_by_user": "Cửa sổ bật lên đã bị người dùng đóng",
+    "validation": {
+        "emptyUsername": "Trường tên người dùng không được để trống",
+        "emptyEmail": "Trường email không được để trống",
+        "invalidEmail": "Địa chỉ email không hợp lệ",
+        "emptyUrl": "Trường URL không được để trống",
+        "invalidUrl": "URL không hợp lệ",
+        "emptyPassword": "Trường mật khẩu không được để trống",
+        "incorrectPassword": "Mật khẩu không chính xác",
+        "emptySelect": "Vui lòng chọn tùy chọn"
+    }
+}

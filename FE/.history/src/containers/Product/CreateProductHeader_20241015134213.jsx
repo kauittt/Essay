@@ -1,0 +1,42 @@
+import React, { useMemo } from "react";
+
+const CreateProductHeader = (t) => {
+    const columns = useMemo(
+        () => [
+            {
+                Header: t("store:product.no"), // "Số thứ tự"
+                accessor: "no",
+            },
+            {
+                Header: t("store:product.name"), // "Tên"
+                accessor: "name",
+            },
+            {
+                Header: t("store:product.description"), // "Mô tả"
+                accessor: "description",
+            },
+            {
+                Header: t("store:product.stock"), // "Kho hàng"
+                accessor: "stock",
+            },
+            {
+                Header: t("store:product.category"), // "Danh mục"
+                accessor: "category",
+            },
+            {
+                Header: t("store:product.price"), // "Giá"
+                accessor: "price",
+                // Cell: ({ value }) => `${value.toLocaleString()} VND`, // Format the price to be more readable if needed
+            },
+        ],
+        [t]
+    );
+
+    const customerTableData = {
+        tableHeaderData: columns,
+        tableRowsData: [],
+    };
+    return customerTableData;
+};
+
+export default CreateProductHeader;

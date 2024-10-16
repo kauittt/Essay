@@ -1,0 +1,15 @@
+{
+    "product": {
+        "title": "Product",
+        "titles": "Products",
+        "description": "Description",
+        "price": "Price",
+        "category": "Category",
+        "stock": "Stock Available",
+        "feedback": "Customer Feedback",
+        "no": "Serial Number",
+        "name": "Name",
+        "id": "ID",
+        "image": "Product Image"
+    }
+}

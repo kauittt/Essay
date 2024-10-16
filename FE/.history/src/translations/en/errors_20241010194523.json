@@ -1,0 +1,25 @@
+{
+    "unknown": "Unknown error",
+    "popup_closed_by_user": "Popup was closed by user",
+    "table": {
+        "crud": "You cannot {{type}} this item because you are currently logged in with this account."
+    },
+    "validation": {
+        "empty": "This field shouldn’t be empty",
+        "emptyId": "ID field shouldn’t be empty",
+        "emptyUsername": "Username field shouldn’t be empty",
+        "emptyEmail": "Email field shouldn’t be empty",
+        "emptyUrl": "Url field shouldn’t be empty",
+        "emptySelect": "Please select the option",
+        "emptyPassword": "Password field shouldn’t be empty",
+
+        "invalidEmail": "Invalid email address",
+        "invalidUrl": "Invalid url",
+        "invalidPhone": "Invalid phone format",
+        "invalidNumber": "Invalid number",
+        "negativeNumber": "Negative number is not allowed",
+
+        "incorrectPassword": "The password is incorrect",
+        "required": "Required"
+    }
+}

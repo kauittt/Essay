@@ -1,0 +1,15 @@
+{
+    "product": {
+        "title": "Product",
+        "titles": "Products",
+        "description": "Description",
+        "price": "Price",
+        "category": "Category",
+        "stock": "Stock Available",
+        "feedback": "Customer Feedback",
+        "no": "Serial Number", // Assuming this is meant to describe an index or position in a list
+        "name": "Name",
+        "id": "Product ID", // Providing a label for the ID field
+        "image": "Product Image" // Adding the image field description
+    }
+}

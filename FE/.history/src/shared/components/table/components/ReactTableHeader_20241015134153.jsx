@@ -1,0 +1,145 @@
+import React from "react";
+import PropTypes from "prop-types";
+import SortIcon from "mdi-react/SortIcon";
+import SortAscendingIcon from "mdi-react/SortAscendingIcon";
+import SortDescendingIcon from "mdi-react/SortDescendingIcon";
+
+const Header = ({ column, isSortable }) => (
+    <span className="react-table__column-header">
+        <span
+            className={isSortable ? "react-table__column-header sortable" : ""}
+        >
+            {column.render("Header")}
+        </span>
+        {isSortable && column.canSort && <Sorting column={column} />}
+    </span>
+);
+
+Header.propTypes = {
+    column: PropTypes.shape({
+        Header: PropTypes.string,
+        disableGlobalFilter: PropTypes.bool,
+        accessor: PropTypes.func,
+        render: PropTypes.func,
+        canSort: PropTypes.bool,
+    }).isRequired,
+    isSortable: PropTypes.bool.isRequired,
+};
+
+const Sorting = ({ column }) => (
+    <span className="react-table__column-header sortable">
+        {column.isSortedDesc === undefined ? (
+            <SortIcon />
+        ) : (
+            <span>
+                {column.isSortedDesc ? (
+                    <SortDescendingIcon />
+                ) : (
+                    <SortAscendingIcon />
+                )}
+            </span>
+        )}
+    </span>
+);
+
+Sorting.propTypes = {
+    column: PropTypes.shape({
+        Header: PropTypes.string,
+        disableGlobalFilter: PropTypes.bool,
+        accessor: PropTypes.func,
+        isSorted: PropTypes.bool,
+        isSortedDesc: PropTypes.bool,
+    }).isRequired,
+};
+
+const getStylesResizable = (props, align = "left") => [
+    props,
+    {
+        style: {
+            justifyContent: align === "right" ? "flex-end" : "flex-start",
+            alignItems: "flex-start",
+            display: "flex",
+        },
+    },
+];
+
+const ReactTableHeader = ({ headerGroups, isResizable, isSortable }) => {
+    const headerPropsSortable = (props, { column }) => {
+        if (column.getSortByToggleProps && isSortable) {
+            return column.getSortByToggleProps;
+        }
+        return [props];
+    };
+    const headerPropsResize = (props, { column }) => {
+        if (column.getResizerProps && isResizable) {
+            return getStylesResizable(props, column.align);
+        }
+        return [props];
+    };
+
+    return (
+        <thead>
+            {headerGroups.map((headerGroup) => {
+                // Extract key from headerGroup.getHeaderGroupProps
+                const { key: headerGroupKey, ...headerGroupRest } =
+                    headerGroup.getHeaderGroupProps();
+                return (
+                    <tr
+                        key={headerGroupKey} // Pass the key explicitly
+                        {...headerGroupRest} // Spread the remaining props
+                        className="react-table thead tr"
+                    >
+                        {headerGroup.headers.map((column) => {
+                            // Extract key from column.getHeaderProps
+                            const { key: columnKey, ...columnRest } =
+                                column.getHeaderProps();
+
+                            // Extract key from sorting and resizing props
+                            const { key: sortableKey, ...sortableRest } =
+                                column.getHeaderProps(headerPropsSortable);
+                            const { key: resizableKey, ...resizableRest } =
+                                column.getHeaderProps(headerPropsResize);
+
+                            return (
+                                <th
+                                    key={columnKey} // Pass the key explicitly
+                                    {...columnRest} // Spread the remaining column props
+                                    {...sortableRest} // Spread sortable props (without key)
+                                    {...resizableRest} // Spread resizable props (without key)
+                                >
+                                    <Header
+                                        column={column}
+                                        isSortable={isSortable}
+                                    />
+                                    {isResizable && (
+                                        <div
+                                            {...column.getResizerProps()}
+                                            className={`resizer ${
+                                                column.isResizing &&
+                                                "isResizing"
+                                            }`}
+                                        />
+                                    )}
+                                </th>
+                            );
+                        })}
+                    </tr>
+                );
+            })}
+        </thead>
+    );
+};
+
+ReactTableHeader.propTypes = {
+    headerGroups: PropTypes.arrayOf(
+        PropTypes.shape({
+            headers: PropTypes.arrayOf(PropTypes.shape()),
+            getHeaderGroupProps: PropTypes.func,
+            getFooterGroupProps: PropTypes.func,
+        })
+    ).isRequired,
+    isResizable: PropTypes.bool.isRequired,
+    isSortable: PropTypes.bool.isRequired,
+};
+
+export default ReactTableHeader;
