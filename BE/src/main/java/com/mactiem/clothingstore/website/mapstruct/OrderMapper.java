@@ -24,7 +24,7 @@ import java.util.Map;
         , InvoiceMapper.class})
 @Component
 public interface OrderMapper {
-    //- DTO
+    //* DTO
     OrderResponseDTO toDTO(Order order);
 
     @AfterMapping
@@ -47,7 +47,7 @@ public interface OrderMapper {
         return orders.stream().map(this::toDTO).toList();
     }
 
-    //- Entity
+    //* Entity
     @Mapping(target = "user", source = "user", qualifiedByName = "byId")
     Order toEntity(OrderRequestDTO orderRequestDTO);
 
@@ -63,7 +63,7 @@ public interface OrderMapper {
         order.setUser(userService.findUserById(orderRequestDTO.getUser()));
     }
 
-    //- Gọi ở chổ gọi .toEntity()
+    //! Gọi ở chổ gọi .toEntity()
     @AfterMapping
     default void mapOrderProductsEntity(@MappingTarget Order order, OrderRequestDTO orderRequestDTO
             , ProductService productService) {

@@ -1,19 +1,26 @@
 package com.mactiem.clothingstore.website.validator;
 
 import com.mactiem.clothingstore.website.DTO.ProductRequestDTO;
+import com.mactiem.clothingstore.website.entity.Authority;
+import com.mactiem.clothingstore.website.entity.Category;
 import com.mactiem.clothingstore.website.repository.ProductRepository;
+import com.mactiem.clothingstore.website.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Component
 public class ProductValidator {
     private ProductRepository productRepository;
+    private CategoryService categoryService;
 
     @Autowired
-    public ProductValidator(ProductRepository productRepository) {
+    public ProductValidator(ProductRepository productRepository, CategoryService categoryService) {
         this.productRepository = productRepository;
+        this.categoryService = categoryService;
     }
 
     // Validate the basic details of the product
@@ -22,7 +29,7 @@ public class ProductValidator {
         validateProductDescription(productRequestDTO.getDescription());
         validateProductPrice(productRequestDTO.getPrice());
         validateProductImage(productRequestDTO.getImage());
-        validateProductCategory(productRequestDTO.getCategory());
+        validateProductCategory(productRequestDTO.getCategories());
         validateProductStock(productRequestDTO.getStock());
     }
 
@@ -33,6 +40,10 @@ public class ProductValidator {
 
         if (productRequestDTO.getStock() != null) {
             validateProductStock(productRequestDTO.getStock());
+        }
+
+        if(productRequestDTO.getCategories() != null) {
+            validateProductCategory(productRequestDTO.getCategories());
         }
     }
 
@@ -70,9 +81,13 @@ public class ProductValidator {
     }
 
     // Validate product category
-    public void validateProductCategory(String category) {
-        if (category == null || category.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product category is required");
+    public void validateProductCategory(List<String> categories) {
+        if (categories == null || categories.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categories cannot be null or empty");
+        }
+        List<Category> dbCategories = categoryService.findAllByIds(categories);
+        if (categories.size() != dbCategories.size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not all categories are found");
         }
     }
 

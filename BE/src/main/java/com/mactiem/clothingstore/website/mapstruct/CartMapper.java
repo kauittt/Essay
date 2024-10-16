@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Mapper(componentModel = "spring", uses = {CartService.class, ProductMapper.class})
 @Component
 public interface CartMapper {
-    //- DTO
+    //* DTO
     CartResponseDTO toDTO(Cart cart);
     @AfterMapping
     default CartResponseDTO mapCartProduct(@MappingTarget CartResponseDTO cartResponseDTO, Cart cart, ProductMapper productMapper) {
@@ -33,7 +33,6 @@ public interface CartMapper {
     }
 
 
-    //- New
     default UserResponseDTO toCartForUser(UserResponseDTO userResponseDTO, Cart cart, ProductMapper productMapper) {
         for (CartProduct cartProduct : cart.getCartProducts()) {
             CartProductDTO dto = new CartProductDTO();

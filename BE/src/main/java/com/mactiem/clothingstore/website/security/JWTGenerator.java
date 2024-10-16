@@ -1,27 +1,30 @@
 package com.mactiem.clothingstore.website.security;
 
+import com.mactiem.clothingstore.website.entity.User;
+import com.mactiem.clothingstore.website.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 public class JWTGenerator {
-
     private final Key key;
+    private final UserRepository userRepository;
 
-    public JWTGenerator() {
+    @Autowired
+    public JWTGenerator(UserRepository userRepository) {
         byte[] keyBytes = SecurityConstants.JWT_SECRET.getBytes();
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.userRepository = userRepository;
     }
 
     public String generateToken(Authentication authentication) {
@@ -29,11 +32,18 @@ public class JWTGenerator {
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + SecurityConstants.JWT_EXPIRATION);
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", authentication.getAuthorities().stream()
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        User user = optionalUser.orElseThrow(() -> new UsernameNotFoundException(username));
+
+        Map<String, Object> userClaims = new HashMap<>();
+        userClaims.put("username", username);
+        userClaims.put("name", user.getName());
+        userClaims.put("roles", authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
-        claims.put("customClaim", "customValue"); // Add custom claim
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("user", userClaims);
 
 
         String token = Jwts.builder()

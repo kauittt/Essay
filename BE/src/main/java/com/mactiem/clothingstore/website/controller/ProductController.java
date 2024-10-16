@@ -43,16 +43,16 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/grouped")
-    public ResponseEntity<?> getProductsGroupedByCategory() {
-        try {
-            List<CategoryProductsDTO> productsDTOs = productService.getProductsGroupedByCategory();
-            return ResponseEntity.ok(productsDTOs);
-        } catch (Exception ex) {
-            Response response = Response.of(HttpStatus.NOT_FOUND, ex.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-    }
+//    @GetMapping("/grouped")
+//    public ResponseEntity<?> getProductsGroupedByCategory() {
+//        try {
+//            List<CategoryProductsDTO> productsDTOs = productService.getProductsGroupedByCategory();
+//            return ResponseEntity.ok(productsDTOs);
+//        } catch (Exception ex) {
+//            Response response = Response.of(HttpStatus.NOT_FOUND, ex.getMessage());
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+//        }
+//    }
 
     @PostMapping
     public ResponseEntity<?> createProduct(@RequestBody ProductRequestDTO productRequestDTO) {

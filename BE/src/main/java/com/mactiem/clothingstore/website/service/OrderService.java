@@ -62,6 +62,9 @@ public class OrderService {
         orderValidator.validateOrderRequest(orderRequestDTO);
 
         Order order = orderMapper.toEntity(orderRequestDTO);
+        order.setId(GenerateID.generateID());
+        order.setCreateDate(LocalDate.now());
+        order.setUpdateDate(LocalDate.now());
         orderMapper.mapOrderProductsEntity(order, orderRequestDTO, productService);
 
         return orderMapper.toDTO(orderRepository.save(order));

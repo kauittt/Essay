@@ -25,7 +25,7 @@ import java.util.List;
         ,ProductMapper.class})
 @Component
 public interface UserMapper {
-    //- DTO
+    //* DTO
     @Mapping(target = "cart", ignore = true)
     UserResponseDTO toDTO(User user);
 
@@ -53,7 +53,7 @@ public interface UserMapper {
 //        cartMapper.toCartForUser(userResponseDTO, user.getCart(), productMapper);
 //    }
 
-    //- Entity
+    //* Entity
     User toEntity(UserRegistryDTO userRegistryDTO);
 
     @AfterMapping
@@ -62,14 +62,4 @@ public interface UserMapper {
         List<Authority> authorities = authorityService.getAuthoritiesByNames(userRegistryDTO.getAuthorities());
         user.setAuthorities(authorities);
     }
-
-    @AfterMapping
-    default void mapBasicFields(@MappingTarget User user) {
-        user.setId(GenerateID.generateID());
-        user.setCreateDate(LocalDate.now());
-        user.setUpdateDate(LocalDate.now());
-        user.setEnabled(1);
-    }
-
-    //- 7 - 14
 }

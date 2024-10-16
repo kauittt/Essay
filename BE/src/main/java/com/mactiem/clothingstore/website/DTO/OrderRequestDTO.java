@@ -21,10 +21,10 @@ public class OrderRequestDTO {
     private List<String> products;
     private List<String> quantities;
 
+    private String status; //- Update
     private String name; //- Update
     private String phone; //- Update
     private String address;
-    private String status; //- Update
 
 //    private String id;
 //    private LocalDate createDate;

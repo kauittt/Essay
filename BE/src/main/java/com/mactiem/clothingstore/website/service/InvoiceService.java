@@ -4,6 +4,7 @@ import com.mactiem.clothingstore.website.DTO.InvoiceRequestDTO;
 import com.mactiem.clothingstore.website.DTO.InvoiceResponseDTO;
 import com.mactiem.clothingstore.website.DTO.ProductRequestDTO;
 import com.mactiem.clothingstore.website.DTO.ProductResponseDTO;
+import com.mactiem.clothingstore.website.entity.GenerateID;
 import com.mactiem.clothingstore.website.entity.Invoice;
 import com.mactiem.clothingstore.website.entity.Product;
 import com.mactiem.clothingstore.website.entity.Response;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -31,7 +33,7 @@ public class InvoiceService {
         this.invoiceValidator = invoiceValidator;
     }
 
-    //- Helper
+    //* Helper
     public Invoice findInvoiceById(String id) {
         return invoiceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(Response.notFound("Invoice", id)));
@@ -41,7 +43,7 @@ public class InvoiceService {
         return invoiceRepository.findAll();
     }
 
-    //- Methods
+    //* Methods
     public InvoiceResponseDTO getInvoiceById(String id) {
         Invoice invoice = findInvoiceById(id);
         return invoiceMapper.toDTO(invoice);
@@ -56,6 +58,8 @@ public class InvoiceService {
         invoiceValidator.validateInvoiceRequest(invoiceRequestDTO);
 
         Invoice invoice = invoiceMapper.toEntity(invoiceRequestDTO);
+        invoice.setId(GenerateID.generateID());
+        invoice.setCreateDate(LocalDate.now());
         return invoiceMapper.toDTO(invoiceRepository.save(invoice));
     }
 }

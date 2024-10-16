@@ -15,19 +15,25 @@ import java.util.List;
 @Builder
 public class ProductResponseDTO {
     private String id;
+    private List<CategoryResponseDTO> categories;
     private String name;
     private String description;
+    private Integer stock;
     private Double price;
     private String image;
-    private String category;
-    private Integer stock;
     private List<FeedBackResponseDTO> feedBacks;
-
 
     public List<FeedBackResponseDTO> getFeedBacks() {
         if (feedBacks == null) {
             feedBacks = new ArrayList<>();
         }
         return feedBacks;
+    }
+
+    public List<CategoryResponseDTO> getCategories() {
+        if (categories == null) {
+            categories = new ArrayList<>();
+        }
+        return categories;
     }
 }

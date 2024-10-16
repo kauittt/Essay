@@ -18,7 +18,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {ProductMapper.class, ProductService.class})
 @Component
 public interface VoucherMapper {
-    //- DTO
+    //* DTO
     VoucherResponseDTO toDTO(Voucher voucher);
 
     @AfterMapping
@@ -31,7 +31,7 @@ public interface VoucherMapper {
         return vouchers.stream().map(this::toDTO).toList();
     }
 
-    //- Entity
+    //* Entity
     @Mapping(target = "products", ignore = true)
     @Mapping(target = "discountPercentage", ignore = true)
     Voucher toEntity(VoucherRequestDTO voucherRequestDTO);
@@ -44,9 +44,4 @@ public interface VoucherMapper {
 //            voucher.setProducts(productService.findAllProducts());
 //        }
 //    }
-
-    @AfterMapping
-    default void mapBasicFields(@MappingTarget Voucher voucher, VoucherRequestDTO voucherRequestDTO) {
-        voucher.setId(GenerateID.generateID());
-    }
 }

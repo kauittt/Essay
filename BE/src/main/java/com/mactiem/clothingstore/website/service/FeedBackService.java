@@ -1,10 +1,7 @@
 package com.mactiem.clothingstore.website.service;
 
 import com.mactiem.clothingstore.website.DTO.*;
-import com.mactiem.clothingstore.website.entity.FeedBack;
-import com.mactiem.clothingstore.website.entity.Product;
-import com.mactiem.clothingstore.website.entity.Response;
-import com.mactiem.clothingstore.website.entity.User;
+import com.mactiem.clothingstore.website.entity.*;
 import com.mactiem.clothingstore.website.mapstruct.FeedBackMapper;
 import com.mactiem.clothingstore.website.repository.FeedBackRepository;
 import com.mactiem.clothingstore.website.validator.FeedBackValidator;
@@ -44,6 +41,9 @@ public class FeedBackService {
 
         //- Mapping
         FeedBack feedBack = feedBackMapper.toEntity(feedBackRequestDTO);
+        feedBack.setId(GenerateID.generateID());
+        feedBack.setCreateDate(LocalDate.now());
+        feedBack.setUpdateDate(LocalDate.now());
         feedBack.setProduct(productService.findProductById(feedBackRequestDTO.getProduct())); //- Ra ngoài cho khỏi bị loop denpendency
 
         return feedBackMapper.toDTO(feedBackRepository.save(feedBack));

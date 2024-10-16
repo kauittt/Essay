@@ -17,7 +17,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {UserService.class})
 @Component
 public interface FeedBackMapper {
-    //- DTO
+    //* DTO
     @Mapping(target = "user", ignore = true)
     FeedBackResponseDTO toDTO(FeedBack feedBack);
 
@@ -30,7 +30,7 @@ public interface FeedBackMapper {
         return feedBacks.stream().map(this::toDTO).toList();
     }
 
-    //- Entity
+    //* Entity
     @Mapping(target = "user", source = "user", qualifiedByName = "byId")
     @Mapping(target = "product", source = "product", ignore = true)
     FeedBack toEntity(FeedBackRequestDTO feedBackRequestDTO);
@@ -43,8 +43,6 @@ public interface FeedBackMapper {
 
     @AfterMapping
     default void mapBasicFields(@MappingTarget FeedBack feedBack, FeedBackRequestDTO feedBackRequestDTO) {
-        feedBack.setId(GenerateID.generateID());
-        feedBack.setCreateDate(LocalDate.now());
-        feedBack.setUpdateDate(LocalDate.now());
+
     }
 }

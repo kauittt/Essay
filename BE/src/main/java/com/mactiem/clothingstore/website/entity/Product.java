@@ -18,6 +18,7 @@ public class Product {
     @Column(name = "id")
     private String id;//-==...
 
+    //* Relationship
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartProduct> cartProducts;
 
@@ -35,11 +36,22 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<FeedBack> feedBacks;
 
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "products_categories",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
+    //*--------------------------------
     @Column(name = "name")
     private String name;//-==...
 
     @Column(name = "description")
     private String description;//-==...
+
+    @Column(name = "stock")
+    private int stock;//-==...
 
     @Column(name = "price")
     private double price;//-==...
@@ -47,12 +59,7 @@ public class Product {
     @Column(name = "image")
     private String image;//-==...
 
-    @Column(name = "category")
-    private String category;//-==...
-
-    @Column(name = "stock")
-    private int stock;//-==...
-
+    //* Helper
     public List<CartProduct> getCartProducts() {
         if (cartProducts == null) {
             cartProducts = new ArrayList<>();

@@ -4,10 +4,7 @@ import com.mactiem.clothingstore.website.DTO.ProductRequestDTO;
 import com.mactiem.clothingstore.website.DTO.ProductResponseDTO;
 import com.mactiem.clothingstore.website.DTO.VoucherRequestDTO;
 import com.mactiem.clothingstore.website.DTO.VoucherResponseDTO;
-import com.mactiem.clothingstore.website.entity.Product;
-import com.mactiem.clothingstore.website.entity.Response;
-import com.mactiem.clothingstore.website.entity.User;
-import com.mactiem.clothingstore.website.entity.Voucher;
+import com.mactiem.clothingstore.website.entity.*;
 import com.mactiem.clothingstore.website.mapstruct.VoucherMapper;
 import com.mactiem.clothingstore.website.repository.VoucherRepository;
 import com.mactiem.clothingstore.website.validator.VoucherValidator;
@@ -63,6 +60,7 @@ public class VoucherService {
         voucherValidator.validateVoucherRequest(voucherRequestDTO);
 
         Voucher voucher = voucherMapper.toEntity(voucherRequestDTO);
+        voucher.setId(GenerateID.generateID());
         voucher.setDiscountPercentage(voucherRequestDTO.getDiscountPercentage() / 100); //- input: 10 -> save: 0.1
 
         List<Product> products;

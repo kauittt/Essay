@@ -10,12 +10,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRegistryDTO {
+    private List<String> authorities;
     private String username;
     private String password;
     private String email;
     private String name;
     private String phone;
     private String address;
-    private List<String> authorities;
 }
 

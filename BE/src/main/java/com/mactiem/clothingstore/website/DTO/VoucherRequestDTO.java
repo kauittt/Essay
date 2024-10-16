@@ -1,9 +1,6 @@
 package com.mactiem.clothingstore.website.DTO;
 
-import com.mactiem.clothingstore.website.entity.Product;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToMany;
+
 import lombok.*;
 
 import java.time.LocalDate;
@@ -16,11 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VoucherRequestDTO {
-    private String name;
+    private List<String> products = new ArrayList<>();
     private Double discountPercentage; //- input: 10 -> save: 0.1
+    private String name;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer quantity;
-    private List<String> products = new ArrayList<>();
-    ;  //- empty = all
 }

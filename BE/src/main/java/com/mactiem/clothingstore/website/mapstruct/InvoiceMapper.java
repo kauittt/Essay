@@ -19,7 +19,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {OrderService.class})
 @Component
 public interface InvoiceMapper {
-    //- DTO
+    //* DTO
     InvoiceResponseDTO toDTO(Invoice invoice);
 
     default List<InvoiceResponseDTO> toListDTOs(List<Invoice> invoices) {
@@ -27,13 +27,12 @@ public interface InvoiceMapper {
     }
 
 
-    //- Entity
+    //* Entity
     Invoice toEntity(InvoiceRequestDTO invoiceRequestDTO);
 
     @AfterMapping
     default void mapBasicFields(@MappingTarget Invoice invoice, InvoiceRequestDTO invoiceRequestDTO) {
-        invoice.setId(GenerateID.generateID());
-        invoice.setCreateDate(LocalDate.now());
+
     }
 
     @AfterMapping

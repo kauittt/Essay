@@ -2,6 +2,8 @@ package com.mactiem.clothingstore.website.DTO;
 
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @Setter
 @Getter
@@ -9,10 +11,10 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ProductRequestDTO {
+    private List<String> categories;
     private String name;
     private String description;
+    private Integer stock;
     private Double price;
     private String image;
-    private String category;
-    private Integer stock;
 }

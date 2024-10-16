@@ -52,7 +52,8 @@ public class UserService {
     //- Helpers
     @Named("byUsername")
     public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException(Response.notFound("User", username)));
     }
 
     @Named("byId")
@@ -79,10 +80,14 @@ public class UserService {
         String hashedPassword = passwordEncoder.encode(userRequestDTO.getPassword());
         userRequestDTO.setPassword(hashedPassword);
 
-        //- Mapping
+        //* Mapping
         User user = userMapper.toEntity(userRequestDTO);
         Cart cart = new Cart(GenerateID.generateID(), user, new ArrayList<>());
         user.setCart(cart);
+        user.setId(GenerateID.generateID());
+        user.setCreateDate(LocalDate.now());
+        user.setUpdateDate(LocalDate.now());
+        user.setEnabled(1);
 
         cartRepository.save(cart);
         return mapUserDTO(userRepository.save(user));
