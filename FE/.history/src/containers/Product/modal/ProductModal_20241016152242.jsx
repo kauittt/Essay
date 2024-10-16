@@ -49,7 +49,6 @@ const ProductModal = ({ toggle, data, action }) => {
 
     const [formData, setFormData] = useState(data);
 
-    //! đang template image value
     const submitForm = async (values) => {
         console.log("Root -----------");
         console.log(values);
@@ -127,9 +126,8 @@ const ProductModal = ({ toggle, data, action }) => {
 
         const requiredFields = [
             "name",
-            "description",
             // "categories",
-
+            "description",
             "price",
             "stock",
             // "image",

@@ -49,7 +49,6 @@ const ProductModal = ({ toggle, data, action }) => {
 
     const [formData, setFormData] = useState(data);
 
-    //! đang template image value
     const submitForm = async (values) => {
         console.log("Root -----------");
         console.log(values);
@@ -127,9 +126,8 @@ const ProductModal = ({ toggle, data, action }) => {
 
         const requiredFields = [
             "name",
+            "categories",
             "description",
-            // "categories",
-
             "price",
             "stock",
             // "image",
@@ -141,7 +139,7 @@ const ProductModal = ({ toggle, data, action }) => {
             }
         });
 
-        if (!values.categories || values.categories.length === 0) {
+        if (values.categories.length == 0) {
             errors.categories = t("errors:validation.required");
         }
 

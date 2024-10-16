@@ -49,7 +49,6 @@ const ProductModal = ({ toggle, data, action }) => {
 
     const [formData, setFormData] = useState(data);
 
-    //! đang template image value
     const submitForm = async (values) => {
         console.log("Root -----------");
         console.log(values);
@@ -122,14 +121,11 @@ const ProductModal = ({ toggle, data, action }) => {
 
     //! cần handle image
     const validate = (values, t) => {
-        console.log("Validate", values);
         const errors = {};
 
         const requiredFields = [
             "name",
             "description",
-            // "categories",
-
             "price",
             "stock",
             // "image",
@@ -140,10 +136,6 @@ const ProductModal = ({ toggle, data, action }) => {
                 errors[field] = t("errors:validation.required");
             }
         });
-
-        if (!values.categories || values.categories.length === 0) {
-            errors.categories = t("errors:validation.required");
-        }
 
         bigDecimalFields.forEach((field) => {
             const value = values[field];

@@ -49,12 +49,11 @@ const ProductModal = ({ toggle, data, action }) => {
 
     const [formData, setFormData] = useState(data);
 
-    //! đang template image value
     const submitForm = async (values) => {
         console.log("Root -----------");
         console.log(values);
 
-        //* Process values before dispatching
+        //! Process values before dispatching
         let processedValues = Object.keys(values).reduce((acc, key) => {
             if (
                 typeof values[key] === "object" &&
@@ -77,8 +76,6 @@ const ProductModal = ({ toggle, data, action }) => {
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
-
-        //! Template image
         processedValues = { ...processedValues, image: "image" };
 
         try {
@@ -122,14 +119,12 @@ const ProductModal = ({ toggle, data, action }) => {
 
     //! cần handle image
     const validate = (values, t) => {
-        console.log("Validate", values);
         const errors = {};
 
         const requiredFields = [
             "name",
             "description",
-            // "categories",
-
+            "categories",
             "price",
             "stock",
             // "image",
@@ -140,10 +135,6 @@ const ProductModal = ({ toggle, data, action }) => {
                 errors[field] = t("errors:validation.required");
             }
         });
-
-        if (!values.categories || values.categories.length === 0) {
-            errors.categories = t("errors:validation.required");
-        }
 
         bigDecimalFields.forEach((field) => {
             const value = values[field];
