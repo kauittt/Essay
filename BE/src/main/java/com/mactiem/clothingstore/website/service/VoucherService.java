@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class VoucherService {
         this.productService = productService;
     }
 
-    //- Helper
+    //* Helper
     public Voucher findVoucherById(String id) {
         return voucherRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(Response.notFound("Voucher", id)));
@@ -46,7 +47,7 @@ public class VoucherService {
         return voucherRepository.findAll();
     }
 
-    //- Methods
+    //* Methods
     public VoucherResponseDTO getVoucherById(String id) {
         return voucherMapper.toDTO(findVoucherById(id));
     }
@@ -107,15 +108,30 @@ public class VoucherService {
             voucher.setDiscountPercentage(voucherRequestDTO.getDiscountPercentage() / 100);
         }
 
-        if (voucherRequestDTO.getProducts() != null) {
-            if (!voucherRequestDTO.getProducts().isEmpty()) {
-                voucher.setProducts(productService.findProductsByIds(voucherRequestDTO.getProducts()));
-            } else {
-                voucher.setProducts(productService.findAllProducts());
-            }
-        }
-
+//        if (voucherRequestDTO.getProducts() != null) {
+//            if (!voucherRequestDTO.getProducts().isEmpty()) {
+//                voucher.setProducts(productService.findProductsByIds(voucherRequestDTO.getProducts()));
+//            } else {
+//                voucher.setProducts(productService.findAllProducts());
+//            }
+//        }
+        updateProductRelationships(voucher, voucherRequestDTO);
         return voucherMapper.toDTO(voucherRepository.save(voucher));
+    }
+
+    private void updateProductRelationships(Voucher voucher, VoucherRequestDTO voucherRequestDTO) {
+        voucher.getProducts().forEach(product -> product.getVouchers().remove(voucher));
+        voucher.setProducts(new ArrayList<>()); // Clear the existing products list
+
+        List<Product> newProducts;
+        if (voucherRequestDTO.getProducts() != null && !voucherRequestDTO.getProducts().isEmpty()) {
+            newProducts = productService.findProductsByIds(voucherRequestDTO.getProducts());
+        } else {
+            newProducts = productService.findAllProducts();
+        }
+        voucher.setProducts(newProducts);
+
+        newProducts.forEach(product -> product.getVouchers().add(voucher));
     }
 
     @Transactional
