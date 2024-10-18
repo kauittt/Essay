@@ -4,6 +4,7 @@ import rtlReducer from "./rtlReducer";
 import userReducer from "./userSlice";
 import productReducer from "./productSlice";
 import categoryReducer from "./categorySlice";
+import voucherReducer from "./voucherSlice";
 
 export {
     themeReducer,
@@ -12,4 +13,5 @@ export {
     productReducer,
     userReducer,
     categoryReducer,
+    voucherReducer,
 };

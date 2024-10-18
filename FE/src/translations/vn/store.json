@@ -1,24 +1,39 @@
 {
+    "no": "Số thứ tự",
+
     "product": {
         "title": "Sản phẩm",
         "titles": "Sản phẩm",
-        "description": "Mô tả",
-        "price": "Giá (VNĐ)",
-        "category": "Danh mục",
-        "stock": "Tồn kho",
-        "feedback": "Phản hồi khách hàng",
-        "no": "Số thứ tự",
-        "name": "Tên",
         "id": "Mã",
+
+        "name": "Tên",
+        "description": "Mô tả",
+        "category": "Danh mục",
+
+        "price": "Giá (VNĐ)",
+        "stock": "Tồn kho",
         "image": "Hình ảnh",
-        "action": "Hành động",
+
+        "feedback": "Phản hồi khách hàng",
         "selectImage": "Chọn hình"
     },
+
     "category": {
         "title": "Danh mục",
         "titles": "Danh mục",
-        "action": "Hành động",
+        "name": "Tên"
+    },
+
+    "voucher": {
+        "title": "Khuyến mãi",
+        "titles": "Khuyến mãi",
         "name": "Tên",
-        "no": "Số thứ tự"
+        "discountPercentage": "Khuyến mãi (%)",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc",
+        "quantity": "Số lượng",
+        "products": "Sản phẩm áp dụng",
+        "all": "Tất cả",
+        "invalidProducts": "Chọn [{{all}}] hoặc [Từng sản phẩm]"
     }
 }

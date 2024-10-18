@@ -8,6 +8,7 @@ import { DatePickerWrap } from "./DatePickerElements";
 const DatePickerField = ({ onChange, ...other }) => {
     const [startDate, setStartDate] = useState(null);
     const handleChange = (date) => {
+        console.log(date);
         setStartDate(date);
         onChange(date);
     };
@@ -17,7 +18,7 @@ const DatePickerField = ({ onChange, ...other }) => {
             <DatePicker
                 selected={startDate}
                 onChange={handleChange}
-                dateFormat="yyyy/MM/dd"
+                dateFormat="yyyy-MM-dd"
                 dropDownMode="select"
                 popperPlacement="center"
                 withPortal={isMobileOnly}

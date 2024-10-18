@@ -100,6 +100,7 @@ const FormInput = ({ data }) => {
                             name={data.name}
                             component={renderDatePickerField}
                             style={{ height: "32px" }}
+                            disabled={data.disabled}
                         />
                         <FormGroupIcon>
                             <CalendarBlankIcon />

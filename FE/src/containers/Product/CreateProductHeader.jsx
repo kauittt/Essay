@@ -4,7 +4,7 @@ const CreateProductHeader = (t) => {
     const columns = useMemo(
         () => [
             {
-                Header: t("store:product.no"), // "Số thứ tự"
+                Header: t("store:no"), // "Số thứ tự"
                 accessor: "no",
             },
             {
@@ -23,12 +23,12 @@ const CreateProductHeader = (t) => {
                         <img
                             src={value}
                             alt="Product Image"
-                            style={{
-                                boxShadow:
-                                    "rgba(0, 0, 0, 0.05) 0px 2px 15px 0px",
-                            }}
+                            // style={{
+                            //     boxShadow:
+                            //         "rgba(0, 0, 0, 0.05) 0px 2px 15px 0px",
+                            // }}
                             className="tw-h-[80px] tw-max-h-[50px] tw-w-[80px] tw-max-w-[50px] 
-                            tw-object-cover tw-rounded-[5px]"
+                            tw-object-cover tw-rounded-[5px] tw-shadow-md"
                         />
                     ) : (
                         ""
@@ -49,7 +49,7 @@ const CreateProductHeader = (t) => {
                     value != null ? `${value.toLocaleString()} VND` : "", // Check for null or undefined
             },
             {
-                Header: t("store:product.action"),
+                Header: t("action.action"),
                 accessor: "action",
                 disableGlobalFilter: true,
             },

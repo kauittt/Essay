@@ -4,7 +4,7 @@ const CreateCategoryHeader = (t) => {
     const columns = useMemo(
         () => [
             {
-                Header: t("store:category.no"),
+                Header: t("store:no"),
                 accessor: "no",
             },
             {
@@ -12,7 +12,7 @@ const CreateCategoryHeader = (t) => {
                 accessor: "name",
             },
             {
-                Header: t("store:category.action"),
+                Header: t("action.action"),
                 accessor: "action",
                 disableGlobalFilter: true,
             },

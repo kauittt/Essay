@@ -16,6 +16,7 @@ import CustomForm from "@/shared/components/custom/form/CustomForm";
 import { selectCategories } from "@/redux/reducers/categorySlice";
 import { addProduct, updateProduct } from "@/redux/actions/productAction";
 import { createGlobalStyle } from "styled-components";
+import { fetchVouchers } from "@/redux/actions/voucherAction";
 
 const bigDecimalFields = ["price"];
 const integerFields = ["stock"];
@@ -91,6 +92,7 @@ const ProductModal = ({ toggle, data, action }) => {
             }
 
             if (response) {
+                dispatch(fetchVouchers());
                 toast.info(t("common:action.success", { type: actionText }), {
                     position: "top-right",
                     autoClose: 5000,

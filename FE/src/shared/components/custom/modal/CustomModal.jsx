@@ -22,6 +22,7 @@ import {
 } from "@/utils/directions";
 import CategoryModal from "@/containers/Category/modal/CategoryModal";
 import ProductModal from "@/containers/Product/modal/ProductModal";
+import VoucherModal from "../../../../containers/Voucher/modal/VoucherModal";
 
 const CustomModal = ({
     color,
@@ -97,6 +98,14 @@ const CustomModal = ({
                             toggle={toggle}
                             data={data}
                         ></CategoryModal>
+                    )}
+
+                    {component == "voucher" && (
+                        <VoucherModal
+                            action={action}
+                            toggle={toggle}
+                            data={data}
+                        ></VoucherModal>
                     )}
                 </ModalBody>
             </StyledModal>

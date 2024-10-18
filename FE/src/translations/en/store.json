@@ -1,8 +1,9 @@
 {
+    "no": "No.",
+
     "product": {
         "title": "Product",
         "titles": "Products",
-        "no": "No.",
         "id": "ID",
 
         "name": "Name",
@@ -14,14 +15,25 @@
         "image": "Image",
 
         "feedback": "Customer Feedback",
-        "selectImage": "Select an image",
-        "action": "Action"
+        "selectImage": "Select an image"
     },
+
     "category": {
         "title": "Category",
         "titles": "Categories",
-        "action": "Action",
+        "name": "Name"
+    },
+
+    "voucher": {
+        "title": "Promotion",
+        "titles": "Promotions",
         "name": "Name",
-        "no": "No."
+        "discountPercentage": "Discount (%)",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "quantity": "Quantity",
+        "products": "Applicable Product",
+        "all": "All",
+        "invalidProducts": "Select [{{all}}] or [Individual products]"
     }
 }

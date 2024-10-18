@@ -17,6 +17,7 @@
         "invalidUrl": "Địa chỉ URL không hợp lệ",
         "invalidPhone": "Định dạng số điện thoại không hợp lệ",
         "invalidNumber": "Số không hợp lệ.",
+        "invalidDate": "Ngày không hợp lệ.",
         "negativeNumber": "Không được phép nhập số âm.",
 
         "incorrectPassword": "Mật khẩu không chính xác",

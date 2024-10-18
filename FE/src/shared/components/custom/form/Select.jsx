@@ -26,6 +26,7 @@ export const SelectField = React.forwardRef(
         },
         ref
     ) => {
+        // console.log("Values select", value);
         const selectedOptions = Array.isArray(value)
             ? options.filter((option) => value.includes(option.value))
             : options.find((option) => option.value === value);

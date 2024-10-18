@@ -65,6 +65,14 @@ const SidebarContent = ({
 
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
+                    title={t("store:voucher.titles")}
+                    icon="store"
+                    route="/pages/vouchers"
+                />
+            </SidebarBlock>
+
+            <SidebarBlock collapse={collapse}>
+                <SidebarLink
                     title="Log out"
                     icon="exit"
                     route="/log_in"

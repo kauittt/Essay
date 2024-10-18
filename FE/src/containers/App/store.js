@@ -7,6 +7,7 @@ import {
     userReducer,
     productReducer,
     categoryReducer,
+    voucherReducer,
 } from "@/redux/reducers/index";
 
 // Combine all reducers, including the new one
@@ -17,6 +18,7 @@ const reducer = combineReducers({
     user: userReducer,
     product: productReducer,
     category: categoryReducer,
+    voucher: voucherReducer,
 });
 
 // Create the store with the combined reducers

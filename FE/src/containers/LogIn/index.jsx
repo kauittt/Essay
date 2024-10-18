@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import { getUserSuccess } from "@/redux/reducers/userSlice";
 import { fetchProducts } from "@/redux/actions/productAction";
 import { fetchCategories } from "@/redux/actions/categoryAction";
+import { fetchVouchers } from "@/redux/actions/voucherAction";
 
 const LogIn = () => {
     const dispatch = useDispatch();
@@ -49,6 +50,7 @@ const LogIn = () => {
                 dispatch(getUserSuccess(decoded.user));
                 dispatch(fetchProducts(accessToken));
                 dispatch(fetchCategories(accessToken));
+                dispatch(fetchVouchers(accessToken));
 
                 const action = t("common:action.login");
                 toast.info(t("common:action.success", { type: action }), {

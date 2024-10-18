@@ -17,6 +17,7 @@
         "invalidUrl": "Invalid url",
         "invalidPhone": "Invalid phone format",
         "invalidNumber": "Invalid number",
+        "invalidDate": "Invalid date",
         "negativeNumber": "Negative number is not allowed",
 
         "incorrectPassword": "The password is incorrect",
