@@ -12,12 +12,14 @@ import renderCheckBoxField from "@/shared/components/custom/form/CustomCheckBox"
 import CalendarBlankIcon from "mdi-react/CalendarBlankIcon";
 import renderDatePickerField from "@/shared/components/form/date-pickers/DatePicker";
 import FormField from "@/shared/components/custom/form/FormField";
-import { FileInputField } from "@/shared/components/form/FileInput";
 import { useForm, Controller } from "react-hook-form";
+import { FileInputImageField } from "./FileInputImage";
+import { FileInputField } from "../../form/FileInput";
 
 const FormInput = ({ data }) => {
     const { handleSubmit, register, reset, control } = useForm();
     const styleType = "colored";
+    // console.log("Data", data);
     return (
         <FormGroup key={data.name} style={{ minHeight: "65px" }}>
             {/* Label */}
@@ -43,7 +45,13 @@ const FormInput = ({ data }) => {
                     <Controller
                         name={data.name}
                         control={control}
-                        render={({ field }) => <FileInputField {...field} />}
+                        render={({ field }) => (
+                            <FileInputImageField
+                                {...field}
+                                value={data}
+                                name={data.name}
+                            />
+                        )}
                     />
                 )}
 

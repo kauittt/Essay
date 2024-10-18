@@ -60,7 +60,7 @@ const LogIn = () => {
                     draggable: true,
                     progress: undefined,
                 });
-                history.push("/pages/test");
+                history.push("/pages/products");
             }
         } catch (error) {
             console.log(error);

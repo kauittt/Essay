@@ -49,7 +49,6 @@ const ProductModal = ({ toggle, data, action }) => {
 
     const [formData, setFormData] = useState(data);
 
-    //! đang template image value
     const submitForm = async (values) => {
         console.log("Root -----------");
         console.log(values);
@@ -77,9 +76,6 @@ const ProductModal = ({ toggle, data, action }) => {
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
-
-        //! Template image
-        processedValues = { ...processedValues, image: "image" };
 
         try {
             let response;
@@ -120,19 +116,17 @@ const ProductModal = ({ toggle, data, action }) => {
         }
     };
 
-    //! cần handle image
     const validate = (values, t) => {
-        console.log("Validate", values);
+        console.log("Validate values", values);
         const errors = {};
 
         const requiredFields = [
             "name",
             "description",
-            // "categories",
 
             "price",
             "stock",
-            // "image",
+            "image",
         ];
 
         requiredFields.forEach((field) => {
@@ -165,7 +159,7 @@ const ProductModal = ({ toggle, data, action }) => {
             }
         });
 
-        console.log(errors);
+        console.log("Erros", errors);
         return errors;
     };
 

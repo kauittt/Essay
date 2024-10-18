@@ -11,7 +11,8 @@
         "name": "Tên",
         "id": "Mã",
         "image": "Hình ảnh",
-        "action": "Hành động"
+        "action": "Hành động",
+        "selectImage": "Chọn hình"
     },
     "category": {
         "title": "Danh mục",

@@ -30,21 +30,12 @@ export const SelectField = React.forwardRef(
             ? options.filter((option) => value.includes(option.value))
             : options.find((option) => option.value === value);
 
-        // const handleChange = (selectedOption) => {
-        //     console.log(selectedOption);
-        //     onChange(selectedOption);
-        //     if (selectedOption) {
-        //         setSelectedItem(selectedOption);
-        //     }
-        // };
-
         const handleChange = (selectedOption) => {
             console.log(selectedOption);
-            // selectedOption có thể là một mảng hoặc đối tượng đơn lẻ tùy vào cấu hình của Select
             const newValue = Array.isArray(selectedOption)
                 ? selectedOption.map((option) => option.value)
                 : selectedOption.value;
-            onChange(newValue); // Gửi giá trị mới lên form hoặc state bên ngoài
+            onChange(newValue);
             if (selectedOption) {
                 setSelectedItem(selectedOption);
             }

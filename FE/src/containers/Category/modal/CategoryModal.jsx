@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { addCategory, updateCategory } from "@/redux/actions/categoryAction";
 import FormInput from "@/shared/components/custom/form/FormInput";
+import { fetchProducts } from "@/redux/actions/productAction";
 
 const CategoryModal = ({ toggle, data, action }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
@@ -61,6 +62,7 @@ const CategoryModal = ({ toggle, data, action }) => {
             }
 
             if (response) {
+                dispatch(fetchProducts());
                 toast.info(t("common:action.success", { type: actionText }), {
                     position: "top-right",
                     autoClose: 5000,

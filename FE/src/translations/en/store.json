@@ -14,6 +14,7 @@
         "image": "Image",
 
         "feedback": "Customer Feedback",
+        "selectImage": "Select an image",
         "action": "Action"
     },
     "category": {
