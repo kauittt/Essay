@@ -63,11 +63,12 @@ const ProductPage = () => {
     };
 
     let products = useSelector(selectProducts);
+    console.log("Products before", products);
+
     products = products?.map((product) => ({
         ...product,
-        categories: product.categories.map((category) => category.id), //* Hiển thị modal
+        // categories: product.categories.map((category) => category.name), //* Hiển thị modal
         convertedCategories: product.categories //* Hiển thị table
-            .map((category) => category.name)
             .join(", "),
     }));
     console.log("Products", products);

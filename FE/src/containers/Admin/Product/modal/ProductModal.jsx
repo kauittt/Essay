@@ -187,7 +187,7 @@ const ProductModal = ({ toggle, data, action }) => {
             name: "categories",
             type: "multiSelect",
             options: categories.map((category) => ({
-                value: category.id,
+                value: category.name,
                 label: category.name,
             })),
         },

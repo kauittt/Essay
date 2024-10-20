@@ -67,13 +67,12 @@ const validateInteger = (value, t) => {
 const VoucherModal = ({ toggle, data, action }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
     const dispatch = useDispatch();
-
-    const enter = t("action.enter");
     const [formData, setFormData] = useState(data);
 
-    console.log("Form Data", formData);
+    const enter = t("action.enter");
+
     const submitForm = async (values) => {
-        console.log("Default values", values);
+        console.log("Submitted values:", values);
 
         //* Process values before dispatching
         let processedValues = Object.keys(values).reduce((acc, key) => {
@@ -93,64 +92,60 @@ const VoucherModal = ({ toggle, data, action }) => {
             return acc;
         }, {});
 
-        console.log("Processed values", values);
+        console.log(
+            "Processed values before additional processing",
+            processedValues
+        );
 
-        //* More Process on Product
+        //! Handle Products and Categories Processing
         let selectedProducts = [];
 
-        processedValues.products.forEach((selectedItem) => {
-            //* Xem có category' NAME nào trùng k
+        processedValues.products?.forEach((selectedItem) => {
+            //* If the selected item matches a category
             const matchingCategory = categories.find(
                 (category) => category.name === selectedItem
             );
 
             if (matchingCategory) {
-                //* Lọc các product của category đó
-                const productsInCategory = products.filter((product) =>
-                    product.categories.some(
-                        (cat) => cat.id === matchingCategory.id
-                    )
-                );
+                console.log("Matching category found:", matchingCategory);
+                const productsInCategory = matchingCategory.products;
 
-                console.log("productsInCategory", productsInCategory);
-
-                //* Set
                 selectedProducts = [
                     ...selectedProducts,
                     ...productsInCategory.map((product) => product.id),
                 ];
             } else if (selectedItem !== "all") {
-                //* không phải category và không phải all -> product
+                //* If it's a product ID
                 selectedProducts.push(selectedItem);
             }
         });
 
-        //* Deduplicate product IDs
+        //* Remove duplicates from selected products
         selectedProducts = [...new Set(selectedProducts)];
 
+        //* Handle "all" selection
         if (processedValues.products.includes("all")) {
             processedValues.products = [];
         } else {
             processedValues.products = selectedProducts;
         }
 
-        //* Process Date: + 1 (maybe timezone)
+        //* Adjust Dates (handle timezone issues)
         processedValues.startDate = new Date(processedValues.startDate);
         processedValues.startDate.setDate(
             processedValues.startDate.getDate() + 1
-        ); // +1 day
+        );
 
         processedValues.endDate = new Date(processedValues.endDate);
-        processedValues.endDate.setDate(processedValues.endDate.getDate() + 1); // +1 day
+        processedValues.endDate.setDate(processedValues.endDate.getDate() + 1);
 
-        console.log("Processed more values", processedValues);
+        console.log("Final processed values before dispatch:", processedValues);
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
 
         try {
             let response;
-
             if (action === "new") {
                 response = await dispatch(addVoucher(processedValues));
             } else if (action === "edit") {
@@ -158,7 +153,7 @@ const VoucherModal = ({ toggle, data, action }) => {
                     updateVoucher(processedValues.id, processedValues)
                 );
             } else {
-                throw new Error("Error: No matching action");
+                throw new Error("No matching action found");
             }
 
             if (response) {
@@ -171,10 +166,10 @@ const VoucherModal = ({ toggle, data, action }) => {
                     draggable: true,
                     progress: undefined,
                 });
-                toggle();
+                toggle(); // Close modal
             }
         } catch (e) {
-            console.log(e);
+            console.error(e);
             toast.error(t("common:action.fail", { type: actionText }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -189,13 +184,11 @@ const VoucherModal = ({ toggle, data, action }) => {
 
     const validate = (values, t) => {
         const errors = {};
-        console.log("Values validate", values);
 
-        //* Required
+        //* Required Fields
         const requiredFields = [
             "name",
             "discountPercentage",
-
             "quantity",
             "startDate",
             "endDate",
@@ -206,7 +199,7 @@ const VoucherModal = ({ toggle, data, action }) => {
             }
         });
 
-        //* Number
+        //* Validate BigDecimal Fields
         bigDecimalFields.forEach((field) => {
             const value = values[field];
             if (value !== undefined && value !== null && value !== "") {
@@ -217,6 +210,7 @@ const VoucherModal = ({ toggle, data, action }) => {
             }
         });
 
+        //* Validate Integer Fields
         integerFields.forEach((field) => {
             const value = values[field];
             if (value !== undefined && value !== null && value !== "") {
@@ -227,43 +221,31 @@ const VoucherModal = ({ toggle, data, action }) => {
             }
         });
 
-        //* Select multi Products
+        //! Handle Product Duplication and Invalid Combinations
         if (!values.products || values.products.length === 0) {
             errors.products = t("errors:validation.required");
         }
 
-        if (
-            values.products &&
-            values.products.length > 1 &&
-            values.products.includes("all")
-        ) {
+        if (values.products?.length > 1 && values.products.includes("all")) {
             errors.products = t("store:voucher.invalidProducts");
         }
 
-        //* Category and Product Duplication Validation
-        let selectedCategories = values.products.filter((selectedItem) =>
-            categories.some((category) => category.name === selectedItem)
+        let selectedCategories = values?.products?.filter((item) =>
+            categories.some((category) => category.name === item)
         );
-        let selectedProducts = values.products.filter((selectedItem) =>
-            products.some((product) => product.id === selectedItem)
+        let selectedProducts = values?.products?.filter((item) =>
+            products.some((product) => product.id === item)
         );
 
         let categoryProductIds = [];
-
-        selectedCategories.forEach((categoryName) => {
-            // Find the category and get associated products
+        selectedCategories?.forEach((categoryName) => {
             const matchingCategory = categories.find(
                 (category) => category.name === categoryName
             );
             if (matchingCategory) {
-                const productsInCategory = products
-                    .filter((product) =>
-                        product.categories.some(
-                            (cat) => cat.id === matchingCategory.id
-                        )
-                    )
-                    .map((product) => product.id);
-
+                const productsInCategory = matchingCategory.products.map(
+                    (product) => product.id
+                );
                 categoryProductIds = [
                     ...categoryProductIds,
                     ...productsInCategory,
@@ -271,15 +253,26 @@ const VoucherModal = ({ toggle, data, action }) => {
             }
         });
 
-        const duplicateProducts = selectedProducts.filter((productId) =>
+        console.log("Products within selected categories:", categoryProductIds);
+        const duplicateProducts = selectedProducts?.filter((productId) =>
             categoryProductIds.includes(productId)
         );
 
-        if (duplicateProducts.length > 0) {
-            errors.products = t("store:voucher.invalidCategoryProduct");
-        }
+        duplicateProducts?.forEach((productId) => {
+            const matchedProduct = products.find(
+                (product) => product.id === productId
+            );
+            if (matchedProduct) {
+                const otherCategories = matchedProduct.categories.filter(
+                    (categoryName) => !selectedCategories.includes(categoryName)
+                );
+                if (otherCategories.length <= 0) {
+                    errors.products = t("store:voucher.invalidCategoryProduct");
+                }
+            }
+        });
 
-        //* Discount
+        //* Discount Percentage Validation
         if (
             values.discountPercentage &&
             (values.discountPercentage <= 0 || values.discountPercentage > 100)
@@ -288,28 +281,28 @@ const VoucherModal = ({ toggle, data, action }) => {
                 t("errors:validation.invalidNumber") + " (1 - 100)";
         }
 
-        //* Quantity
-        if (values.quantity && values.quantity == 0) {
+        //* Quantity Validation
+        if (values.quantity && values.quantity === 0) {
             errors.quantity = t("errors:validation.invalidNumber") + " (> 0)";
         }
 
-        //* End date
+        //* Date Validation (start date should not be greater than end date)
         let startDate = values.startDate ? formatDate(values.startDate) : null;
         let endDate = values.endDate ? formatDate(values.endDate) : null;
         if (startDate && endDate && endDate < startDate) {
             errors.endDate = t("errors:validation.invalidDate");
         }
 
-        console.log("Errors", errors);
+        console.log("Validation Errors:", errors);
 
         return errors;
     };
 
-    let products = useSelector(selectProducts);
-    let categories = useSelector(selectCategories);
+    const products = useSelector(selectProducts);
+    const categories = useSelector(selectCategories);
 
-    console.log("Product", products);
-    console.log("Categories to load voucher", categories);
+    console.log("Products List", products);
+    console.log("Categories to load for voucher", categories);
 
     const categoryTitle = t("store:category.title");
     const leftFields = [
@@ -384,7 +377,7 @@ const VoucherModal = ({ toggle, data, action }) => {
                                         min={3}
                                         max={3}
                                         isButton={false}
-                                    ></CustomForm>
+                                    />
                                 </CardBody>
 
                                 {/*//* Button  */}
@@ -397,7 +390,7 @@ const VoucherModal = ({ toggle, data, action }) => {
                                         gap: "20px",
                                     }}
                                 >
-                                    {/*//* Cancle  */}
+                                    {/*//* Cancel  */}
                                     <Button
                                         variant="secondary"
                                         onClick={toggle}

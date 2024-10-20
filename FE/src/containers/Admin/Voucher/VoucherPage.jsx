@@ -10,12 +10,8 @@ import {
     CardTitleWrap,
     CardTitle,
 } from "@/shared/components/Card";
-import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { Button } from "@/shared/components/Button";
-import Modal from "@/shared/components/Modal";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import CustomModal from "@/shared/components/custom/modal/CustomModal";
@@ -62,28 +58,60 @@ const VoucherPage = () => {
     };
 
     const dbProducts = useSelector(selectProducts);
-    let categories = useSelector(selectCategories);
-    console.log("Category", categories);
+    const categories = useSelector(selectCategories);
 
     //* Process
     let vouchers = useSelector(selectVouchers);
-    console.log("Vouchers before", vouchers);
-
-    // console.log("Voucher before", vouchers);
 
     vouchers = vouchers?.map((voucher, index) => {
-        let mapProductIds = voucher.products.map((product) => product.id);
-
-        console.log("Products ids", mapProductIds);
-        let joinProductsName = voucher.products
-            .map((product) => product.name)
-            .join(", ");
-
+        let voucherProductIds =
+            voucher.products?.map((product) => product?.id) || [];
         let newProducts = [];
-        if (mapProductIds.length == dbProducts.length) {
+        let joinProductsName = [];
+        let matchedProductIds = []; // save to delete later
+
+        //* Xử lý select ở modal
+        if (voucherProductIds?.length === dbProducts?.length) {
             newProducts = ["all"];
         } else {
-            newProducts = mapProductIds;
+            categories?.forEach((category) => {
+                const categoryProductIds =
+                    category?.products?.map((product) => product?.id) || [];
+
+                // Check if all category products are included in the voucher
+                const allProductsInCategory = categoryProductIds.every((id) =>
+                    voucherProductIds.includes(id)
+                );
+
+                if (allProductsInCategory) {
+                    newProducts = [...newProducts, category?.name];
+                    joinProductsName = [
+                        ...joinProductsName,
+                        t("store:category.title") + ": " + category?.name,
+                    ];
+
+                    matchedProductIds = [
+                        ...matchedProductIds,
+                        ...categoryProductIds,
+                    ];
+                }
+            });
+
+            // Filter out matched products after processing all categories
+            voucherProductIds = voucherProductIds.filter(
+                (id) => !matchedProductIds.includes(id)
+            );
+
+            const remainingProductNames =
+                voucher.products
+                    ?.filter((product) =>
+                        voucherProductIds.includes(product?.id)
+                    )
+                    .map((product) => product?.name) || [];
+
+            //* Set các product còn lại
+            joinProductsName = [...joinProductsName, ...remainingProductNames];
+            newProducts = [...newProducts, ...voucherProductIds];
         }
 
         return {
@@ -91,13 +119,12 @@ const VoucherPage = () => {
             no: index + 1,
             products: newProducts, //* Modal
             convertedProduct:
-                newProducts[0] == "all"
+                newProducts[0] === "all"
                     ? t("store:voucher.all")
-                    : joinProductsName, //* Table
+                    : joinProductsName.join(", "), //* Table
             discountPercentage: voucher.discountPercentage * 100,
         };
     });
-    console.log("Vouchers", vouchers);
 
     //* Add edit/delete Button
     const data = useMemo(() => {
@@ -110,6 +137,7 @@ const VoucherPage = () => {
                         alignItems: "center",
                         gap: "10px",
                     }}
+                    key={index}
                 >
                     <CustomModal
                         color="warning"
@@ -151,8 +179,7 @@ const VoucherPage = () => {
                 });
             }
         } catch (error) {
-            console.log(error);
-            const action = t("common:action.delete");
+            console.error(error);
             toast.error(t("common:action.fail", { type: action }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -175,7 +202,7 @@ const VoucherPage = () => {
                             <CardTitle>{t("store:voucher.titles")}</CardTitle>
                         </CardTitleWrap>
 
-                        {/*//*Customizer   */}
+                        {/*//* Customizer  */}
                         <div
                             style={{
                                 display: "flex",

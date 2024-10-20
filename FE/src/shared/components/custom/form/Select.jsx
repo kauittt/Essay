@@ -19,9 +19,9 @@ export const SelectField = React.forwardRef(
             onChange,
             value,
             name,
-            placeholder,
-            options,
-            setSelectedItem,
+            placeholder = "",
+            options = [],
+            setSelectedItem = () => {},
             ...other
         },
         ref
@@ -91,23 +91,21 @@ SelectField.propTypes = {
     setSelectedItem: PropTypes.func,
 };
 
-SelectField.defaultProps = {
-    placeholder: "",
-    options: [],
-    setSelectedItem: () => {},
-};
-
 export default renderComponentField(SelectField);
 
 // region STYLES
 
 const StyledSelect = styled(Select)`
     width: 100%;
-    height: 40px;
+    /* height: 40px; */
+    height: ${({ value }) =>
+        Array.isArray(value) && value.length > 0 ? "auto" : "40px"};
     font-size: 12px;
 
     .react-select__control {
-        height: 32px;
+        /* height: 32px; */
+        height: ${({ value }) =>
+            Array.isArray(value) && value.length > 0 ? "auto" : "32px"};
         border-radius: 0 !important;
         transition: all 0.3s;
         border: 1px solid ${colorFieldsBorder};
@@ -122,7 +120,8 @@ const StyledSelect = styled(Select)`
     }
 
     .react-select__input {
-        height: 30px;
+        /* height: 30px; */
+        height: auto;
         color: ${colorText};
     }
 
@@ -144,6 +143,7 @@ const StyledSelect = styled(Select)`
     .react-select__multi-value {
         background-color: transparent;
         border: 1px solid ${colorBlue};
+        margin: 3px;
 
         .react-select__multi-value__label {
             padding: 3px 6px;
@@ -179,7 +179,7 @@ const StyledSelect = styled(Select)`
         border-radius: 0;
         box-shadow: none;
         font-size: 12px;
-        overflow: hidden;
+        overflow: auto;
         background: ${colorBackground};
         border: 1px solid ${colorFieldsBorder};
     }
@@ -199,8 +199,10 @@ const StyledSelect = styled(Select)`
     }
 
     .react-select__value-container {
-        padding-top: 0;
-        padding-bottom: 0;
+        /* padding-top: 0;
+        padding-bottom: 0; */
+        padding-top: 8px;
+        padding-bottom: 8px;
 
         & > div {
             margin-top: 0;
