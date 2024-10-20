@@ -14,6 +14,7 @@ import com.mactiem.clothingstore.website.validator.UserValidator;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,7 @@ public class UserService {
         this.productMapper = productMapper;
     }
 
-    //- Helpers
+    //* Helpers
     @Named("byUsername")
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username)
@@ -58,18 +59,19 @@ public class UserService {
 
     @Named("byId")
     public User findUserById(String id) {
-        return userRepository.findById(id)
+        return userRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException(Response.notFound("User", id)));
     }
 
-    //- Methods
+    //* Methods
     public UserResponseDTO getUserById(String id) {
         User user = findUserById(id);
         return mapUserDTO(user);
     }
 
     public List<UserResponseDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
+        Sort sort = Sort.by("name");
+        List<User> users = userRepository.findAll(sort);
         return mapListUser(users);
     }
 
@@ -82,9 +84,8 @@ public class UserService {
 
         //* Mapping
         User user = userMapper.toEntity(userRequestDTO);
-        Cart cart = new Cart(GenerateID.generateID(), user, new ArrayList<>());
+        Cart cart = new Cart(new ArrayList<>(), user);
         user.setCart(cart);
-        user.setId(GenerateID.generateID());
         user.setCreateDate(LocalDate.now());
         user.setUpdateDate(LocalDate.now());
         user.setEnabled(1);

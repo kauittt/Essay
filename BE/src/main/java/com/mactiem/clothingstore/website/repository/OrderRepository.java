@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, String> {
-    @Query(value = "SELECT * FROM orders WHERE user_id = :userId", nativeQuery = true)
+public interface OrderRepository extends JpaRepository<Order, Long> {
+    @Query(value = "SELECT * FROM orders WHERE user_id = CAST(:userId AS bigint)", nativeQuery = true)
     List<Order> findOrdersByUserId(@Param("userId") String userId);
 
     @Query(value = "SELECT o FROM orders o JOIN users u " +

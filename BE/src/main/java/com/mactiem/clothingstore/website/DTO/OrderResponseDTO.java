@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class OrderResponseDTO {
-    private String id;
+    private Long id;
     private String name;
     private String phone;
     private String address;

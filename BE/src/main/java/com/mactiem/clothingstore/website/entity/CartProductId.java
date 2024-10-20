@@ -15,8 +15,8 @@ import java.util.Objects;
 @AllArgsConstructor
 @Embeddable
 public class CartProductId implements Serializable {
-    private String cart_id;
-    private String product_id;
+    private Long cart_id;
+    private Long product_id;
 
     @Override
     public boolean equals(Object o) {

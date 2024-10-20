@@ -35,7 +35,7 @@ public class InvoiceService {
 
     //* Helper
     public Invoice findInvoiceById(String id) {
-        return invoiceRepository.findById(id)
+        return invoiceRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException(Response.notFound("Invoice", id)));
     }
 
@@ -58,7 +58,6 @@ public class InvoiceService {
         invoiceValidator.validateInvoiceRequest(invoiceRequestDTO);
 
         Invoice invoice = invoiceMapper.toEntity(invoiceRequestDTO);
-        invoice.setId(GenerateID.generateID());
         invoice.setCreateDate(LocalDate.now());
         return invoiceMapper.toDTO(invoiceRepository.save(invoice));
     }

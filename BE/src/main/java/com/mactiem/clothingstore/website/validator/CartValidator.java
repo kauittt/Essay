@@ -40,7 +40,7 @@ public class CartValidator {
         // Map để lưu trữ thông tin sản phẩm và tồn kho (stock)
         Map<String, Integer> productStockMap = new HashMap<>();
         for (Product product : products) {
-            productStockMap.put(product.getId(), product.getStock());
+            productStockMap.put(String.valueOf(product.getId()), product.getStock());
         }
 
         // Duyệt qua danh sách quantity để validate

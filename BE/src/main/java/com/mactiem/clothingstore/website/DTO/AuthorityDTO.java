@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthorityDTO {
-    private String id;
+    private Long id;
     private String authority;
 }

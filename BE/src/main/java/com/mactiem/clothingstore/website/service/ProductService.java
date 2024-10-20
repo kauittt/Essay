@@ -37,12 +37,16 @@ public class ProductService {
 
     //* Helper
     public Product findProductById(String id) {
-        return productRepository.findById(id)
+        return productRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException(Response.notFound("Product", id)));
     }
 
-    public List<Product> findProductsByIds(List<String> products) {
-        return productRepository.findAllById(products);
+    public List<Product> findProductsByIds(List<String> productIds) {
+        List<Long> longIds = productIds.stream()
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+        return productRepository.findAllById(longIds);
     }
 
     public List<Product> findAllProducts() {
@@ -76,7 +80,6 @@ public class ProductService {
         productValidator.validateProductRequest(productRequestDTO);
 
         Product product = productMapper.toEntity(productRequestDTO);
-        product.setId(GenerateID.generateID());
 
         return productMapper.toDTO(productRepository.save(product));
     }

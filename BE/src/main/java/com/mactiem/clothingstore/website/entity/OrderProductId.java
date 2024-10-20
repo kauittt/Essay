@@ -13,8 +13,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @Embeddable
 public class OrderProductId implements Serializable {
-    private String order_id;
-    private String product_id;
+    private Long order_id;
+    private Long product_id;
 
     @Override
     public boolean equals(Object o) {

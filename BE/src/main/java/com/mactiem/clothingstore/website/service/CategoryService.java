@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -36,7 +37,7 @@ public class CategoryService {
 
     //* Helper
     public Category findCategoryById(String id) {
-        return categoryRepository.findById(id)
+        return categoryRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException(Response.notFound("Category", id)));
     }
 
@@ -46,7 +47,12 @@ public class CategoryService {
     }
 
     public List<Category> findAllByIds(List<String> ids) {
-        return categoryRepository.findAllById(ids);
+        List<Long> longIds = ids.stream()
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+
+        return categoryRepository.findAllById(longIds);
     }
 
     //* Methods
@@ -64,7 +70,6 @@ public class CategoryService {
         categoryValidator.validateRequest(categoryRequestDTO);
 
         Category category = categoryMapper.toEntity(categoryRequestDTO);
-        category.setId(GenerateID.generateID());
 
         return categoryMapper.toDTO(categoryRepository.save(category));
     }

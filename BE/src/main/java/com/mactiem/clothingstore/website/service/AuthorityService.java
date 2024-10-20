@@ -27,7 +27,7 @@ public class AuthorityService {
     }
 
     private Authority getAuthorityById(String id) {
-        return authorityRepository.findById(id)
+        return authorityRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException(Response.notFound("Authority", id)));
     }
 

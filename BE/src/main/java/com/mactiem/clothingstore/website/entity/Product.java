@@ -15,8 +15,9 @@ import java.util.List;
 @Builder
 public class Product {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;//-==...
+    private Long id;//-==...
 
     //* Relationship
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)

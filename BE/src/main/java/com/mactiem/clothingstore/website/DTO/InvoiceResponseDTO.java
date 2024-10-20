@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class InvoiceResponseDTO {
-    private String id;
+    private Long id;
 //    private Order order;
     private LocalDate createDate;
 //    private String status;

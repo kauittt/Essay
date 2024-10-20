@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class FeedBackResponseDTO {
-    private String id;
+    private Long id;
     private LocalDate createDate;
     private LocalDate updateDate;
     private Double point;

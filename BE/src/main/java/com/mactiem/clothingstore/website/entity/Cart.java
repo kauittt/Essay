@@ -16,8 +16,9 @@ import java.util.List;
 @Builder
 public class Cart {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String  id;
+    private Long  id;
 
     @OneToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
@@ -26,6 +27,11 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartProduct> cartProducts;
+
+    public Cart(List<CartProduct> cartProducts, User user) {
+        this.cartProducts = cartProducts;
+        this.user = user;
+    }
 
     public User getUser() {
         if (user == null) {

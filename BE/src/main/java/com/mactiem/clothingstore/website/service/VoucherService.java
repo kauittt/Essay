@@ -9,6 +9,7 @@ import com.mactiem.clothingstore.website.mapstruct.VoucherMapper;
 import com.mactiem.clothingstore.website.repository.VoucherRepository;
 import com.mactiem.clothingstore.website.validator.VoucherValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VoucherService {
@@ -35,16 +37,21 @@ public class VoucherService {
 
     //* Helper
     public Voucher findVoucherById(String id) {
-        return voucherRepository.findById(id)
+        return voucherRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException(Response.notFound("Voucher", id)));
     }
 
     public List<Voucher> findVouchersByIds(List<String> vouchers) {
-        return voucherRepository.findAllById(vouchers);
+        List<Long> longIds = vouchers.stream()
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+        return voucherRepository.findAllById(longIds);
     }
 
     public List<Voucher> findAllVouchers() {
-        return voucherRepository.findAll();
+        Sort sort = Sort.by("name");
+        return voucherRepository.findAll(sort);
     }
 
     //* Methods
@@ -61,7 +68,6 @@ public class VoucherService {
         voucherValidator.validateVoucherRequest(voucherRequestDTO);
 
         Voucher voucher = voucherMapper.toEntity(voucherRequestDTO);
-        voucher.setId(GenerateID.generateID());
         voucher.setDiscountPercentage(voucherRequestDTO.getDiscountPercentage() / 100); //- input: 10 -> save: 0.1
 
         List<Product> products;

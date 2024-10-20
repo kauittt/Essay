@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VoucherResponseDTO {
-    private String id;
+    private Long id;
     private List<ProductResponseDTO> products;
     private Double discountPercentage;
     private String name;

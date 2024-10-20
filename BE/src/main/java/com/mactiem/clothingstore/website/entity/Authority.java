@@ -17,8 +17,9 @@ import java.util.List;
 @Table(name = "authorities")
 public class Authority implements GrantedAuthority {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private Long id;
 
     @Column(name = "authority")
     private String authority;

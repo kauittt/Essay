@@ -38,7 +38,7 @@ public class OrderService {
 
     //- Helper
     public Order findOrderById(String id) {
-        return orderRepository.findById(id)
+        return orderRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException(Response.notFound("Order", id)));
     }
 
@@ -62,7 +62,6 @@ public class OrderService {
         orderValidator.validateOrderRequest(orderRequestDTO);
 
         Order order = orderMapper.toEntity(orderRequestDTO);
-        order.setId(GenerateID.generateID());
         order.setCreateDate(LocalDate.now());
         order.setUpdateDate(LocalDate.now());
         orderMapper.mapOrderProductsEntity(order, orderRequestDTO, productService);

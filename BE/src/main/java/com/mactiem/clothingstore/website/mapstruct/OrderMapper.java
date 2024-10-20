@@ -53,7 +53,6 @@ public interface OrderMapper {
 
     @AfterMapping
     default void mapBasicField(@MappingTarget Order order, OrderRequestDTO orderRequestDTO) {
-        order.setId(GenerateID.generateID());
         order.setCreateDate(LocalDate.now());
         order.setUpdateDate(LocalDate.now());
     }

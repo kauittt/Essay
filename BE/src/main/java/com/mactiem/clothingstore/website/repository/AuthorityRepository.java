@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AuthorityRepository extends JpaRepository<Authority, String> {
+public interface AuthorityRepository extends JpaRepository<Authority, Long> {
     @Query(value = "SELECT A.* FROM users_authorities UA " +
             "JOIN authorities A ON UA.authority_id = A.id " +
             "JOIN users U ON  UA.user_id = U.id " +

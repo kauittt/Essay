@@ -17,8 +17,9 @@ import java.util.List;
 @Builder
 public class Voucher {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;//-
+    private Long id;//-
 
     @ManyToMany(mappedBy = "vouchers",
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

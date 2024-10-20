@@ -92,7 +92,7 @@ public class OrderValidator {
         List<Product> products = productService.findProductsByIds(productIds);
         Map<String, Integer> productStockMap = new HashMap<>();
         for (Product product : products) {
-            productStockMap.put(product.getId(), product.getStock());
+            productStockMap.put(String.valueOf(product.getId()), product.getStock());
         }
 
         for (int i = 0; i < productIds.size(); i++) {

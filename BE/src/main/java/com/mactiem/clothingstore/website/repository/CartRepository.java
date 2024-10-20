@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, String> {
-    @Query(value = "SELECT * FROM carts WHERE user_id = :userId", nativeQuery = true)
+public interface CartRepository extends JpaRepository<Cart, Long> {
+    @Query(value = "SELECT * FROM carts WHERE user_id = = CAST(:userId AS bigint)", nativeQuery = true)
     Optional<Cart> findCartByUserId(@Param("userId") String userId);
 
     @Query(value = "SELECT c FROM carts c JOIN users u ON c.user_id = u.id" +
@@ -19,6 +19,6 @@ public interface CartRepository extends JpaRepository<Cart, String> {
     Optional<Cart> findCartByUsername(@Param("username") String username);
 
     @Modifying
-    @Query(value = "DELETE FROM carts_products WHERE cart_id = :cartId", nativeQuery = true)
+    @Query(value = "DELETE FROM carts_products WHERE cart_id = CAST(:cartId AS bigint)", nativeQuery = true)
     void deleteProductsByCartId(@Param("cartId") String cartId);
 }

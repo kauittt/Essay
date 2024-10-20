@@ -43,7 +43,7 @@ public class CartService {
     public CartResponseDTO cleanCartByUserId(String id) {
         Cart cart = findCartByUserId(id);
 
-        cartRepository.deleteProductsByCartId(cart.getId());
+        cartRepository.deleteProductsByCartId(String.valueOf(cart.getId()));
 
         return cartMapper.toDTO(cartRepository.save(cart));
     }
@@ -57,9 +57,9 @@ public class CartService {
         List<String> productIds = cartRequestDTO.getProducts();
         List<String> quantities = cartRequestDTO.getQuantities();
 
-        Map<String, Integer> requestedQuantities = new HashMap<>();
+        Map<Long, Integer> requestedQuantities = new HashMap<>();
         for (int i = 0; i < productIds.size(); i++) {
-            requestedQuantities.put(productIds.get(i), Integer.parseInt(quantities.get(i)));
+            requestedQuantities.put(Long.valueOf(productIds.get(i)), Integer.parseInt(quantities.get(i)));
         }
 
         List<Product> products = productService.findProductsByIds(productIds);

@@ -29,7 +29,7 @@ public class FeedBackService {
 
     //- Helper
     public FeedBack findFeedBackById(String id) {
-        return feedBackRepository.findById(id)
+        return feedBackRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException(Response.notFound("FeedBack", id)));
     }
 
@@ -41,7 +41,6 @@ public class FeedBackService {
 
         //- Mapping
         FeedBack feedBack = feedBackMapper.toEntity(feedBackRequestDTO);
-        feedBack.setId(GenerateID.generateID());
         feedBack.setCreateDate(LocalDate.now());
         feedBack.setUpdateDate(LocalDate.now());
         feedBack.setProduct(productService.findProductById(feedBackRequestDTO.getProduct())); //- Ra ngoài cho khỏi bị loop denpendency

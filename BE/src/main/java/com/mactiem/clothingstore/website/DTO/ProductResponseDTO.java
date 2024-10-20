@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ProductResponseDTO {
-    private String id;
+    private Long id;
     private List<CategoryResponseDTO> categories;
     private String name;
     private String description;
