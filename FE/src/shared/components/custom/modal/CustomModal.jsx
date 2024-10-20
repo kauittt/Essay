@@ -20,9 +20,10 @@ import {
     paddingRight,
     right,
 } from "@/utils/directions";
-import CategoryModal from "@/containers/Category/modal/CategoryModal";
-import ProductModal from "@/containers/Product/modal/ProductModal";
-import VoucherModal from "../../../../containers/Voucher/modal/VoucherModal";
+import VoucherModal from "@/containers/Admin/Voucher/modal/VoucherModal";
+import CategoryModal from "@/containers/Admin/Category/modal/CategoryModal";
+import ProductModal from "@/containers/Admin/Product/modal/ProductModal";
+import UserModal from "../../../../containers/Admin/User/modal/UserModal";
 
 const CustomModal = ({
     color,
@@ -106,6 +107,14 @@ const CustomModal = ({
                             toggle={toggle}
                             data={data}
                         ></VoucherModal>
+                    )}
+
+                    {component == "user" && (
+                        <UserModal
+                            action={action}
+                            toggle={toggle}
+                            data={data}
+                        ></UserModal>
                     )}
                 </ModalBody>
             </StyledModal>

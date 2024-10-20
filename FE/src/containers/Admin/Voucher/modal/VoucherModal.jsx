@@ -10,14 +10,14 @@ import { Card, CardBody } from "@/shared/components/Card";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
-import { addCategory, updateCategory } from "@/redux/actions/categoryAction";
+import { toast, ToastContainer } from "react-toastify";
 import FormInput from "@/shared/components/custom/form/FormInput";
 import { fetchProducts } from "@/redux/actions/productAction";
 import CustomForm from "@/shared/components/custom/form/CustomForm";
 import { useSelector } from "react-redux";
 import { selectProducts } from "@/redux/reducers/productSlice";
 import { addVoucher, updateVoucher } from "@/redux/actions/voucherAction";
+import { selectCategories } from "@/redux/reducers/categorySlice";
 
 //* Helper
 //* Cần convert sang cùng loại trước khi check
@@ -95,15 +95,46 @@ const VoucherModal = ({ toggle, data, action }) => {
 
         console.log("Processed values", values);
 
-        //* More Process
-        if (
-            processedValues.products.length == 1 &&
-            processedValues.products[0] == "all"
-        ) {
+        //* More Process on Product
+        let selectedProducts = [];
+
+        processedValues.products.forEach((selectedItem) => {
+            //* Xem có category' NAME nào trùng k
+            const matchingCategory = categories.find(
+                (category) => category.name === selectedItem
+            );
+
+            if (matchingCategory) {
+                //* Lọc các product của category đó
+                const productsInCategory = products.filter((product) =>
+                    product.categories.some(
+                        (cat) => cat.id === matchingCategory.id
+                    )
+                );
+
+                console.log("productsInCategory", productsInCategory);
+
+                //* Set
+                selectedProducts = [
+                    ...selectedProducts,
+                    ...productsInCategory.map((product) => product.id),
+                ];
+            } else if (selectedItem !== "all") {
+                //* không phải category và không phải all -> product
+                selectedProducts.push(selectedItem);
+            }
+        });
+
+        //* Deduplicate product IDs
+        selectedProducts = [...new Set(selectedProducts)];
+
+        if (processedValues.products.includes("all")) {
             processedValues.products = [];
+        } else {
+            processedValues.products = selectedProducts;
         }
 
-        //* Process + 1 (maybe timezone)
+        //* Process Date: + 1 (maybe timezone)
         processedValues.startDate = new Date(processedValues.startDate);
         processedValues.startDate.setDate(
             processedValues.startDate.getDate() + 1
@@ -196,14 +227,56 @@ const VoucherModal = ({ toggle, data, action }) => {
             }
         });
 
-        //* Select multi
+        //* Select multi Products
         if (!values.products || values.products.length === 0) {
             errors.products = t("errors:validation.required");
         }
 
-        const all = t("store:voucher.all");
-        if (values.products && values.products.includes("all")) {
-            errors.products = t("store:voucher.invalidProducts", { all: all });
+        if (
+            values.products &&
+            values.products.length > 1 &&
+            values.products.includes("all")
+        ) {
+            errors.products = t("store:voucher.invalidProducts");
+        }
+
+        //* Category and Product Duplication Validation
+        let selectedCategories = values.products.filter((selectedItem) =>
+            categories.some((category) => category.name === selectedItem)
+        );
+        let selectedProducts = values.products.filter((selectedItem) =>
+            products.some((product) => product.id === selectedItem)
+        );
+
+        let categoryProductIds = [];
+
+        selectedCategories.forEach((categoryName) => {
+            // Find the category and get associated products
+            const matchingCategory = categories.find(
+                (category) => category.name === categoryName
+            );
+            if (matchingCategory) {
+                const productsInCategory = products
+                    .filter((product) =>
+                        product.categories.some(
+                            (cat) => cat.id === matchingCategory.id
+                        )
+                    )
+                    .map((product) => product.id);
+
+                categoryProductIds = [
+                    ...categoryProductIds,
+                    ...productsInCategory,
+                ];
+            }
+        });
+
+        const duplicateProducts = selectedProducts.filter((productId) =>
+            categoryProductIds.includes(productId)
+        );
+
+        if (duplicateProducts.length > 0) {
+            errors.products = t("store:voucher.invalidCategoryProduct");
         }
 
         //* Discount
@@ -233,7 +306,12 @@ const VoucherModal = ({ toggle, data, action }) => {
     };
 
     let products = useSelector(selectProducts);
+    let categories = useSelector(selectCategories);
 
+    console.log("Product", products);
+    console.log("Categories to load voucher", categories);
+
+    const categoryTitle = t("store:category.title");
     const leftFields = [
         {
             label: t("store:voucher.name"),
@@ -252,7 +330,14 @@ const VoucherModal = ({ toggle, data, action }) => {
             name: "products",
             type: "multiSelect",
             options: [
-                { value: "all", label: t("store:voucher.all") },
+                {
+                    value: "all",
+                    label: `>> ${t("store:voucher.all")} <<`,
+                },
+                ...categories.map((category) => ({
+                    value: category.name,
+                    label: `${categoryTitle}: ${category.name}`,
+                })),
                 ...products.map((product) => ({
                     value: product.id,
                     label: product.name,

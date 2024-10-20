@@ -34,6 +34,19 @@
         "quantity": "Số lượng",
         "products": "Sản phẩm áp dụng",
         "all": "Tất cả",
-        "invalidProducts": "Chọn [{{all}}] hoặc [Từng sản phẩm]"
+        "invalidProducts": "Chọn [Tất cả] hoặc [Từng sản phẩm]",
+        "invalidCategoryProduct": "Chọn [Danh mục] đại diện hoặc [Từng sản phẩm]"
+    },
+
+    "user": {
+        "title": "Người dùng",
+        "titles": "Người dùng",
+        "password": "Mật khẩu",
+        "username": "Tên đăng nhập",
+        "name": "Tên",
+        "authorities": "Quyền hạn",
+        "email": "Email",
+        "phone": "Điện thoại",
+        "address": "Địa chỉ"
     }
 }

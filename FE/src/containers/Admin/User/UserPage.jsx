@@ -20,15 +20,13 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import CustomModal from "@/shared/components/custom/modal/CustomModal";
 import CustomReactTableBase from "@/shared/components/custom/table/CustomReactTableBase";
-import CreateVoucherHeader from "./CreateVoucherHeader";
-import { selectVouchers } from "@/redux/reducers/voucherSlice";
-import { removeVoucher } from "@/redux/actions/voucherAction";
-import { selectProducts } from "@/redux/reducers/productSlice";
+import CreateUserHeader from "./CreateUserHeader";
+import { selectTotalUsers } from "./../../../redux/reducers/userSlice";
+import { removeUser } from "../../../redux/actions/userAction";
 
-//!!!!!! Check endDate/ Quantity
-const VoucherPage = () => {
+const UserPage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
-    const reactTableData = CreateVoucherHeader(t);
+    const reactTableData = CreateUserHeader(t);
 
     const [withPagination, setWithPaginationTable] = useState(true);
     const [isSortable, setIsSortable] = useState(false);
@@ -49,7 +47,7 @@ const VoucherPage = () => {
     };
 
     const mapPlaceholder =
-        t("tables.customizer.search.search") + " " + t("store:voucher.titles");
+        t("tables.customizer.search.search") + " " + t("store:user.titles");
 
     const tableConfig = {
         isSortable,
@@ -60,38 +58,27 @@ const VoucherPage = () => {
         placeholder: mapPlaceholder,
     };
 
-    const dbProducts = useSelector(selectProducts);
+    let users = useSelector(selectTotalUsers);
+    users = users?.map((user) => ({
+        ...user,
+        authorities: user.authorities.map((auth) => auth.authority), // For display in Modal
+        convertedAuthorities: user.authorities
+            .map((auth) => auth.authority)
+            .map((role) => role.replace("ROLE_", "")) // For display in the table
+            .join(", "),
+    }));
 
-    //* Process
-    let vouchers = useSelector(selectVouchers);
-    console.log("Voucher before", vouchers);
+    users = users?.filter(
+        (user) => !user.convertedAuthorities.includes("USER")
+    );
 
-    vouchers = vouchers?.map((voucher, index) => {
-        let mapProductIds = voucher.products.map((product) => product.id);
-
-        let joinProductsName = voucher.products
-            .map((product) => product.name)
-            .join(", ");
-
-        let newProducts =
-            mapProductIds.length == dbProducts.length ? ["all"] : mapProductIds;
-        return {
-            ...voucher,
-            no: index + 1,
-            products: newProducts, //* Modal
-            convertedProduct:
-                newProducts[0] == "all"
-                    ? t("store:voucher.all")
-                    : joinProductsName, //* Table
-            discountPercentage: voucher.discountPercentage * 100,
-        };
-    });
-    console.log("Vouchers", vouchers);
+    console.log("users", users);
 
     //* Add edit/delete Button
     const data = useMemo(() => {
-        return vouchers?.map((item, index) => ({
+        return users?.map((item, index) => ({
             ...item,
+            no: index + 1,
             action: (
                 <Col
                     style={{
@@ -102,12 +89,10 @@ const VoucherPage = () => {
                 >
                     <CustomModal
                         color="warning"
-                        title={
-                            t("action.edit") + " " + t("store:voucher.title")
-                        }
+                        title={t("action.edit") + " " + t("store:user.title")}
                         btn={t("action.edit")}
                         action="edit"
-                        component="voucher"
+                        component="user"
                         data={item}
                     />
 
@@ -121,11 +106,11 @@ const VoucherPage = () => {
                 </Col>
             ),
         }));
-    }, [vouchers, t]);
+    }, [users, t]);
 
     const handleDelete = async (id) => {
         try {
-            const response = await dispatch(removeVoucher(id));
+            const response = await dispatch(removeUser(id));
             const action = t("common:action.delete");
 
             if (response) {
@@ -161,7 +146,7 @@ const VoucherPage = () => {
                     <CardBody>
                         {/*//* Title  */}
                         <CardTitleWrap>
-                            <CardTitle>{t("store:voucher.titles")}</CardTitle>
+                            <CardTitle>{t("store:user.titles")}</CardTitle>
                         </CardTitleWrap>
 
                         {/*//*Customizer   */}
@@ -191,11 +176,11 @@ const VoucherPage = () => {
                                 title={
                                     t("action.add") +
                                     " " +
-                                    t("store:voucher.title")
+                                    t("store:user.title")
                                 }
                                 btn={t("action.add")}
                                 action="new"
-                                component="voucher"
+                                component="user"
                             />
                         </div>
 
@@ -205,7 +190,7 @@ const VoucherPage = () => {
                             columns={reactTableData.tableHeaderData}
                             data={data}
                             tableConfig={tableConfig}
-                            component="voucher"
+                            component="user"
                         />
                     </CardBody>
                 </Card>
@@ -214,6 +199,6 @@ const VoucherPage = () => {
     );
 };
 
-VoucherPage.propTypes = {};
+UserPage.propTypes = {};
 
-export default VoucherPage;
+export default UserPage;

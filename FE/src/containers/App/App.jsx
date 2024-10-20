@@ -11,7 +11,8 @@ import ScrollToTop from "./ScrollToTop";
 import GlobalStyles from "./globalStyles";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../translations";
-import { ToastContainer } from "react-bootstrap";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
     const [isLoading, setIsLoading] = useState(true);

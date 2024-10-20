@@ -6,16 +6,18 @@ import { paddingLeft } from "@/utils/directions";
 import Layout from "../Layout/index";
 import MainWrapper from "./components/MainWrapper";
 import LogIn from "../LogIn/index";
-import ProductPage from "../Product/ProductPage";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { useDispatch } from "react-redux";
 import { selectUser } from "@/redux/reducers/userSlice";
 import { fetchProducts } from "@/redux/actions/productAction";
 import { useSelector } from "react-redux";
-import CategoryPage from "../Category/CategoryPage";
 import { fetchCategories } from "@/redux/actions/categoryAction";
-import VoucherPage from "../Voucher/VoucherPage";
 import { fetchVouchers } from "@/redux/actions/voucherAction";
+import ProductPage from "./../Admin/Product/ProductPage";
+import CategoryPage from "./../Admin/Category/CategoryPage";
+import VoucherPage from "./../Admin/Voucher/VoucherPage";
+import { fetchUsers } from "./../../redux/actions/userAction";
+import UserPage from "../Admin/User/UserPage";
 
 const Pages = () => (
     <Switch>
@@ -23,6 +25,7 @@ const Pages = () => (
         <Route path="/pages/products" component={ProductPage} />
         <Route path="/pages/categories" component={CategoryPage} />
         <Route path="/pages/vouchers" component={VoucherPage} />
+        <Route path="/pages/users" component={UserPage} />
     </Switch>
 );
 
@@ -55,6 +58,7 @@ const Router = () => {
             dispatch(fetchProducts());
             dispatch(fetchCategories());
             dispatch(fetchVouchers());
+            dispatch(fetchUsers());
         } else {
             console.log("No user found in localStorage");
         }

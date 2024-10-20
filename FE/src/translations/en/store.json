@@ -34,6 +34,19 @@
         "quantity": "Quantity",
         "products": "Applicable Product",
         "all": "All",
-        "invalidProducts": "Select [{{all}}] or [Individual products]"
+        "invalidProducts": "Select [All] or [Individual Products]",
+        "invalidCategoryProduct": "Select either [Category] or [Individual Products]"
+    },
+
+    "user": {
+        "title": "User",
+        "titles": "Users",
+        "username": "Username",
+        "password": "Password",
+        "name": "Name",
+        "authorities": "Authorities",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address"
     }
 }

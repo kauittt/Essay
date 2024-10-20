@@ -26,6 +26,7 @@ import { getUserSuccess } from "@/redux/reducers/userSlice";
 import { fetchProducts } from "@/redux/actions/productAction";
 import { fetchCategories } from "@/redux/actions/categoryAction";
 import { fetchVouchers } from "@/redux/actions/voucherAction";
+import { fetchUsers } from "../../redux/actions/userAction";
 
 const LogIn = () => {
     const dispatch = useDispatch();
@@ -51,6 +52,7 @@ const LogIn = () => {
                 dispatch(fetchProducts(accessToken));
                 dispatch(fetchCategories(accessToken));
                 dispatch(fetchVouchers(accessToken));
+                dispatch(fetchUsers(accessToken));
 
                 const action = t("common:action.login");
                 toast.info(t("common:action.success", { type: action }), {
