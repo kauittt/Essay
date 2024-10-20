@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class ProductResponseDTO {
     private Long id;
-    private List<CategoryResponseDTO> categories;
+    private List<String> categories;
     private String name;
     private String description;
     private Integer stock;
@@ -30,7 +30,7 @@ public class ProductResponseDTO {
         return feedBacks;
     }
 
-    public List<CategoryResponseDTO> getCategories() {
+    public List<String> getCategories() {
         if (categories == null) {
             categories = new ArrayList<>();
         }

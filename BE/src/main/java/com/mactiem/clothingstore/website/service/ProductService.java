@@ -80,6 +80,10 @@ public class ProductService {
         productValidator.validateProductRequest(productRequestDTO);
 
         Product product = productMapper.toEntity(productRequestDTO);
+        List<Category> categories = categoryService.findAllByNames(productRequestDTO.getCategories());
+        product.setCategories(categories);
+
+        categories.forEach(category -> category.getProducts().add(product));
 
         return productMapper.toDTO(productRepository.save(product));
     }
@@ -95,9 +99,9 @@ public class ProductService {
         List<Category> currentCategories = product.getCategories();
 
         // Convert incomingCategoryIds to Category objects
-        List<Category> newCategories = categoryService.findAllByIds(incomingCategoryIds);
+        List<Category> newCategories = categoryService.findAllByNames(incomingCategoryIds);
 
-        currentCategories.removeIf(category -> !incomingCategoryIds.contains(category.getId()));
+        currentCategories.removeIf(category -> !incomingCategoryIds.contains(category.getName()));
 
         for (Category newCategory : newCategories) {
             if (!currentCategories.contains(newCategory)) {

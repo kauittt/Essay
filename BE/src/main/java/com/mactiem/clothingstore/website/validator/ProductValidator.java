@@ -85,7 +85,7 @@ public class ProductValidator {
         if (categories == null || categories.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categories cannot be null or empty");
         }
-        List<Category> dbCategories = categoryService.findAllByIds(categories);
+        List<Category> dbCategories = categoryService.findAllByNames(categories);
         if (categories.size() != dbCategories.size()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not all categories are found");
         }

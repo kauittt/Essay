@@ -10,6 +10,7 @@ import com.mactiem.clothingstore.website.mapstruct.CategoryMapper;
 import com.mactiem.clothingstore.website.repository.CategoryRepository;
 import com.mactiem.clothingstore.website.repository.ProductRepository;
 import com.mactiem.clothingstore.website.validator.CategoryValidator;
+import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -45,14 +46,16 @@ public class CategoryService {
         Sort sort = Sort.by("name");
         return categoryRepository.findAll(sort);
     }
-
     public List<Category> findAllByIds(List<String> ids) {
         List<Long> longIds = ids.stream()
                 .map(Long::parseLong)
-                .collect(Collectors.toList());
-
+                .toList();
 
         return categoryRepository.findAllById(longIds);
+    }
+
+    public List<Category> findAllByNames(List<String> names) {
+        return categoryRepository.findAllByNameIn(names);
     }
 
     //* Methods
