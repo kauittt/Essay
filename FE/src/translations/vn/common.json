@@ -22,10 +22,13 @@
         "edit": "Sửa",
         "action": "Thao tác",
         "save": "Lưu",
+        "view": "Xem",
+        "detail": "Chi tiết",
         "cancel": "Hủy",
         "showMore": "Hiển thị thêm",
         "showLess": "Hiển thị ít hơn",
-        "enter": "Nhập"
+        "enter": "Nhập",
+        "close": "Đóng"
     },
     "online_marketing_dashboard": {
         "page_title": "Bảng điều khiển tiếp thị trực tuyến",

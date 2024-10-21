@@ -5,6 +5,7 @@ import userReducer from "./userSlice";
 import productReducer from "./productSlice";
 import categoryReducer from "./categorySlice";
 import voucherReducer from "./voucherSlice";
+import orderReducer from "./orderSlice";
 
 export {
     themeReducer,
@@ -14,4 +15,5 @@ export {
     userReducer,
     categoryReducer,
     voucherReducer,
+    orderReducer,
 };

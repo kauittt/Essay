@@ -10,27 +10,32 @@ import {
     CardTitleWrap,
     CardTitle,
 } from "@/shared/components/Card";
+import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/shared/components/Button";
-import { useSelector, useDispatch } from "react-redux";
+import Modal from "@/shared/components/Modal";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import CustomModal from "@/shared/components/custom/modal/CustomModal";
 import CustomReactTableBase from "@/shared/components/custom/table/CustomReactTableBase";
-import CreateVoucherHeader from "./CreateVoucherHeader";
-import { selectVouchers } from "@/redux/reducers/voucherSlice";
-import { removeVoucher } from "@/redux/actions/voucherAction";
-import { selectProducts } from "@/redux/reducers/productSlice";
-import { selectCategories } from "@/redux/reducers/categorySlice";
+import { fetchVouchers } from "@/redux/actions/voucherAction";
+import { removeOrder } from "../../../redux/actions/orderAction";
+import CreateOrderHeader from "./CreateOrderHeader";
+import { selectOrders } from "@/redux/reducers/orderSlice";
 
-//!!!!!! Check endDate/ Quantity
-const VoucherPage = () => {
+//! Check stock
+const OrderPage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
-    const reactTableData = CreateVoucherHeader(t);
+    const reactTableData = CreateOrderHeader(t);
 
     const [withPagination, setWithPaginationTable] = useState(true);
     const [isSortable, setIsSortable] = useState(false);
     const [withSearchEngine, setWithSearchEngine] = useState(false);
 
+    const location = useLocation();
+    const history = useHistory();
     const dispatch = useDispatch();
 
     const handleClickIsSortable = () => {
@@ -46,7 +51,7 @@ const VoucherPage = () => {
     };
 
     const mapPlaceholder =
-        t("tables.customizer.search.search") + " " + t("store:voucher.titles");
+        t("tables.customizer.search.search") + " " + t("store:order.titles");
 
     const tableConfig = {
         isSortable,
@@ -57,88 +62,27 @@ const VoucherPage = () => {
         placeholder: mapPlaceholder,
     };
 
-    console.log("trước khi lấy");
-    const dbProducts = useSelector(selectProducts);
-    const categories = useSelector(selectCategories);
-    console.log("Category", categories);
-    console.log("Product", dbProducts);
+    let orders = useSelector(selectOrders);
+    console.log("Order before", orders);
 
-    //* Process
-    let vouchers = useSelector(selectVouchers);
-    console.log("Voucher before", vouchers);
-
-    console.log("Proces voucher lại sau khi fetch");
-    vouchers = vouchers?.map((voucher, index) => {
-        console.log("Đang process");
-        let voucherProductIds =
-            voucher.products?.map((product) => product?.id) || [];
-        let newProducts = [];
-        let joinProductsName = [];
-        let matchedProductIds = []; // save to delete later
-
-        //* Xử lý select ở modal
-        if (voucherProductIds?.length === dbProducts?.length) {
-            newProducts = ["all"];
-        } else {
-            categories?.forEach((category) => {
-                if (category.products.length == 0) return;
-                const categoryProductIds =
-                    category?.products?.map((product) => product?.id) || [];
-
-                // Check if all category products are included in the voucher
-                const allProductsInCategory = categoryProductIds.every((id) =>
-                    voucherProductIds.includes(id)
-                );
-
-                if (allProductsInCategory) {
-                    newProducts = [...newProducts, category?.name];
-                    joinProductsName = [
-                        ...joinProductsName,
-                        t("store:category.title") + ": " + category?.name,
-                    ];
-
-                    matchedProductIds = [
-                        ...matchedProductIds,
-                        ...categoryProductIds,
-                    ];
-                }
-            });
-
-            // Filter out matched products after processing all categories
-            voucherProductIds = voucherProductIds.filter(
-                (id) => !matchedProductIds.includes(id)
-            );
-
-            const remainingProductNames =
-                voucher.products
-                    ?.filter((product) =>
-                        voucherProductIds.includes(product?.id)
-                    )
-                    .map((product) => product?.name) || [];
-
-            //* Set các product còn lại
-            joinProductsName = [...joinProductsName, ...remainingProductNames];
-            newProducts = [...newProducts, ...voucherProductIds];
-        }
-
-        return {
-            ...voucher,
-            no: index + 1,
-            products: newProducts, //* Modal
-            convertedProduct:
-                newProducts[0] === "all"
-                    ? t("store:voucher.all")
-                    : joinProductsName.join(" | "), //* Table
-            discountPercentage: voucher.discountPercentage * 100,
-        };
-    });
-
-    console.log("Voucher after", vouchers);
+    orders = orders?.map((order) => ({
+        ...order,
+        invoiceId: order.invoice.id,
+        invoiceCreateDate: order.invoice.createDate,
+        invoiceTotalAmount: `${order.invoice?.totalAmount.toLocaleString()} VNĐ`,
+        invoiceDiscountAmount: `${order.invoice?.discountAmount.toLocaleString()} VNĐ`,
+        invoiceTotalDue: `${(
+            order.invoice?.totalAmount - order.invoice?.discountAmount
+        ).toLocaleString()} VNĐ`,
+        invoicePaymentMethod: order.invoice?.paymentMethod,
+    }));
+    console.log("orders", orders);
 
     //* Add edit/delete Button
     const data = useMemo(() => {
-        return vouchers?.map((item, index) => ({
+        return orders?.map((item, index) => ({
             ...item,
+            no: index + 1,
             action: (
                 <Col
                     style={{
@@ -146,37 +90,37 @@ const VoucherPage = () => {
                         alignItems: "center",
                         gap: "10px",
                     }}
-                    key={index}
                 >
                     <CustomModal
                         color="warning"
                         title={
-                            t("action.edit") + " " + t("store:voucher.title")
+                            t("action.detail") + " " + t("store:order.title")
                         }
-                        btn={t("action.edit")}
+                        btn={t("action.detail")}
                         action="edit"
-                        component="voucher"
+                        component="order"
                         data={item}
                     />
 
-                    <Button
+                    {/* <Button
                         variant="danger"
                         onClick={() => handleDelete(item.id)}
                         style={{ margin: "0" }}
                     >
                         <span>{t("action.delete")}</span>
-                    </Button>
+                    </Button> */}
                 </Col>
             ),
         }));
-    }, [vouchers, t]);
+    }, [orders, t]);
 
     const handleDelete = async (id) => {
         try {
-            const response = await dispatch(removeVoucher(id));
+            const response = await dispatch(removeOrder(id));
             const action = t("common:action.delete");
 
             if (response) {
+                dispatch(fetchVouchers());
                 toast.info(t("common:action.success", { type: action }), {
                     position: "top-right",
                     autoClose: 5000,
@@ -188,7 +132,8 @@ const VoucherPage = () => {
                 });
             }
         } catch (error) {
-            console.error(error);
+            console.log(error);
+            const action = t("common:action.delete");
             toast.error(t("common:action.fail", { type: action }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -208,10 +153,10 @@ const VoucherPage = () => {
                     <CardBody>
                         {/*//* Title  */}
                         <CardTitleWrap>
-                            <CardTitle>{t("store:voucher.titles")}</CardTitle>
+                            <CardTitle>{t("store:order.titles")}</CardTitle>
                         </CardTitleWrap>
 
-                        {/*//* Customizer  */}
+                        {/*//*Customizer   */}
                         <div
                             style={{
                                 display: "flex",
@@ -233,17 +178,17 @@ const VoucherPage = () => {
                             />
 
                             {/*//* Button: New  */}
-                            <CustomModal
+                            {/* <CustomModal
                                 color="primary"
                                 title={
                                     t("action.add") +
                                     " " +
-                                    t("store:voucher.title")
+                                    t("store:order.title")
                                 }
                                 btn={t("action.add")}
                                 action="new"
-                                component="voucher"
-                            />
+                                component="order"
+                            /> */}
                         </div>
 
                         {/*//* Table  */}
@@ -252,7 +197,7 @@ const VoucherPage = () => {
                             columns={reactTableData.tableHeaderData}
                             data={data}
                             tableConfig={tableConfig}
-                            component="voucher"
+                            component="order"
                         />
                     </CardBody>
                 </Card>
@@ -261,6 +206,6 @@ const VoucherPage = () => {
     );
 };
 
-VoucherPage.propTypes = {};
+OrderPage.propTypes = {};
 
-export default VoucherPage;
+export default OrderPage;

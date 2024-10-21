@@ -10,7 +10,6 @@ const productSlice = createSlice({
     reducers: {
         getProductsSuccess(state, action) {
             state.products = action.payload;
-            state.error = null;
         },
     },
 });

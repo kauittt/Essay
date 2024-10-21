@@ -24,6 +24,7 @@ import { selectProducts } from "@/redux/reducers/productSlice";
 import { removeProduct } from "@/redux/actions/productAction";
 import CreateProductHeader from "./CreateProductHeader";
 import { fetchVouchers } from "@/redux/actions/voucherAction";
+import { fetchCategories } from "@/redux/actions/categoryAction";
 
 //! Check stock
 const ProductPage = () => {
@@ -116,6 +117,7 @@ const ProductPage = () => {
 
             if (response) {
                 dispatch(fetchVouchers());
+                dispatch(fetchCategories());
                 toast.info(t("common:action.success", { type: action }), {
                     position: "top-right",
                     autoClose: 5000,

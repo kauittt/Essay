@@ -24,6 +24,7 @@ import VoucherModal from "@/containers/Admin/Voucher/modal/VoucherModal";
 import CategoryModal from "@/containers/Admin/Category/modal/CategoryModal";
 import ProductModal from "@/containers/Admin/Product/modal/ProductModal";
 import UserModal from "../../../../containers/Admin/User/modal/UserModal";
+import OrderModal from "../../../../containers/Admin/Order/modal/OrderModal";
 
 const CustomModal = ({
     color,
@@ -115,6 +116,14 @@ const CustomModal = ({
                             toggle={toggle}
                             data={data}
                         ></UserModal>
+                    )}
+
+                    {component == "order" && (
+                        <OrderModal
+                            action={action}
+                            toggle={toggle}
+                            data={data}
+                        ></OrderModal>
                     )}
                 </ModalBody>
             </StyledModal>
@@ -225,7 +234,9 @@ const StyledModal = styled(BootstrapModal).withConfig({
         text-align: center;
         background-color: ${colorBackground};
         color: ${colorText};
-        width: 100%; //! Use 100% to ensure it expands to fill the .modal-dialog
+        width: 100%; //! Use 100% to ensure it expands to fill the .modal-dialog,
+        max-height: 90%;
+        overflow-y: auto;
     }
 
     ${ModalTitleIcon} {

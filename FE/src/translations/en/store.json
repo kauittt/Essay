@@ -10,12 +10,14 @@
         "description": "Description",
         "category": "Category",
 
-        "price": "Price (VNĐ)",
+        "price": "Price",
         "stock": "Stock Available",
         "image": "Image",
 
         "feedback": "Customer Feedback",
-        "selectImage": "Select an image"
+        "selectImage": "Select an image",
+        "totalPrice": "Total Price",
+        "quantity": "Quantity"
     },
 
     "category": {
@@ -48,5 +50,31 @@
         "email": "Email",
         "phone": "Phone",
         "address": "Address"
+    },
+
+    "order": {
+        "title": "Order",
+        "titles": "Orders",
+        "id": "Order's ID",
+
+        "detail": "Information",
+        "name": "Name",
+        "phone": "Phone",
+        "address": "Address",
+        "createDate": "Create Date",
+        "updateDate": "Update Date",
+        "status": "Status"
+    },
+
+    "invoice": {
+        "title": "Invoice",
+        "titles": "Invoices",
+
+        "id": "Invoice's ID",
+        "createDate": "Create Date",
+        "totalAmount": "Total Price",
+        "discountAmount": "Discount Amount",
+        "paymentMethod": "Payment Method",
+        "totalDue": "Total Due"
     }
 }

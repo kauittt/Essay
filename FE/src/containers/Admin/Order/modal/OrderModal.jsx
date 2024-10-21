@@ -13,11 +13,13 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import CustomForm from "@/shared/components/custom/form/CustomForm";
-import { selectCategories } from "@/redux/reducers/categorySlice";
 import { addProduct, updateProduct } from "@/redux/actions/productAction";
 import { createGlobalStyle } from "styled-components";
 import { fetchVouchers } from "@/redux/actions/voucherAction";
-import { fetchCategories } from "@/redux/actions/categoryAction";
+import OrderDetail from "./OrderDetail";
+import InvoiceDetail from "./InvoiceDetail";
+import ListProduct from "./ListProduct";
+import { updateOrder } from "../../../../redux/actions/orderAction";
 
 const bigDecimalFields = ["price"];
 const integerFields = ["stock"];
@@ -44,7 +46,7 @@ const validateInteger = (value, t) => {
     return undefined;
 };
 
-const ProductModal = ({ toggle, data, action }) => {
+const OrderModal = ({ toggle, data, action }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
     const enter = t("action.enter");
     const dispatch = useDispatch();
@@ -81,12 +83,9 @@ const ProductModal = ({ toggle, data, action }) => {
 
         try {
             let response;
-
-            if (action === "new") {
-                response = await dispatch(addProduct(processedValues));
-            } else if (action === "edit") {
+            if (action === "edit") {
                 response = await dispatch(
-                    updateProduct(processedValues.id, processedValues)
+                    updateOrder(processedValues.id, processedValues)
                 );
             } else {
                 throw new Error("Error: No matching action");
@@ -94,7 +93,6 @@ const ProductModal = ({ toggle, data, action }) => {
 
             if (response) {
                 dispatch(fetchVouchers());
-                dispatch(fetchCategories());
                 toast.info(t("common:action.success", { type: actionText }), {
                     position: "top-right",
                     autoClose: 5000,
@@ -120,122 +118,30 @@ const ProductModal = ({ toggle, data, action }) => {
         }
     };
 
-    const validate = (values, t) => {
-        console.log("Validate values", values);
-        const errors = {};
+    console.log("Form data", formData);
 
-        const requiredFields = [
-            "name",
-            "description",
+    const flattenedData = formData.orderProducts
+        ?.map(({ product, quantity }) => ({
+            ...product,
+            quantity,
+        }))
+        .flat();
 
-            "price",
-            "stock",
-            "image",
-        ];
-
-        requiredFields.forEach((field) => {
-            if (!values[field]) {
-                errors[field] = t("errors:validation.required");
-            }
-        });
-
-        if (!values.categories || values.categories.length === 0) {
-            errors.categories = t("errors:validation.required");
-        }
-
-        bigDecimalFields.forEach((field) => {
-            const value = values[field];
-            if (value !== undefined && value !== null && value !== "") {
-                const error = validateBigDecimal(value, t);
-                if (error) {
-                    errors[field] = error;
-                }
-            }
-        });
-
-        integerFields.forEach((field) => {
-            const value = values[field];
-            if (value !== undefined && value !== null && value !== "") {
-                const error = validateInteger(value, t);
-                if (error) {
-                    errors[field] = error;
-                }
-            }
-        });
-
-        console.log("Erros", errors);
-        return errors;
-    };
-
-    let categories = useSelector(selectCategories);
-    console.log("Data to load modal", formData);
-    console.log("Categories to load Modal", categories);
-
-    const leftFields = [
-        {
-            label: t("store:product.name"),
-            name: "name",
-            type: "text",
-            placeholder: `${enter} ${t("store:product.name")}...`,
-        },
-        {
-            label: t("store:product.description"),
-            name: "description",
-            type: "text",
-            placeholder: `${enter} ${t("store:product.description")}...`,
-        },
-        {
-            label: t("store:product.category"),
-            name: "categories",
-            type: "multiSelect",
-            options: categories.map((category) => ({
-                value: category.name,
-                label: category.name,
-            })),
-        },
-    ];
-
-    const rightFields = [
-        {
-            label: t("store:product.price"),
-            name: "price",
-            type: "text",
-            placeholder: `${enter} ${t("store:product.price")}...`,
-        },
-        {
-            label: t("store:product.stock"),
-            name: "stock",
-            type: "text",
-            placeholder: `${enter} ${t("store:product.stock")}...`,
-        },
-        {
-            label: t("store:product.image"),
-            name: "image",
-            type: "importFile",
-            placeholder: `${enter} ${t("store:product.image")}...`,
-        },
-    ];
-
+    console.log("flattenedData", flattenedData);
     return (
         <Container>
-            <Form
-                onSubmit={submitForm}
-                initialValues={formData}
-                validate={(values) => validate(values, t)}
-            >
+            <Form onSubmit={submitForm} initialValues={formData}>
                 {({ handleSubmit, form }) => {
                     return (
                         <FormContainer onSubmit={handleSubmit}>
                             <Col md={12} lg={12}>
                                 <Card style={{ marginBottom: "0px" }}>
                                     <CardBody>
-                                        <CustomForm
-                                            leftFields={leftFields}
-                                            rightFields={rightFields}
-                                            min={3}
-                                            max={3}
-                                            isButton={false}
-                                        ></CustomForm>
+                                        <OrderDetail></OrderDetail>
+                                        <ListProduct
+                                            data={flattenedData}
+                                        ></ListProduct>
+                                        <InvoiceDetail></InvoiceDetail>
                                     </CardBody>
 
                                     {/*//* Button  */}
@@ -279,10 +185,10 @@ const ProductModal = ({ toggle, data, action }) => {
     );
 };
 
-ProductModal.propTypes = {
+OrderModal.propTypes = {
     toggle: PropTypes.func,
     action: PropTypes.string,
     data: PropTypes.object,
 };
 
-export default ProductModal;
+export default OrderModal;

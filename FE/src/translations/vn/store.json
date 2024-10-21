@@ -10,12 +10,14 @@
         "description": "Mô tả",
         "category": "Danh mục",
 
-        "price": "Giá (VNĐ)",
+        "price": "Giá",
         "stock": "Tồn kho",
         "image": "Hình ảnh",
 
         "feedback": "Phản hồi khách hàng",
-        "selectImage": "Chọn hình"
+        "selectImage": "Chọn hình",
+        "totalPrice": "Tổng tiền",
+        "quantity": "Số lượng"
     },
 
     "category": {
@@ -48,5 +50,31 @@
         "email": "Email",
         "phone": "Điện thoại",
         "address": "Địa chỉ"
+    },
+
+    "order": {
+        "title": "Đơn hàng",
+        "titles": "Đơn hàng",
+        "id": "Mã đơn hàng",
+
+        "detail": "Chi tiết đơn hàng",
+        "createDate": "Ngày tạo",
+        "updateDate": "Ngày cập nhật",
+        "status": "Trạng thái",
+        "name": "Tên",
+        "phone": "Điện thoại",
+        "address": "Địa chỉ"
+    },
+
+    "invoice": {
+        "title": "Hóa đơn",
+        "titles": "Hóa đơn",
+
+        "id": "Mã hóa đơn",
+        "createDate": "Ngày tạo",
+        "totalAmount": "Tổng số tiền",
+        "discountAmount": "Số tiền giảm giá",
+        "paymentMethod": "Phương thức thanh toán",
+        "totalDue": "Số tiền cần thanh toán"
     }
 }

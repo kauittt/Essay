@@ -1,6 +1,10 @@
 import React, { useMemo } from "react";
+import Badge from "@/shared/components/Badge";
 
 const CreateUserHeader = (t) => {
+    const getStatusBadge = (text) => {
+        return <Badge bg="primary">{text}</Badge>;
+    };
     const columns = useMemo(
         () => [
             {
@@ -17,6 +21,7 @@ const CreateUserHeader = (t) => {
             },
             {
                 Header: t("store:user:authorities"), // "Authorities"
+                Cell: ({ value }) => getStatusBadge(value),
                 accessor: "convertedAuthorities",
             },
             {

@@ -18,6 +18,8 @@ import CategoryPage from "./../Admin/Category/CategoryPage";
 import VoucherPage from "./../Admin/Voucher/VoucherPage";
 import { fetchUsers } from "./../../redux/actions/userAction";
 import UserPage from "../Admin/User/UserPage";
+import OrderPage from "../Admin/Order/OrderPage";
+import { fetchOrders } from "./../../redux/actions/orderAction";
 
 const Pages = () => (
     <Switch>
@@ -26,6 +28,7 @@ const Pages = () => (
         <Route path="/pages/categories" component={CategoryPage} />
         <Route path="/pages/vouchers" component={VoucherPage} />
         <Route path="/pages/users" component={UserPage} />
+        <Route path="/pages/orders" component={OrderPage} />
     </Switch>
 );
 
@@ -59,6 +62,7 @@ const Router = () => {
             dispatch(fetchCategories());
             dispatch(fetchVouchers());
             dispatch(fetchUsers());
+            dispatch(fetchOrders());
         } else {
             console.log("No user found in localStorage");
         }
