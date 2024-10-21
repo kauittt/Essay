@@ -63,8 +63,7 @@ public interface OrderMapper {
     }
 
     //! Gọi ở chổ gọi .toEntity()
-    @AfterMapping
-    default void mapOrderProductsEntity(@MappingTarget Order order, OrderRequestDTO orderRequestDTO
+    default void mapOrderProductsEntity(Order order, OrderRequestDTO orderRequestDTO
             , ProductService productService) {
 
         List<OrderProduct> orderProducts = new ArrayList<>();
@@ -86,7 +85,7 @@ public interface OrderMapper {
             op.setId(opId);
             op.setOrder(order);
             op.setProduct(product);
-            op.setQuantity(requestedQuantities.get(product.getId()));
+            op.setQuantity(requestedQuantities.get(String.valueOf(product.getId())));
             orderProducts.add(op);
         }
         order.setOrderProducts(orderProducts);

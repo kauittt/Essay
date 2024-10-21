@@ -90,20 +90,19 @@ public class OrderValidator {
 
     private void validateQuantitiesDoNotExceedStock(List<String> productIds, List<String> quantities) {
         List<Product> products = productService.findProductsByIds(productIds);
-        Map<String, Integer> productStockMap = new HashMap<>();
+        Map<Long, Integer> productStockMap = new HashMap<>();
         for (Product product : products) {
-            productStockMap.put(String.valueOf(product.getId()), product.getStock());
+            productStockMap.put(product.getId(), product.getStock());
         }
 
         for (int i = 0; i < productIds.size(); i++) {
-            String productId = productIds.get(i);
-            String quantityStr = quantities.get(i);
+            long productId = Long.valueOf(productIds.get(i));
+            int quantityStr = Integer.parseInt(quantities.get(i));
 
             try {
-                int quantity = Integer.parseInt(quantityStr);
                 Integer stock = productStockMap.get(productId);
 
-                if (stock != null && quantity > stock) {
+                if (stock != null && quantityStr > stock) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             "Quantity for product ID " + productId + " exceeds available stock. Available stock: " + stock);
                 }
