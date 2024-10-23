@@ -130,8 +130,8 @@ const DashboardPage = () => {
             previousYear
         );
 
-        console.log("currentMonthUsers", currentMonthUsers);
-        console.log("previousMonthUsers", previousMonthUsers);
+        // console.log("currentMonthUsers", currentMonthUsers);
+        // console.log("previousMonthUsers", previousMonthUsers);
 
         let percentageChange;
         if (previousMonthUsers == 0 && currentMonthUsers == 0)
@@ -200,7 +200,10 @@ const DashboardPage = () => {
             </Row>
 
             <Row>
-                <ProductSalesAreaChart></ProductSalesAreaChart>
+                <ProductSalesAreaChart
+                    orders={orders}
+                    products={products}
+                ></ProductSalesAreaChart>
             </Row>
         </Container>
     );

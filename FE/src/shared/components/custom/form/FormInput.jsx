@@ -80,6 +80,7 @@ const FormInput = ({ data }) => {
                         options={data.options}
                         style={{ height: "32px" }}
                         value={data.value}
+                        onChange={data.onChange}
                     />
                 )}
                 {data.type === "multiSelect" && (
@@ -92,6 +93,7 @@ const FormInput = ({ data }) => {
                         closeOnSelect={false}
                         removeSelected={false}
                         value={data.value}
+                        onChange={data.onChange}
                     />
                 )}
                 {data.type === "datepicker" && (

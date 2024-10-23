@@ -66,8 +66,8 @@ const NewOrders = () => {
     const orders = useSelector(selectOrders);
     let newOrder = [];
 
-    console.log("order", orders);
-    console.log("Products", products);
+    // console.log("order", orders);
+    // console.log("Products", products);
 
     //* Xử lý data
     const productSalesMap = products?.reduce((acc, product) => {
@@ -120,7 +120,7 @@ const NewOrders = () => {
             }));
     }
 
-    console.log("newOrder", newOrder);
+    // console.log("newOrder", newOrder);
 
     return (
         <Panel

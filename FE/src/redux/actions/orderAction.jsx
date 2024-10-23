@@ -7,7 +7,6 @@ export const fetchOrders = (paraToken) => {
     return async (dispatch) => {
         try {
             const response = await OrderService.getOrders(token);
-            console.log("Có response", response.data);
             dispatch(getOrdersSuccess(response.data));
             return response;
         } catch (error) {
