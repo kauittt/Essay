@@ -49,6 +49,14 @@ const SidebarContent = ({
 
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
+                    title="Dashboard"
+                    icon="store"
+                    route="/pages/dashboard"
+                />
+            </SidebarBlock>
+
+            <SidebarBlock collapse={collapse}>
+                <SidebarLink
                     title={t("store:product.titles")}
                     icon="store"
                     route="/pages/products"

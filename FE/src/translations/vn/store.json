@@ -17,6 +17,7 @@
         "feedback": "Phản hồi khách hàng",
         "selectImage": "Chọn hình",
         "totalPrice": "Tổng tiền",
+        "sold": "Đã bán",
         "quantity": "Số lượng"
     },
 
@@ -76,5 +77,15 @@
         "discountAmount": "Số tiền giảm giá",
         "paymentMethod": "Phương thức thanh toán",
         "totalDue": "Số tiền cần thanh toán"
+    },
+
+    "dashboard": {
+        "info": {
+            "monthlyRevenue": "Doanh thu mỗi tháng",
+            "monthlyOrders": "Đơn hàng mỗi tháng",
+            "newCustomers": "Khách hàng mới",
+            "totalProducts": "Tổng sản phẩm"
+        },
+        "topSelling": "Những sản phẩm bán chạy"
     }
 }

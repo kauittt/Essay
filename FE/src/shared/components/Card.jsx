@@ -10,12 +10,14 @@ export const Card = styled(BootstrapCard)`
     height: ${(props) => props.height || "100%"};
     border: none;
     background-color: transparent;
+    border-radius: 5px;
 `;
 
 export const CardBody = styled(Card.Body)`
     height: 100%;
     background-color: ${colorBackground};
-    border-radius: ${borderRadius};
+    /* border-radius: ${borderRadius}; */ //!
+    border-radius: 5px;
     box-shadow: ${shadow};
     padding: 20px;
 `;

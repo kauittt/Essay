@@ -17,6 +17,7 @@
         "feedback": "Customer Feedback",
         "selectImage": "Select an image",
         "totalPrice": "Total Price",
+        "sold": "Sold",
         "quantity": "Quantity"
     },
 
@@ -76,5 +77,15 @@
         "discountAmount": "Discount Amount",
         "paymentMethod": "Payment Method",
         "totalDue": "Total Due"
+    },
+
+    "dashboard": {
+        "info": {
+            "monthlyRevenue": "Monthly Revenue",
+            "monthlyOrders": "Monthly Orders",
+            "newCustomers": "New Customers",
+            "totalProducts": "Total Products"
+        },
+        "topSelling": "Top selling products"
     }
 }

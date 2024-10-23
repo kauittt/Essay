@@ -1,21 +1,21 @@
-import { handleActions } from 'redux-actions';
+import { handleActions } from "redux-actions";
 import {
-  changeDirectionToLTR,
-  changeDirectionToRTL,
-} from '../actions/rtlActions';
+    changeDirectionToLTR,
+    changeDirectionToRTL,
+} from "../actions/rtlActions";
 
 const defaultState = {
-  direction: 'ltr',
+    direction: "ltr",
 };
 
 export default handleActions(
-  {
-    [changeDirectionToLTR]() {
-      return { direction: 'ltr' };
+    {
+        [changeDirectionToLTR]() {
+            return { direction: "ltr" };
+        },
+        [changeDirectionToRTL]() {
+            return { direction: "rtl" };
+        },
     },
-    [changeDirectionToRTL]() {
-      return { direction: 'rtl' };
-    },
-  },
-  defaultState,
+    defaultState
 );

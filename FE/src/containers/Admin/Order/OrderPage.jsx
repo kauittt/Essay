@@ -69,8 +69,8 @@ const OrderPage = () => {
         ...order,
         invoiceId: order.invoice.id,
         invoiceCreateDate: order.invoice.createDate,
-        invoiceTotalAmount: `${order.invoice?.totalAmount.toLocaleString()} VNĐ`,
-        invoiceDiscountAmount: `${order.invoice?.discountAmount.toLocaleString()} VNĐ`,
+        invoiceTotalAmount: `${order?.invoice?.totalAmount?.toLocaleString()} VNĐ`,
+        invoiceDiscountAmount: `${order?.invoice?.discountAmount?.toLocaleString()} VNĐ`,
         invoiceTotalDue: `${(
             order.invoice?.totalAmount - order.invoice?.discountAmount
         ).toLocaleString()} VNĐ`,

@@ -46,7 +46,7 @@ const CreateProductHeader = (t) => {
                 Header: t("store:product.price"), // "Giá"
                 accessor: "price",
                 Cell: ({ value }) =>
-                    value != null ? `${value.toLocaleString()} VND` : "", // Check for null or undefined
+                    value != null ? `${value.toLocaleString()} VNĐ` : "", // Check for null or undefined
             },
             {
                 Header: t("action.action"),

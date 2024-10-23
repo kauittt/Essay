@@ -20,6 +20,7 @@ import { fetchUsers } from "./../../redux/actions/userAction";
 import UserPage from "../Admin/User/UserPage";
 import OrderPage from "../Admin/Order/OrderPage";
 import { fetchOrders } from "./../../redux/actions/orderAction";
+import DashboardPage from "../Admin/Dashboard/DashboardPage";
 
 const Pages = () => (
     <Switch>
@@ -29,6 +30,7 @@ const Pages = () => (
         <Route path="/pages/vouchers" component={VoucherPage} />
         <Route path="/pages/users" component={UserPage} />
         <Route path="/pages/orders" component={OrderPage} />
+        <Route path="/pages/dashboard" component={DashboardPage} />
     </Switch>
 );
 
