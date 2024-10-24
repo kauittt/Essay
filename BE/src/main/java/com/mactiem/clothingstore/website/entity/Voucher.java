@@ -31,6 +31,9 @@ public class Voucher {
     @Column(name = "name")
     private String name;//-
 
+    @Column(name = "en_name")
+    private String enName;//-
+
     @Column(name = "start_date")
     private LocalDate startDate;//-
 

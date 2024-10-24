@@ -46,6 +46,7 @@ public class CategoryService {
         Sort sort = Sort.by("name");
         return categoryRepository.findAll(sort);
     }
+
     public List<Category> findAllByIds(List<String> ids) {
         List<Long> longIds = ids.stream()
                 .map(Long::parseLong)
@@ -74,6 +75,13 @@ public class CategoryService {
 
         Category category = categoryMapper.toEntity(categoryRequestDTO);
 
+        //* en_ fields
+        if (categoryRequestDTO.getEnName() == null || categoryRequestDTO.getEnName().trim().isEmpty()) {
+            category.setEnName(categoryRequestDTO.getName());
+        } else {
+            category.setEnName(categoryRequestDTO.getEnName());
+        }
+
         return categoryMapper.toDTO(categoryRepository.save(category));
     }
 
@@ -81,7 +89,7 @@ public class CategoryService {
     public CategoryResponseDTO updateCategory(String id, CategoryRequestDTO categoryRequestDTO) {
         Category category = findCategoryById(id);
 
-        categoryValidator.validateRequest(categoryRequestDTO);
+        categoryValidator.validateUpdateRequest(categoryRequestDTO.getName(), category.getName());
 
         Field[] fields = categoryRequestDTO.getClass().getDeclaredFields();
         try {
@@ -97,6 +105,10 @@ public class CategoryService {
 
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException("Error updating fields", e);
+        }
+
+        if (categoryRequestDTO.getEnName() == null || categoryRequestDTO.getEnName().trim().isEmpty()) {
+            category.setEnName(categoryRequestDTO.getName());
         }
 
         return categoryMapper.toDTO(categoryRepository.save(category));

@@ -17,6 +17,7 @@ public class VoucherResponseDTO {
     private List<ProductResponseDTO> products;
     private Double discountPercentage;
     private String name;
+    private String enName;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer quantity;

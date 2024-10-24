@@ -84,6 +84,14 @@ public class VoucherService {
             product.getVouchers().add(voucher);
         }
 
+        //* en_ fields
+        if (voucherRequestDTO.getEnName() == null || voucherRequestDTO.getEnName().trim().isEmpty()) {
+            voucher.setEnName(voucherRequestDTO.getName());
+        } else {
+            voucher.setEnName(voucherRequestDTO.getEnName());
+        }
+
+
         return voucherMapper.toDTO(voucherRepository.save(voucher));
     }
 
@@ -108,6 +116,10 @@ public class VoucherService {
             }
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException("Error updating fields", e);
+        }
+
+        if (voucherRequestDTO.getEnName() == null || voucherRequestDTO.getEnName().trim().isEmpty()) {
+            voucher.setEnName(voucherRequestDTO.getName());
         }
 
         if (voucherRequestDTO.getDiscountPercentage() != null) {

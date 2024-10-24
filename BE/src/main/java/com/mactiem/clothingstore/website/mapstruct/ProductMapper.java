@@ -74,6 +74,8 @@ public interface ProductMapper {
 
     //* Entity
     @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "enName", ignore = true)
+    @Mapping(target = "enDescription", ignore = true)
     Product toEntity(ProductRequestDTO productRequestDTO);
 
 //    // Mapping category names from ProductRequestDTO to Category entities

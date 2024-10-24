@@ -9,4 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 public class CategoryRequestDTO {
     private String name;
+    private String enName;
 }

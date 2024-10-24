@@ -18,6 +18,8 @@ public class ProductResponseDTO {
     private List<String> categories;
     private String name;
     private String description;
+    private String enName;
+    private String enDescription;
     private Integer stock;
     private Double price;
     private String image;

@@ -22,6 +22,9 @@ public class Category {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "en_name")
+    private String enName;
+
     @ManyToMany(mappedBy = "categories",
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Product> products;

@@ -85,6 +85,20 @@ public class ProductService {
 
         categories.forEach(category -> category.getProducts().add(product));
 
+        //* en_ fields
+        if (productRequestDTO.getEnName() == null || productRequestDTO.getEnName().trim().isEmpty()) {
+            product.setEnName(productRequestDTO.getName());
+        } else {
+            product.setEnName(productRequestDTO.getEnName());
+        }
+
+        if (productRequestDTO.getEnDescription() == null || productRequestDTO.getEnDescription().trim().isEmpty()) {
+            product.setEnDescription(productRequestDTO.getDescription());
+        } else {
+            product.setEnDescription(productRequestDTO.getEnDescription());
+        }
+
+
         return productMapper.toDTO(productRepository.save(product));
     }
 
@@ -129,9 +143,16 @@ public class ProductService {
             throw new RuntimeException("Error updating fields", e);
         }
 
+        if (productRequestDTO.getEnName() == null || productRequestDTO.getEnName().trim().isEmpty()) {
+            product.setEnName(productRequestDTO.getName());
+        }
+
+        if (productRequestDTO.getEnDescription() == null || productRequestDTO.getEnDescription().trim().isEmpty()) {
+            product.setEnDescription(productRequestDTO.getDescription());
+        }
+
         return productMapper.toDTO(productRepository.save(product));
     }
-
 
 
     @Transactional

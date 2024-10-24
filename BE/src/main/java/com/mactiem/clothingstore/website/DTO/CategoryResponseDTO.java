@@ -12,5 +12,6 @@ import java.util.List;
 public class CategoryResponseDTO {
     private Long id;
     private String name;
+    private String enName;
     private List<ProductResponseDTO> products;
 }

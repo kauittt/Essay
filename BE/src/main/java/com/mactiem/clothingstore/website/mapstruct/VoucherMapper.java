@@ -34,6 +34,7 @@ public interface VoucherMapper {
     //* Entity
     @Mapping(target = "products", ignore = true)
     @Mapping(target = "discountPercentage", ignore = true)
+    @Mapping(target = "enName", ignore = true)
     Voucher toEntity(VoucherRequestDTO voucherRequestDTO);
 
 //    @AfterMapping

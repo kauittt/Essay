@@ -10,6 +10,7 @@ import com.mactiem.clothingstore.website.service.CategoryService;
 import com.mactiem.clothingstore.website.service.UserService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,7 @@ public interface CategoryMapper {
 
 
     //* Entity
+    @Mapping(target = "enName", ignore = true)
     Category toEntity(CategoryRequestDTO categoryRequestDTO);
 
 }
