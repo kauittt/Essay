@@ -98,12 +98,14 @@ const CategoryModal = ({ toggle, data, action }) => {
         return errors;
     };
 
-    const nameField = {
-        label: t("store:category.name"),
-        name: "name",
-        type: "text",
-        placeholder: `${enter} ${t("store:category.name")}...`,
-    };
+    const fields = [
+        {
+            label: t("store:category.name"),
+            name: "name",
+            type: "text",
+            placeholder: `${enter} ${t("store:category.name")}...`,
+        },
+    ];
 
     return (
         <Container>

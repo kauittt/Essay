@@ -3,7 +3,7 @@ import Badge from "@/shared/components/Badge";
 
 const CreateOrderHeader = (t) => {
     const getStatusBadge = (status) => {
-        console.log("Status", status);
+        // console.log("Status", status);
         if (status === "CANCEL") return <Badge bg="danger">{status}</Badge>;
         if (status === "DONE") return <Badge bg="success">{status}</Badge>;
         return <Badge bg="warning">{status}</Badge>;
@@ -14,6 +14,10 @@ const CreateOrderHeader = (t) => {
             {
                 Header: t("store:no"),
                 accessor: "no",
+            },
+            {
+                Header: t("store:order.id"),
+                accessor: "id",
             },
             {
                 Header: t("store:order.name"),

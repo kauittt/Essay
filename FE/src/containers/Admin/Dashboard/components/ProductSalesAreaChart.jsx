@@ -39,6 +39,9 @@ const ProductSalesAreaChart = ({ orders, products }) => {
     );
 
     const handleProductsSelect = (value) => {
+        if (value.length >= 2) {
+            value = [...value, "total"];
+        }
         setSelectedProducts(value);
     };
 
@@ -50,6 +53,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
         setSelectedType(value);
     };
 
+    //* Array years
     const availableYears = useMemo(() => {
         const currentYear = new Date().getFullYear();
         const years = [];
@@ -59,18 +63,25 @@ const ProductSalesAreaChart = ({ orders, products }) => {
         return years;
     }, []);
 
+    //* 3 field input
     const inputs = [
         {
-            label: "Type",
+            label: t("store:dashboard.chart.type.title"),
             name: "type",
             type: "select",
-            options: types?.map((type) => ({
-                value: type,
-                label: type,
-            })),
+            options: [
+                {
+                    value: "Quantity",
+                    label: t("store:dashboard.chart.type.sold"),
+                },
+                {
+                    value: "Money",
+                    label: t("store:dashboard.chart.type.revenue"),
+                },
+            ],
         },
         {
-            label: "Year",
+            label: t("store:dashboard.chart.year"),
             name: "year",
             type: "select",
             options: availableYears?.map((year) => ({
@@ -91,10 +102,11 @@ const ProductSalesAreaChart = ({ orders, products }) => {
 
     // Process sales data only when orders, products, or selectedYear change
     const salesData = useMemo(
-        () => processSalesData(orders, products, selectedYear, selectedType),
-        [orders, products, selectedYear, selectedType]
+        () => processSalesData(orders, products, selectedYear, selectedType, t),
+        [orders, products, selectedYear, selectedType, t]
     );
 
+    //* Form set up
     const submitForm = (values) => {
         console.log("Submit values", values);
     };
@@ -106,7 +118,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
     };
 
     return (
-        <Panel lg={12} title="Product Sales Overview">
+        <Panel lg={12} title={t("store:dashboard.chart.title")}>
             <Form onSubmit={submitForm} initialValues={initValue}>
                 {({ handleSubmit, form }) => {
                     //* Handle việc select No/Name
@@ -197,23 +209,42 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                         width={150}
                         //! Here format
                         tickFormatter={(number) => {
-                            return `${number.toLocaleString()} VNĐ`;
+                            return `${number.toLocaleString()} ${
+                                selectedType == types[1] ? "VNĐ" : ""
+                            }`;
                         }}
                     />
                     <Tooltip
                         {...getTooltipStyles("themeName", "defaultItems")}
                         //! Format
                         formatter={(number) => {
-                            return `${number.toLocaleString()} VNĐ`;
+                            return `${number.toLocaleString()} ${
+                                selectedType == types[1] ? "VNĐ" : ""
+                            }`;
                         }}
                     />
                     <Legend />
                     <CartesianGrid strokeDasharray="3 3" />
                     {selectedProducts?.map((productId, idx) => {
+                        const colorIndex = productId % chartColors.length; // Use modulo to cycle through colors
+                        const fieldName = t("store:dashboard.chart.total");
+
+                        if (productId == "total") {
+                            return (
+                                <Area
+                                    key={idx}
+                                    type="monotone"
+                                    dataKey={fieldName}
+                                    stroke={chartColors[colorIndex]}
+                                    fillOpacity={1}
+                                    fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
+                                />
+                            );
+                        }
                         const product = products.find(
                             (p) => p.id === productId
                         );
-                        const colorIndex = productId % chartColors.length; // Use modulo to cycle through colors
+
                         return (
                             <Area
                                 key={idx}
@@ -255,7 +286,7 @@ const getMonthsForYear = (selectedYear) => {
     const now = new Date();
     const currentYear = now.getFullYear();
 
-    // If the selected year is the current year
+    //* Nếu là .now() thì lấy 11 tháng trước
     if (selectedYear === currentYear) {
         const months = [];
         for (let i = 11; i >= 0; i--) {
@@ -265,7 +296,7 @@ const getMonthsForYear = (selectedYear) => {
         return months;
     }
 
-    // If the selected year is earlier, return all 12 months (Jan-Dec)
+    //* Else lấy 12 tháng trong năm
     const months = [];
     for (let i = 0; i < 12; i++) {
         const d = new Date(selectedYear, i, 1);
@@ -275,7 +306,7 @@ const getMonthsForYear = (selectedYear) => {
 };
 
 // Function to process sales data per product for the selected year and months
-const processSalesData = (orders, products, selectedYear, selectedType) => {
+const processSalesData = (orders, products, selectedYear, selectedType, t) => {
     const salesData = {}; // { productId: { 'month-year': salesCount or salesMoney } }
 
     orders?.forEach((order) => {
@@ -291,7 +322,7 @@ const processSalesData = (orders, products, selectedYear, selectedType) => {
                 salesData[productId][monthYear] = 0; // Initialize month entry
             }
 
-            // Check if the type selected is 'Money' and calculate sales accordingly
+            //* Check xem cần render count/money
             if (selectedType === "Money") {
                 salesData[productId][monthYear] +=
                     orderProduct.quantity * product.price;
@@ -305,11 +336,18 @@ const processSalesData = (orders, products, selectedYear, selectedType) => {
 
     // Convert sales data to format: [{name: 'month-year', product1: value, product2: value, ...}]
     const chartData = monthsForYear.map((monthYear) => {
+        let totalMoney = 0;
         const entry = { name: monthYear }; // Create an entry for each month
         products?.forEach((product) => {
             const productSales = salesData[product.id]?.[monthYear] || 0; // Set 0 if no sales
+            totalMoney += productSales;
             entry[product.name] = productSales;
         });
+
+        if (selectedType == "Money") {
+            const fieldName = t("store:dashboard.chart.total");
+            entry[fieldName] = totalMoney;
+        }
         return entry;
     });
 

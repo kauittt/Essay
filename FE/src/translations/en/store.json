@@ -81,11 +81,21 @@
 
     "dashboard": {
         "info": {
-            "monthlyRevenue": "Monthly Revenue",
+            "monthlyRevenue": "Monthly Revenue (VNĐ)",
             "monthlyOrders": "Monthly Orders",
             "newCustomers": "New Customers",
             "totalProducts": "Total Products"
         },
-        "topSelling": "Top selling products"
+        "topSelling": "Top selling products",
+        "chart": {
+            "title": "Product Sales Overview",
+            "type": {
+                "title": "Type",
+                "revenue": "Revenue",
+                "sold": "Units Sold"
+            },
+            "year": "Year",
+            "total": "Total Revenue"
+        }
     }
 }

@@ -81,11 +81,21 @@
 
     "dashboard": {
         "info": {
-            "monthlyRevenue": "Doanh thu mỗi tháng",
+            "monthlyRevenue": "Doanh thu mỗi tháng (VNĐ)",
             "monthlyOrders": "Đơn hàng mỗi tháng",
             "newCustomers": "Khách hàng mới",
             "totalProducts": "Tổng sản phẩm"
         },
-        "topSelling": "Những sản phẩm bán chạy"
+        "topSelling": "Sản phẩm bán chạy",
+        "chart": {
+            "title": "Tổng quan doanh số sản phẩm",
+            "type": {
+                "title": "Loại",
+                "revenue": "Doanh thu",
+                "sold": "Số lượng bán ra"
+            },
+            "year": "Năm",
+            "total": "Tổng doanh thu"
+        }
     }
 }

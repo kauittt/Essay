@@ -110,7 +110,7 @@ const TopSellingProducts = ({ dir }) => {
             title={t("store:dashboard.topSelling")}
         >
             <div dir={dir}>
-                <DashboardCommercePieChartContainer height={360}>
+                <DashboardCommercePieChartContainer height={400}>
                     <DashboardPieChart>
                         <Tooltip
                             position={coordinates}
@@ -156,22 +156,22 @@ const DashboardCommercePieChartContainer = styled(DashboardPieChartContainer)`
 
     .recharts-legend-wrapper {
         @media screen and (min-width: 370px) {
-            bottom: 0 !important;
+            bottom: 10px !important; // Đã chỉnh từ 0 lên 10px
         }
         @media screen and (min-width: 700px) {
-            bottom: 70px !important;
+            bottom: 80px !important; // Đã chỉnh từ 70 lên 80px
         }
         @media screen and (min-width: 1020px) {
-            bottom: -30px !important;
+            bottom: -20px !important; // Đã chỉnh từ -30 lên -20px
         }
         @media screen and (min-width: 1200px) {
-            bottom: -55px !important;
+            bottom: -45px !important; // Đã chỉnh từ -55 lên -45px
         }
         @media screen and (min-width: 1400px) {
-            bottom: -25px !important;
+            bottom: -15px !important; // Đã chỉnh từ -25 lên -15px
         }
         @media screen and (min-width: 1800px) {
-            bottom: -30px !important;
+            bottom: -20px !important; // Đã chỉnh từ -30 lên -20px
         }
     }
 `;
