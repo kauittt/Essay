@@ -18,6 +18,7 @@ import { addProduct, updateProduct } from "@/redux/actions/productAction";
 import { createGlobalStyle } from "styled-components";
 import { fetchVouchers } from "@/redux/actions/voucherAction";
 import { fetchCategories } from "@/redux/actions/categoryAction";
+import { fetchOrders } from "../../../../redux/actions/orderAction";
 
 const bigDecimalFields = ["price"];
 const integerFields = ["stock"];
@@ -45,7 +46,8 @@ const validateInteger = (value, t) => {
 };
 
 const ProductModal = ({ toggle, data, action }) => {
-    const { t } = useTranslation(["common", "errors", "store"]);
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const enter = t("action.enter");
     const dispatch = useDispatch();
 
@@ -95,6 +97,8 @@ const ProductModal = ({ toggle, data, action }) => {
             if (response) {
                 dispatch(fetchVouchers());
                 dispatch(fetchCategories());
+                dispatch(fetchOrders());
+
                 toast.info(t("common:action.success", { type: actionText }), {
                     position: "top-right",
                     autoClose: 5000,
@@ -127,6 +131,8 @@ const ProductModal = ({ toggle, data, action }) => {
         const requiredFields = [
             "name",
             "description",
+            "enName",
+            "enDescription",
 
             "price",
             "stock",
@@ -179,10 +185,22 @@ const ProductModal = ({ toggle, data, action }) => {
             placeholder: `${enter} ${t("store:product.name")}...`,
         },
         {
+            label: t("store:product.enName"),
+            name: "enName",
+            type: "text",
+            placeholder: `${enter} ${t("store:product.enName")}...`,
+        },
+        {
             label: t("store:product.description"),
             name: "description",
             type: "text",
             placeholder: `${enter} ${t("store:product.description")}...`,
+        },
+        {
+            label: t("store:product.enDescription"),
+            name: "enDescription",
+            type: "text",
+            placeholder: `${enter} ${t("store:product.enDescription")}...`,
         },
         {
             label: t("store:product.category"),
@@ -190,7 +208,7 @@ const ProductModal = ({ toggle, data, action }) => {
             type: "multiSelect",
             options: categories.map((category) => ({
                 value: category.name,
-                label: category.name,
+                label: language == "en" ? category.enName : category.name,
             })),
         },
     ];
@@ -232,8 +250,8 @@ const ProductModal = ({ toggle, data, action }) => {
                                         <CustomForm
                                             leftFields={leftFields}
                                             rightFields={rightFields}
-                                            min={3}
-                                            max={3}
+                                            min={5}
+                                            max={5}
                                             isButton={false}
                                         ></CustomForm>
                                     </CardBody>

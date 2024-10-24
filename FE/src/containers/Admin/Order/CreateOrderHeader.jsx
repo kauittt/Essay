@@ -3,10 +3,12 @@ import Badge from "@/shared/components/Badge";
 
 const CreateOrderHeader = (t) => {
     const getStatusBadge = (status) => {
+        const cancel = t("store:order.status.cancel");
+        const done = t("store:order.status.done");
         // console.log("Status", status);
-        if (status === "CANCEL") return <Badge bg="danger">{status}</Badge>;
-        if (status === "DONE") return <Badge bg="success">{status}</Badge>;
-        return <Badge bg="warning">{status}</Badge>;
+        if (status === cancel) return <Badge bg="danger">{status}</Badge>;
+        if (status === done) return <Badge bg="success">{status}</Badge>;
+        return <Badge bg="">{status}</Badge>;
     };
 
     const columns = useMemo(
@@ -44,8 +46,8 @@ const CreateOrderHeader = (t) => {
                 accessor: "invoiceTotalDue",
             },
             {
-                Header: t("store:order.status"),
-                accessor: "status",
+                Header: t("store:order.status.title"),
+                accessor: "tableStatus",
                 Cell: ({ value }) => getStatusBadge(value),
                 disableGlobalFilter: true,
             },

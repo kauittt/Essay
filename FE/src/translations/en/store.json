@@ -6,8 +6,14 @@
         "titles": "Products",
         "id": "ID",
 
-        "name": "Name",
-        "description": "Description",
+        "tableName": "Name",
+        "name": "Name (VIE)",
+        "enName": "Name (ENG)",
+
+        "tableDescription": "Description",
+        "description": "Description (VIE)",
+        "enDescription": "Description (ENG)",
+
         "category": "Category",
 
         "price": "Price",
@@ -24,13 +30,17 @@
     "category": {
         "title": "Category",
         "titles": "Categories",
-        "name": "Name"
+        "tableName": "Name",
+        "name": "Name (VIE)",
+        "enName": "Name (ENG)"
     },
 
     "voucher": {
         "title": "Promotion",
         "titles": "Promotions",
-        "name": "Name",
+        "tableName": "Name",
+        "name": "Name (VIE)",
+        "enName": "Name (ENG)",
         "discountPercentage": "Discount (%)",
         "startDate": "Start Date",
         "endDate": "End Date",
@@ -50,7 +60,9 @@
         "authorities": "Authorities",
         "email": "Email",
         "phone": "Phone",
-        "address": "Address"
+        "address": "Address",
+        "staff": "STAFF",
+        "admin": "ADMIN"
     },
 
     "order": {
@@ -64,7 +76,14 @@
         "address": "Address",
         "createDate": "Create Date",
         "updateDate": "Update Date",
-        "status": "Status"
+        "status": {
+            "title": "Status",
+            "created": "Created",
+            "confirmed": "Confirmed",
+            "delivering": "Delivering",
+            "done": "Done",
+            "cancel": "Cancel"
+        }
     },
 
     "invoice": {
@@ -80,9 +99,10 @@
     },
 
     "dashboard": {
+        "title": "Dashboard",
         "info": {
-            "monthlyRevenue": "Monthly Revenue (VNĐ)",
-            "monthlyOrders": "Monthly Orders",
+            "monthlyRevenue": "Revenue / Month (VNĐ)",
+            "monthlyOrders": "Orders / Month",
             "newCustomers": "New Customers",
             "totalProducts": "Total Products"
         },
@@ -90,12 +110,13 @@
         "chart": {
             "title": "Product Sales Overview",
             "type": {
-                "title": "Type",
+                "title": "Content Type",
                 "revenue": "Revenue",
                 "sold": "Units Sold"
             },
             "year": "Year",
-            "total": "Total Revenue"
+            "totalRevenue": "Total Revenue",
+            "totalQuantity": "Total Quantity"
         }
     }
 }

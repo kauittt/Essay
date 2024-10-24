@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 import { addCategory, updateCategory } from "@/redux/actions/categoryAction";
 import FormInput from "@/shared/components/custom/form/FormInput";
 import { fetchProducts } from "@/redux/actions/productAction";
+import { fetchOrders } from "../../../../redux/actions/orderAction";
+import { fetchVouchers } from "./../../../../redux/actions/voucherAction";
 
 const CategoryModal = ({ toggle, data, action }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
@@ -63,6 +65,8 @@ const CategoryModal = ({ toggle, data, action }) => {
 
             if (response) {
                 dispatch(fetchProducts());
+                dispatch(fetchOrders());
+                dispatch(fetchVouchers());
                 toast.info(t("common:action.success", { type: actionText }), {
                     position: "top-right",
                     autoClose: 5000,
@@ -92,7 +96,11 @@ const CategoryModal = ({ toggle, data, action }) => {
         const errors = {};
 
         if (!values.name) {
-            errors.name = t("errors:validation.empty");
+            errors.name = t("errors:validation.required");
+        }
+
+        if (!values.enName) {
+            errors.enName = t("errors:validation.required");
         }
 
         return errors;
@@ -104,6 +112,12 @@ const CategoryModal = ({ toggle, data, action }) => {
             name: "name",
             type: "text",
             placeholder: `${enter} ${t("store:category.name")}...`,
+        },
+        {
+            label: t("store:category.enName"),
+            name: "enName",
+            type: "text",
+            placeholder: `${enter} ${t("store:category.enName")}...`,
         },
     ];
 
@@ -119,7 +133,14 @@ const CategoryModal = ({ toggle, data, action }) => {
                         <Col md={12} lg={12}>
                             <Card style={{ marginBottom: "0px" }}>
                                 <CardBody>
-                                    <FormInput data={nameField}></FormInput>
+                                    {fields.map((field, index) => {
+                                        return (
+                                            <FormInput
+                                                key={index}
+                                                data={field}
+                                            ></FormInput>
+                                        );
+                                    })}
                                 </CardBody>
 
                                 {/*//* Button  */}

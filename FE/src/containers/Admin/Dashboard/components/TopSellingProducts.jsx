@@ -49,7 +49,8 @@ renderLegend.propTypes = {
 const colors = ["#70bbfd", "#4ce1b6", "#f6da6e", "#ff4861", "#C9CBCF"];
 
 const TopSellingProducts = ({ dir }) => {
-    const { t } = useTranslation("common");
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const [coordinates, setCoordinate] = useState({ x: 0, y: 0 });
 
     const themeName = useSelector((state) => state.theme.className);
@@ -63,12 +64,14 @@ const TopSellingProducts = ({ dir }) => {
         order.orderProducts.forEach((orderProduct) => {
             const product = orderProduct.product;
             const quantity = orderProduct.quantity;
+            const productName =
+                language === "vn" ? product.name : product.enName;
 
             // Initialize or update the product's sold quantity
             if (!productQuantities[product.id]) {
                 productQuantities[product.id] = {
                     id: product.id,
-                    name: product.name,
+                    name: productName,
                     value: 0, // Starting with 0 sales
                 };
             }

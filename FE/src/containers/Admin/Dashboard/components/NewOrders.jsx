@@ -60,8 +60,8 @@ NewOrderAmount.propTypes = {
 };
 
 const NewOrders = () => {
-    const { t } = useTranslation(["common", "errors", "store"]);
-
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const products = useSelector(selectProducts);
     const orders = useSelector(selectOrders);
     let newOrder = [];
@@ -73,7 +73,7 @@ const NewOrders = () => {
     const productSalesMap = products?.reduce((acc, product) => {
         acc[product.id] = {
             id: product.id,
-            name: product.name,
+            name: language === "en" ? product.enName : product.name,
             stock: product.stock,
             sold: 0,
             total: 0,
@@ -141,26 +141,30 @@ const NewOrders = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {newOrder.map((order, index) => (
-                        <tr key={order.id}>
-                            <td>
-                                <DashboardOrdersTitle>
-                                    <DashboardOrdersImageWrap>
-                                        <DashboardOrdersImage img={order.img} />
-                                    </DashboardOrdersImageWrap>
-                                    {order.title}
-                                </DashboardOrdersTitle>
-                            </td>
-                            <td>
-                                <NewOrderAmount quantity={order.quantity} />
-                            </td>
-                            <td>{order.sold}</td>
-                            <DashboardOrdersTotalCell dir="ltr">
-                                {order.total}
-                            </DashboardOrdersTotalCell>
-                            <td></td>
-                        </tr>
-                    ))}
+                    {newOrder.map((order, index) => {
+                        return (
+                            <tr key={order.id}>
+                                <td>
+                                    <DashboardOrdersTitle>
+                                        <DashboardOrdersImageWrap>
+                                            <DashboardOrdersImage
+                                                img={order.img}
+                                            />
+                                        </DashboardOrdersImageWrap>
+                                        {order.title}
+                                    </DashboardOrdersTitle>
+                                </td>
+                                <td>
+                                    <NewOrderAmount quantity={order.quantity} />
+                                </td>
+                                <td>{order.sold}</td>
+                                <DashboardOrdersTotalCell dir="ltr">
+                                    {order.total}
+                                </DashboardOrdersTotalCell>
+                                <td></td>
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </DashboardOrdersTable>
         </Panel>

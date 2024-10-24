@@ -1,13 +1,19 @@
 {
-    "no": "Số thứ tự",
+    "no": "STT",
 
     "product": {
         "title": "Sản phẩm",
         "titles": "Sản phẩm",
         "id": "Mã",
 
-        "name": "Tên",
-        "description": "Mô tả",
+        "tableName": "Tên",
+        "name": "Tên (VIE)",
+        "enName": "Tên (ENG)",
+
+        "tableDescription": "Mô tả",
+        "description": "Mô tả (VIE)",
+        "enDescription": "Mô tả (ENG)",
+
         "category": "Danh mục",
 
         "price": "Giá",
@@ -24,13 +30,17 @@
     "category": {
         "title": "Danh mục",
         "titles": "Danh mục",
-        "name": "Tên"
+        "tableName": "Tên",
+        "name": "Tên (VIE)",
+        "enName": "Tên (ENG)"
     },
 
     "voucher": {
         "title": "Khuyến mãi",
         "titles": "Khuyến mãi",
-        "name": "Tên",
+        "tableName": "Tên",
+        "name": "Tên (VIE)",
+        "enName": "Tên (ENG)",
         "discountPercentage": "Khuyến mãi (%)",
         "startDate": "Ngày bắt đầu",
         "endDate": "Ngày kết thúc",
@@ -50,7 +60,9 @@
         "authorities": "Quyền hạn",
         "email": "Email",
         "phone": "Điện thoại",
-        "address": "Địa chỉ"
+        "address": "Địa chỉ",
+        "staff": "Nhân viên",
+        "admin": "Quản lý"
     },
 
     "order": {
@@ -61,7 +73,14 @@
         "detail": "Chi tiết đơn hàng",
         "createDate": "Ngày tạo",
         "updateDate": "Ngày cập nhật",
-        "status": "Trạng thái",
+        "status": {
+            "title": "Trạng thái",
+            "created": "Tạo đơn hàng",
+            "confirmed": "Xác nhận",
+            "delivering": "Đang giao",
+            "done": "Hoàn thành",
+            "cancel": "Hủy"
+        },
         "name": "Tên",
         "phone": "Điện thoại",
         "address": "Địa chỉ"
@@ -76,13 +95,14 @@
         "totalAmount": "Tổng số tiền",
         "discountAmount": "Số tiền giảm giá",
         "paymentMethod": "Phương thức thanh toán",
-        "totalDue": "Số tiền cần thanh toán"
+        "totalDue": "Thanh toán"
     },
 
     "dashboard": {
+        "title": "Thống kê",
         "info": {
-            "monthlyRevenue": "Doanh thu mỗi tháng (VNĐ)",
-            "monthlyOrders": "Đơn hàng mỗi tháng",
+            "monthlyRevenue": "Doanh thu / tháng (VNĐ)",
+            "monthlyOrders": "Đơn hàng / tháng",
             "newCustomers": "Khách hàng mới",
             "totalProducts": "Tổng sản phẩm"
         },
@@ -90,12 +110,13 @@
         "chart": {
             "title": "Tổng quan doanh số sản phẩm",
             "type": {
-                "title": "Loại",
+                "title": "Nội dung thống kê",
                 "revenue": "Doanh thu",
                 "sold": "Số lượng bán ra"
             },
             "year": "Năm",
-            "total": "Tổng doanh thu"
+            "totalRevenue": "Tổng doanh thu",
+            "totalQuantity": "Tổng sản phẩm"
         }
     }
 }

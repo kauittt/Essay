@@ -24,9 +24,12 @@ import CreateCategoryHeader from "./CreateCategoryHeader";
 import { selectCategories } from "@/redux/reducers/categorySlice";
 import { removeCategory } from "@/redux/actions/categoryAction";
 import { fetchProducts } from "@/redux/actions/productAction";
+import { fetchOrders } from "./../../../redux/actions/orderAction";
+import { fetchVouchers } from "../../../redux/actions/voucherAction";
 
 const CategoryPage = () => {
-    const { t } = useTranslation(["common", "errors", "store"]);
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const reactTableData = CreateCategoryHeader(t);
 
     const [withPagination, setWithPaginationTable] = useState(true);
@@ -65,6 +68,7 @@ const CategoryPage = () => {
     categories = categories?.map((category, index) => ({
         ...category,
         no: index + 1,
+        tableName: language == "en" ? category.enName : category.name,
     }));
     console.log("Categories", categories);
 
@@ -111,6 +115,8 @@ const CategoryPage = () => {
             if (response) {
                 //* Update Product Page
                 dispatch(fetchProducts());
+                dispatch(fetchOrders());
+                dispatch(fetchVouchers());
                 toast.info(t("common:action.success", { type: action }), {
                     position: "top-right",
                     autoClose: 5000,

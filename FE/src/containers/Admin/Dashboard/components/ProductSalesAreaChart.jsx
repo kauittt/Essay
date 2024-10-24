@@ -28,15 +28,21 @@ import { Card, CardBody } from "@/shared/components/Card";
 import PropTypes from "prop-types";
 
 const ProductSalesAreaChart = ({ orders, products }) => {
-    const { t } = useTranslation(["common", "errors", "store"]);
-
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const types = ["Quantity", "Money"];
 
-    const [selectedType, setSelectedType] = useState(types[0]);
+    const [selectedType, setSelectedType] = useState(types[1]);
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [selectedYear, setSelectedYear] = useState(
         new Date().getFullYear().toString()
     );
+
+    useEffect(() => {
+        setSelectedProducts(
+            products?.map((product) => product.id).concat("total")
+        );
+    }, [products]);
 
     const handleProductsSelect = (value) => {
         if (value.length >= 2) {
@@ -71,12 +77,12 @@ const ProductSalesAreaChart = ({ orders, products }) => {
             type: "select",
             options: [
                 {
-                    value: "Quantity",
-                    label: t("store:dashboard.chart.type.sold"),
-                },
-                {
                     value: "Money",
                     label: t("store:dashboard.chart.type.revenue"),
+                },
+                {
+                    value: "Quantity",
+                    label: t("store:dashboard.chart.type.sold"),
                 },
             ],
         },
@@ -93,17 +99,28 @@ const ProductSalesAreaChart = ({ orders, products }) => {
             label: t("store:product.titles"),
             name: "products",
             type: "multiSelect",
-            options: products?.map((product) => ({
-                value: product.id,
-                label: product.name,
-            })),
+            options: products?.map((product) => {
+                const name = language == "en" ? product.enName : product.name;
+                return {
+                    value: product.id,
+                    label: name,
+                };
+            }),
         },
     ];
 
     // Process sales data only when orders, products, or selectedYear change
     const salesData = useMemo(
-        () => processSalesData(orders, products, selectedYear, selectedType, t),
-        [orders, products, selectedYear, selectedType, t]
+        () =>
+            processSalesData(
+                orders,
+                products,
+                selectedYear,
+                selectedType,
+                t,
+                language
+            ),
+        [orders, products, selectedYear, selectedType, t, language]
     );
 
     //* Form set up
@@ -227,7 +244,10 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                     <CartesianGrid strokeDasharray="3 3" />
                     {selectedProducts?.map((productId, idx) => {
                         const colorIndex = productId % chartColors.length; // Use modulo to cycle through colors
-                        const fieldName = t("store:dashboard.chart.total");
+                        const fieldName =
+                            selectedType == types[0]
+                                ? t("store:dashboard.chart.totalQuantity")
+                                : t("store:dashboard.chart.totalRevenue");
 
                         if (productId == "total") {
                             return (
@@ -245,11 +265,14 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                             (p) => p.id === productId
                         );
 
+                        const productName =
+                            language === "en" ? product.enName : product.name;
+
                         return (
                             <Area
                                 key={idx}
                                 type="monotone"
-                                dataKey={product.name}
+                                dataKey={productName}
                                 stroke={chartColors[colorIndex]}
                                 fillOpacity={1}
                                 fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
@@ -306,7 +329,15 @@ const getMonthsForYear = (selectedYear) => {
 };
 
 // Function to process sales data per product for the selected year and months
-const processSalesData = (orders, products, selectedYear, selectedType, t) => {
+const processSalesData = (
+    orders,
+    products,
+    selectedYear,
+    selectedType,
+    t,
+    language
+) => {
+    const types = ["Quantity", "Money"];
     const salesData = {}; // { productId: { 'month-year': salesCount or salesMoney } }
 
     orders?.forEach((order) => {
@@ -340,14 +371,19 @@ const processSalesData = (orders, products, selectedYear, selectedType, t) => {
         const entry = { name: monthYear }; // Create an entry for each month
         products?.forEach((product) => {
             const productSales = salesData[product.id]?.[monthYear] || 0; // Set 0 if no sales
+            // totalMoney += productSales;
+            // entry[product.name] = productSales;
+            const productName =
+                language === "en" ? product.enName : product.name;
             totalMoney += productSales;
-            entry[product.name] = productSales;
+            entry[productName] = productSales;
         });
 
-        if (selectedType == "Money") {
-            const fieldName = t("store:dashboard.chart.total");
-            entry[fieldName] = totalMoney;
-        }
+        const fieldName =
+            selectedType == types[0]
+                ? t("store:dashboard.chart.totalQuantity")
+                : t("store:dashboard.chart.totalRevenue");
+        entry[fieldName] = totalMoney;
         return entry;
     });
 

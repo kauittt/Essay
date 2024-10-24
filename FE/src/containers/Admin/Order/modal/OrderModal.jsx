@@ -20,6 +20,8 @@ import OrderDetail from "./OrderDetail";
 import InvoiceDetail from "./InvoiceDetail";
 import ListProduct from "./ListProduct";
 import { updateOrder } from "../../../../redux/actions/orderAction";
+import { fetchProducts } from "./../../../../redux/actions/productAction";
+import { fetchCategories } from "./../../../../redux/actions/categoryAction";
 
 const bigDecimalFields = ["price"];
 const integerFields = ["stock"];
@@ -93,6 +95,8 @@ const OrderModal = ({ toggle, data, action }) => {
 
             if (response) {
                 dispatch(fetchVouchers());
+                dispatch(fetchProducts());
+                dispatch(fetchCategories());
                 toast.info(t("common:action.success", { type: actionText }), {
                     position: "top-right",
                     autoClose: 5000,

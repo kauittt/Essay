@@ -180,8 +180,8 @@ const UserModal = ({ toggle, data, action }) => {
             name: "authorities",
             type: "select",
             options: [
-                { value: "ROLE_STAFF", label: "Staff" },
-                { value: "ROLE_ADMIN", label: "Admin" },
+                { value: "ROLE_STAFF", label: t("store:user.staff") },
+                { value: "ROLE_ADMIN", label: t("store:user.admin") },
             ],
         },
     ];

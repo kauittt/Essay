@@ -50,15 +50,21 @@ const OrderDetail = () => {
             disabled: true,
         },
         {
-            label: t("store:order.status"),
+            label: t("store:order.status.title"),
             name: "status",
             type: "select",
             options: [
-                { value: "CREATED", label: "Tạo đơn hàng" },
-                { value: "CONFIRMED", label: "Xác nhận" },
-                { value: "DELIVERING", label: "Đang giao" },
-                { value: "DONE", label: "Hoàn thành" },
-                { value: "CANCEL", label: "Hủy" },
+                { value: "CREATED", label: t("store:order.status.created") },
+                {
+                    value: "CONFIRMED",
+                    label: t("store:order.status.confirmed"),
+                },
+                {
+                    value: "DELIVERING",
+                    label: t("store:order.status.delivering"),
+                },
+                { value: "DONE", label: t("store:order.status.done") },
+                { value: "CANCEL", label: t("store:order.status.cancel") },
             ],
         },
     ];

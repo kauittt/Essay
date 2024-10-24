@@ -8,8 +8,8 @@ const CreateVoucherHeader = (t) => {
                 accessor: "no",
             },
             {
-                Header: t("store:voucher:name"),
-                accessor: "name",
+                Header: t("store:voucher:tableName"),
+                accessor: "tableName",
             },
             {
                 Header: t("store:voucher:discountPercentage"),

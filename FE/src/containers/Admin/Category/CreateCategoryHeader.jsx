@@ -8,8 +8,8 @@ const CreateCategoryHeader = (t) => {
                 accessor: "no",
             },
             {
-                Header: t("store:category.name"),
-                accessor: "name",
+                Header: t("store:category.tableName"),
+                accessor: "tableName",
             },
             {
                 Header: t("action.action"),

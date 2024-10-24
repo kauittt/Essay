@@ -65,7 +65,8 @@ const validateInteger = (value, t) => {
 };
 
 const VoucherModal = ({ toggle, data, action }) => {
-    const { t } = useTranslation(["common", "errors", "store"]);
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const dispatch = useDispatch();
     const [formData, setFormData] = useState(data);
 
@@ -188,6 +189,7 @@ const VoucherModal = ({ toggle, data, action }) => {
         //* Required Fields
         const requiredFields = [
             "name",
+            "enName",
             "discountPercentage",
             "quantity",
             "startDate",
@@ -313,6 +315,12 @@ const VoucherModal = ({ toggle, data, action }) => {
             placeholder: `${enter} ${t("store:voucher.name")}...`,
         },
         {
+            label: t("store:voucher.enName"),
+            name: "enName",
+            type: "text",
+            placeholder: `${enter} ${t("store:voucher.enName")}...`,
+        },
+        {
             label: t("store:voucher.discountPercentage"),
             name: "discountPercentage",
             type: "text",
@@ -327,14 +335,22 @@ const VoucherModal = ({ toggle, data, action }) => {
                     value: "all",
                     label: `>> ${t("store:voucher.all")} <<`,
                 },
-                ...categories.map((category) => ({
-                    value: category.name,
-                    label: `${categoryTitle}: ${category.name}`,
-                })),
-                ...products.map((product) => ({
-                    value: product.id,
-                    label: product.name,
-                })),
+                ...categories.map((category) => {
+                    const modalName =
+                        language == "en" ? category.enName : category.name;
+                    return {
+                        value: category.name,
+                        label: `${categoryTitle}: ${modalName}`,
+                    };
+                }),
+                ...products.map((product) => {
+                    const productName =
+                        language == "en" ? product.enName : product.name;
+                    return {
+                        value: product.id,
+                        label: productName,
+                    };
+                }),
             ],
         },
     ];
@@ -374,8 +390,8 @@ const VoucherModal = ({ toggle, data, action }) => {
                                     <CustomForm
                                         leftFields={leftFields}
                                         rightFields={rightFields}
-                                        min={3}
-                                        max={3}
+                                        min={5}
+                                        max={5}
                                         isButton={false}
                                     />
                                 </CardBody>

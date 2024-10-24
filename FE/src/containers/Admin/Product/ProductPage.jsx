@@ -25,10 +25,13 @@ import { removeProduct } from "@/redux/actions/productAction";
 import CreateProductHeader from "./CreateProductHeader";
 import { fetchVouchers } from "@/redux/actions/voucherAction";
 import { fetchCategories } from "@/redux/actions/categoryAction";
+import { selectCategories } from "@/redux/reducers/categorySlice";
+import { fetchOrders } from "./../../../redux/actions/orderAction";
 
 //! Check stock
 const ProductPage = () => {
-    const { t } = useTranslation(["common", "errors", "store"]);
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const reactTableData = CreateProductHeader(t);
 
     const [withPagination, setWithPaginationTable] = useState(true);
@@ -64,13 +67,33 @@ const ProductPage = () => {
     };
 
     let products = useSelector(selectProducts);
+    let categories = useSelector(selectCategories);
     console.log("Products before", products);
+    console.log("Category", categories);
 
-    products = products?.map((product) => ({
-        ...product,
-        // categories: product.categories.map((category) => category.name), //* Hiển thị modal
-        convertedCategories: product.categories //* Hiển thị table
-            .join(", "),
+    const tableCategories = (products = products?.map((product, index) => {
+        const joinCategories =
+            categories?.filter((category) => {
+                return product.categories.some((productCategory) => {
+                    return productCategory == category.name;
+                });
+            }) || [];
+
+        const enCategories = joinCategories
+            .map((category) => category.enName)
+            .join(" | ");
+        const vnCategories = joinCategories
+            .map((category) => category.name)
+            .join(" | ");
+
+        return {
+            ...product,
+            no: index + 1,
+            convertedCategories: language == "en" ? enCategories : vnCategories, //* Categories ở table
+            tableDescription:
+                language == "en" ? product.enDescription : product.description,
+            tableName: language == "en" ? product.enName : product.name,
+        };
     }));
     console.log("Products", products);
 
@@ -78,7 +101,6 @@ const ProductPage = () => {
     const data = useMemo(() => {
         return products?.map((item, index) => ({
             ...item,
-            no: index + 1,
             action: (
                 <Col
                     style={{
@@ -118,6 +140,8 @@ const ProductPage = () => {
             if (response) {
                 dispatch(fetchVouchers());
                 dispatch(fetchCategories());
+                dispatch(fetchOrders());
+
                 toast.info(t("common:action.success", { type: action }), {
                     position: "top-right",
                     autoClose: 5000,

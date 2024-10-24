@@ -26,6 +26,10 @@ import { removeUser } from "../../../redux/actions/userAction";
 
 const UserPage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
+    const roleLabels = {
+        ADMIN: t("store:user.admin"),
+        STAFF: t("store:user.staff"),
+    };
     const reactTableData = CreateUserHeader(t);
 
     const [withPagination, setWithPaginationTable] = useState(true);
@@ -59,18 +63,24 @@ const UserPage = () => {
     };
 
     let users = useSelector(selectTotalUsers);
+    console.log("user before", users);
+
+    users = users?.filter(
+        (user) =>
+            !user.authorities.some(
+                (authority) => authority.authority == "ROLE_USER"
+            )
+    );
+
     users = users?.map((user) => ({
         ...user,
         authorities: user.authorities.map((auth) => auth.authority), // For display in Modal
         convertedAuthorities: user.authorities
             .map((auth) => auth.authority)
             .map((role) => role.replace("ROLE_", "")) // For display in the table
+            .map((role) => roleLabels[role])
             .join(", "),
     }));
-
-    users = users?.filter(
-        (user) => !user.convertedAuthorities.includes("USER")
-    );
 
     console.log("users", users);
 

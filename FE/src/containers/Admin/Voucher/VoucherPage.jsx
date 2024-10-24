@@ -24,7 +24,8 @@ import { selectCategories } from "@/redux/reducers/categorySlice";
 
 //!!!!!! Check endDate/ Quantity
 const VoucherPage = () => {
-    const { t } = useTranslation(["common", "errors", "store"]);
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const reactTableData = CreateVoucherHeader(t);
 
     const [withPagination, setWithPaginationTable] = useState(true);
@@ -82,6 +83,8 @@ const VoucherPage = () => {
         } else {
             categories?.forEach((category) => {
                 if (category.products.length == 0) return;
+                const processedCategoryName =
+                    language == "en" ? category.enName : category.name;
                 const categoryProductIds =
                     category?.products?.map((product) => product?.id) || [];
 
@@ -94,7 +97,9 @@ const VoucherPage = () => {
                     newProducts = [...newProducts, category?.name];
                     joinProductsName = [
                         ...joinProductsName,
-                        t("store:category.title") + ": " + category?.name,
+                        t("store:category.title") +
+                            ": " +
+                            processedCategoryName,
                     ];
 
                     matchedProductIds = [
@@ -114,7 +119,11 @@ const VoucherPage = () => {
                     ?.filter((product) =>
                         voucherProductIds.includes(product?.id)
                     )
-                    .map((product) => product?.name) || [];
+                    .map((product) => {
+                        const productName =
+                            language == "en" ? product.enName : product.name;
+                        return productName;
+                    }) || [];
 
             //* Set các product còn lại
             joinProductsName = [...joinProductsName, ...remainingProductNames];
@@ -123,6 +132,7 @@ const VoucherPage = () => {
 
         return {
             ...voucher,
+            tableName: language == "en" ? voucher.enName : voucher.name,
             no: index + 1,
             products: newProducts, //* Modal
             convertedProduct:

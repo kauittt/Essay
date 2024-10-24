@@ -8,12 +8,12 @@ const CreateProductHeader = (t) => {
                 accessor: "no",
             },
             {
-                Header: t("store:product.name"), // "Tên"
-                accessor: "name",
+                Header: t("store:product.tableName"), // "Tên"
+                accessor: "tableName",
             },
             {
-                Header: t("store:product.description"), // "Mô tả"
-                accessor: "description",
+                Header: t("store:product.tableDescription"), // "Mô tả"
+                accessor: "tableDescription",
             },
             {
                 Header: t("store:product.image"), // "Mô tả"

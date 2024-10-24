@@ -27,7 +27,16 @@ import { selectOrders } from "@/redux/reducers/orderSlice";
 
 //! Check stock
 const OrderPage = () => {
-    const { t } = useTranslation(["common", "errors", "store"]);
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
+
+    const statusLabels = {
+        CREATED: t("store:order.status.created"),
+        CONFIRMED: t("store:order.status.confirmed"),
+        DELIVERING: t("store:order.status.delivering"),
+        DONE: t("store:order.status.done"),
+        CANCEL: t("store:order.status.cancel"),
+    };
     const reactTableData = CreateOrderHeader(t);
 
     const [withPagination, setWithPaginationTable] = useState(true);
@@ -75,6 +84,7 @@ const OrderPage = () => {
             order.invoice?.totalAmount - order.invoice?.discountAmount
         ).toLocaleString()} VNĐ`,
         invoicePaymentMethod: order.invoice?.paymentMethod,
+        tableStatus: statusLabels[order.status],
     }));
     console.log("orders", orders);
 

@@ -24,6 +24,7 @@ const SidebarContent = ({
     };
     return (
         <SidebarContentWrap collapse={collapse}>
+            {/*//* Layout */}
             <SidebarBlock collapse={collapse}>
                 <SidebarCategory
                     title="Layout"
@@ -47,46 +48,16 @@ const SidebarContent = ({
                 </SidebarCategory>
             </SidebarBlock>
 
+            {/*//* Dashboard  */}
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
-                    title="Dashboard"
+                    title={t("store:dashboard.title")}
                     icon="store"
                     route="/pages/dashboard"
                 />
             </SidebarBlock>
 
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:product.titles")}
-                    icon="store"
-                    route="/pages/products"
-                />
-            </SidebarBlock>
-
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:category.titles")}
-                    icon="store"
-                    route="/pages/categories"
-                />
-            </SidebarBlock>
-
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:voucher.titles")}
-                    icon="store"
-                    route="/pages/vouchers"
-                />
-            </SidebarBlock>
-
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:user.titles")}
-                    icon="store"
-                    route="/pages/users"
-                />
-            </SidebarBlock>
-
+            {/*//* Orders  */}
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
                     title={t("store:order.titles")}
@@ -95,14 +66,50 @@ const SidebarContent = ({
                 />
             </SidebarBlock>
 
+            {/*//* Product  */}
             <SidebarBlock collapse={collapse}>
+                <SidebarLink
+                    title={t("store:product.titles")}
+                    icon="store"
+                    route="/pages/products"
+                />
+            </SidebarBlock>
+
+            {/*//* Categories  */}
+            <SidebarBlock collapse={collapse}>
+                <SidebarLink
+                    title={t("store:category.titles")}
+                    icon="store"
+                    route="/pages/categories"
+                />
+            </SidebarBlock>
+
+            {/*//* Vouchers  */}
+            <SidebarBlock collapse={collapse}>
+                <SidebarLink
+                    title={t("store:voucher.titles")}
+                    icon="store"
+                    route="/pages/vouchers"
+                />
+            </SidebarBlock>
+
+            {/*//* Users  */}
+            <SidebarBlock collapse={collapse}>
+                <SidebarLink
+                    title={t("store:user.titles")}
+                    icon="store"
+                    route="/pages/users"
+                />
+            </SidebarBlock>
+
+            {/* <SidebarBlock collapse={collapse}>
                 <SidebarLink
                     title="Log out"
                     icon="exit"
                     route="/log_in"
                     onClick={logout}
                 />
-            </SidebarBlock>
+            </SidebarBlock> */}
         </SidebarContentWrap>
     );
 };

@@ -11,7 +11,8 @@ import {
 import TopbarMenuLink, { TopbarLink } from "./TopbarMenuLink";
 import { TopbarBack, TopbarDownIcon } from "./BasicTopbarComponents";
 import { useDispatch } from "react-redux";
-import { userLogout } from "../../../redux/reducers/userSlice";
+import { selectUser, userLogout } from "../../../redux/reducers/userSlice";
+import { useSelector } from "react-redux";
 
 const Ava = `/img/topbar/ava.png`;
 
@@ -30,13 +31,16 @@ const TopbarProfile = () => {
         dispatch(userLogout());
     };
 
+    const user = useSelector(selectUser);
+    console.log("User", user);
+
     return (
         <TopbarProfileWrap>
             {/*//* Icon/Button  */}
             <TopbarAvatarButton type="button" onClick={toggleCollapse}>
                 <TopbarAvatarImage src={Ava} alt="avatar" />
                 <TopbarAvatarName className="tw-font-bold">
-                    Roman Johanson
+                    {user.name}
                 </TopbarAvatarName>
                 <TopbarDownIcon />
             </TopbarAvatarButton>

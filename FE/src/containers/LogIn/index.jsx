@@ -66,7 +66,7 @@ const LogIn = () => {
                     draggable: true,
                     progress: undefined,
                 });
-                history.push("/pages/products");
+                history.push("/pages/dashboard");
             }
         } catch (error) {
             console.log(error);

@@ -33,22 +33,24 @@ const ReactTableCustomizer = ({
     withPagination,
     withSearchEngine,
 }) => {
+    const { t } = useTranslation(["common", "errors", "store"]);
+
     const arrayTableCustomizerSingleToggle = [
         {
             id: 0,
-            text: "Filtration mode",
+            text: t("tables.customizer.mode.filter"),
             func: handleClickWithSearchEngine,
             isChecked: withSearchEngine,
         },
         {
             id: 1,
-            text: "Sortable mode",
+            text: t("tables.customizer.mode.sort"),
             func: handleClickIsSortable,
             isChecked: isSortable,
         },
         {
             id: 2,
-            text: "Pagination mode",
+            text: t("tables.customizer.mode.page"),
             func: handleClickWithPagination,
             isChecked: withPagination,
         },
@@ -87,8 +89,6 @@ const ReactTableCustomizer = ({
     const handleOpen = () => {
         setCollapse(!collapse);
     };
-
-    const { t } = useTranslation(["common", "errors", "store"]);
 
     return (
         <ReactTableCustomizerWrap>
