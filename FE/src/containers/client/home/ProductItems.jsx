@@ -82,7 +82,7 @@ const ProductItems = ({ items = [] }) => {
                 {items?.map((item) => (
                     <ProductCard key={item.id}>
                         <ProductItem>
-                            <ProductItemLink to="/pages /dashboard">
+                            <ProductItemLink to="/pages/dashboard">
                                 {/* <ProductItemLink> */}
                                 {/*//* Image  */}
                                 <ProductItemImageWrap>
@@ -125,19 +125,22 @@ const ProductItems = ({ items = [] }) => {
                                     </ProductItemPrice>
 
                                     <StarRating rating={item.star} />
-
-                                    <Button
-                                        variant="primary"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            console.log("Add to cart");
-                                        }}
-                                        style={{ margin: "0" }}
-                                    >
-                                        <span>Add to cart</span>
-                                    </Button>
                                 </div>
                             </ProductItemLink>
+
+                            {/*//* Button  */}
+                            <div className="tw-flex tw-flex-col tw-items-center tw-mt-[-7px]">
+                                <Button
+                                    variant="primary"
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Prevents the click event from propagating to the Link
+                                        console.log("Add to cart");
+                                    }}
+                                    style={{ margin: "0" }}
+                                >
+                                    <span>Add to cart</span>
+                                </Button>
+                            </div>
                         </ProductItem>
                     </ProductCard>
                 ))}
@@ -203,7 +206,7 @@ const ProductItem = styled(CardBody)`
     transition: all 0.3s;
 
     &:hover {
-        transform: translateY(-10px); /* Move the card up by 10px on hover */
+        transform: translateY(-8px); /* Move the card up by 10px on hover */
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1); /* Slight shadow effect for a raised look */
     }
 

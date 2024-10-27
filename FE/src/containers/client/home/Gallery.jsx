@@ -10,6 +10,10 @@ import {
 } from "@/utils/palette";
 import { marginRight, left } from "@/utils/directions";
 import ProductItems from "./ProductItems";
+import { BorderedBottomTabs } from "../../../shared/components/Tabs";
+import { PanelTabs } from "./styled";
+import { Nav, Tab } from "react-bootstrap";
+import { NavItem, NavLink, TabsWrap } from "@/shared/components/Tabs";
 
 const Gallery = ({ products, tags }) => {
     const [renderProduct, setRenderProduct] = useState(products);
@@ -42,24 +46,44 @@ const Gallery = ({ products, tags }) => {
         <GalleryWrap>
             <GalleryButtons>
                 {/*//* Button  */}
-                <GalleryButton
-                    type="button"
-                    active={currentTag === "all"}
-                    onClick={() => onFilter("all")}
-                >
-                    all
-                </GalleryButton>
-                {tags?.map((btn) => (
-                    <GalleryButton
-                        className="tw-text-2xl"
-                        key={`index_${btn.tag}`}
-                        type="button"
-                        active={btn.tag === currentTag}
-                        onClick={() => onFilter(btn.tag)}
-                    >
-                        {btn.title}
-                    </GalleryButton>
-                ))}
+                <BorderedBottomTabs>
+                    <PanelTabs>
+                        <Tab.Container defaultActiveKey="1">
+                            <TabsWrap>
+                                <Nav className="nav-tabs">
+                                    <NavItem key="0">
+                                        <NavLink
+                                            eventKey="1"
+                                            type="button"
+                                            active={currentTag === "all"}
+                                            onClick={() => onFilter("all")}
+                                            className="tw-text-2xl"
+                                        >
+                                            All
+                                        </NavLink>
+                                    </NavItem>
+
+                                    {tags?.map((btn, index) => (
+                                        <NavItem key={index + 1}>
+                                            <NavLink
+                                                eventKey={index}
+                                                className="tw-text-2xl"
+                                                key={`index_${btn.tag}`}
+                                                type="button"
+                                                active={btn.tag === currentTag}
+                                                onClick={() =>
+                                                    onFilter(btn.tag)
+                                                }
+                                            >
+                                                {btn.title}
+                                            </NavLink>
+                                        </NavItem>
+                                    ))}
+                                </Nav>
+                            </TabsWrap>
+                        </Tab.Container>
+                    </PanelTabs>
+                </BorderedBottomTabs>
             </GalleryButtons>
 
             {/*//* List */}
@@ -98,7 +122,7 @@ const GalleryButtons = styled.div`
     text-align: ${left};
 
     //* Thêm
-    padding: 15px 10px;
+    padding: 10px 10px;
     border-radius: 5px;
     background-color: ${colorBackground};
 `;
