@@ -6,6 +6,7 @@ import productReducer from "./productSlice";
 import categoryReducer from "./categorySlice";
 import voucherReducer from "./voucherSlice";
 import orderReducer from "./orderSlice";
+import feedbackReducer from "./feedbackSlice";
 
 export {
     themeReducer,
@@ -16,4 +17,5 @@ export {
     categoryReducer,
     voucherReducer,
     orderReducer,
+    feedbackReducer,
 };

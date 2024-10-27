@@ -21,6 +21,7 @@ import UserPage from "../Admin/User/UserPage";
 import OrderPage from "../Admin/Order/OrderPage";
 import { fetchOrders } from "./../../redux/actions/orderAction";
 import DashboardPage from "../Admin/Dashboard/DashboardPage";
+import HomePage from "../client/home/HomePage";
 
 const Pages = () => (
     <Switch>
@@ -31,6 +32,7 @@ const Pages = () => (
         <Route path="/pages/users" component={UserPage} />
         <Route path="/pages/orders" component={OrderPage} />
         <Route path="/pages/dashboard" component={DashboardPage} />
+        <Route path="/pages/home" component={HomePage} />
     </Switch>
 );
 

@@ -48,6 +48,14 @@ const SidebarContent = ({
                 </SidebarCategory>
             </SidebarBlock>
 
+            <SidebarBlock collapse={collapse}>
+                <SidebarLink
+                    title="Homepage"
+                    icon="store"
+                    route="/pages/home"
+                />
+            </SidebarBlock>
+
             {/*//* Dashboard  */}
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
