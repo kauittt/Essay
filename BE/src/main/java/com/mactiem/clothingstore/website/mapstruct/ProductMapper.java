@@ -19,12 +19,25 @@ public interface ProductMapper {
 
     //* DTO
     @Mapping(target = "categories", expression = "java(mapCategoryEntitiesToStrings(product.getCategories()))")
+    @Mapping(target = "star", expression = "java(mapStar(product.getFeedBacks()))")
     ProductResponseDTO toDTO(Product product);
 
     @AfterMapping
     default void mapFeedBack(@MappingTarget ProductResponseDTO productResponseDTO, Product product,
                              FeedBackMapper feedBackMapper) {
         productResponseDTO.setFeedBacks(feedBackMapper.toListDTOs(product.getFeedBacks()));
+    }
+
+    default Double mapStar(List<FeedBack> feedBacks) {
+        if (feedBacks != null && !feedBacks.isEmpty()) {
+            return feedBacks.stream()
+                    .filter(f -> f.getPoint() != null)
+                    .mapToDouble(FeedBack::getPoint)
+                    .average()
+                    .orElse(0.0);
+        } else {
+            return 0.0;
+        }
     }
 
     default List<String> mapCategoryEntitiesToStrings(List<Category> categories) {

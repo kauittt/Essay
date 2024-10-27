@@ -18,12 +18,12 @@ import java.util.List;
 @Component
 public interface FeedBackMapper {
     //* DTO
-    @Mapping(target = "user", ignore = true)
+//    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "user", expression = "java(mapUser(feedBack))")
     FeedBackResponseDTO toDTO(FeedBack feedBack);
 
-    @AfterMapping
-    default void mapUser(@MappingTarget FeedBackResponseDTO feedBackResponseDTO, FeedBack feedBack) {
-        feedBackResponseDTO.setUser(feedBack.getUser().getUsername());
+    default String mapUser(FeedBack feedback) {
+        return feedback.getUser().getName();
     }
 
     default List<FeedBackResponseDTO> toListDTOs(List<FeedBack> feedBacks) {
