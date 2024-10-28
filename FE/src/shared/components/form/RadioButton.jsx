@@ -21,10 +21,10 @@ import {
 
 const RadioButton = ({
     onChange,
-    radioValue,
-    styleType,
-    disabled,
-    label,
+    radioValue = "",
+    styleType = "",
+    disabled = false,
+    label = "",
     name,
     value,
 }) => {
@@ -65,12 +65,12 @@ RadioButton.propTypes = {
     styleType: PropTypes.string,
 };
 
-RadioButton.defaultProps = {
-    label: "",
-    disabled: false,
-    radioValue: "",
-    styleType: "", // 'colored' | 'button' | 'colored-click'
-};
+// RadioButton.defaultProps = {
+//     label: "",
+//     disabled: false,
+//     radioValue: "",
+//     styleType: "", // 'colored' | 'button' | 'colored-click'
+// };
 
 export default renderComponentField(RadioButton);
 

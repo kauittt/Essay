@@ -15,6 +15,7 @@ import {
     colorText,
 } from "@/utils/palette";
 import { marginRight, marginLeft } from "@/utils/directions";
+import { useTranslation } from "react-i18next";
 
 const ReactTablePagination = ({
     dataLength,
@@ -30,6 +31,8 @@ const ReactTablePagination = ({
     setPageSize,
     manualPageSize = [10, 20, 30, 40],
 }) => {
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+
     const arrayPageIndex =
         pageIndex - 2 < 0
             ? pageOptions.slice(0, pageIndex + 3)
@@ -77,8 +80,11 @@ const ReactTablePagination = ({
                 </Pagination.Last>
             </Pagination>
             <PaginationInfo>
-                Showing {pageSize * pageIndex + 1} to{" "}
-                {pageSize * pageIndex + page.length} of {dataLength}
+                {t("tables.customizer.page.title", {
+                    start: pageSize * pageIndex + 1,
+                    end: pageSize * pageIndex + page.length,
+                    total: dataLength,
+                })}
             </PaginationInfo>
             {manualPageSize.length > 1 && (
                 <PaginationSelectWrap as={Form.Group}>
@@ -92,7 +98,7 @@ const ReactTablePagination = ({
                     >
                         {manualPageSize.map((item) => (
                             <PaginationFormOption key={item} value={item}>
-                                Show {item}
+                                {t("tables.customizer.page.show")} {item}
                             </PaginationFormOption>
                         ))}
                     </PaginationFormSelect>

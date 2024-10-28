@@ -81,6 +81,7 @@ const FormInput = ({ data }) => {
                         style={{ height: "32px" }}
                         value={data.value}
                         onChange={data.onChange}
+                        myOnChange={data.myOnChange}
                     />
                 )}
                 {data.type === "multiSelect" && (

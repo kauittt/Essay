@@ -73,6 +73,7 @@ const StarRating = ({ rating }) => {
     );
 };
 
+//! Hết hàng -> thêm style
 const ProductItems = ({ items = [] }) => {
     const yellow = "#f6da6e";
     const gray = "#787985";
@@ -82,7 +83,12 @@ const ProductItems = ({ items = [] }) => {
                 {items?.map((item) => (
                     <ProductCard key={item.id}>
                         <ProductItem>
-                            <ProductItemLink to="/pages/dashboard">
+                            <ProductItemLink
+                                to={{
+                                    pathname: `/pages/product-detail/${item.id}`,
+                                    state: { product: item }, // Passing the product data
+                                }}
+                            >
                                 {/* <ProductItemLink> */}
                                 {/*//* Image  */}
                                 <ProductItemImageWrap>
@@ -214,7 +220,7 @@ const ProductItem = styled(CardBody)`
     &:hover:after {
         content: "";
         display: block;
-        height: 20px; /* The same height as the transform */
+        height: 35px; /* The same height as the transform */
         width: calc(100% + 40px);
         transform: translateX(-20px);
         /* background-color: red; */

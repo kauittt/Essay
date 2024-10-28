@@ -56,6 +56,10 @@ const SidebarContent = ({
                 />
             </SidebarBlock>
 
+            <SidebarBlock collapse={collapse}>
+                <SidebarLink title="Cart" icon="store" route="/pages/cart" />
+            </SidebarBlock>
+
             {/*//* Dashboard  */}
             <SidebarBlock collapse={collapse}>
                 <SidebarLink

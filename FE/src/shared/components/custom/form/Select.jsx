@@ -22,6 +22,7 @@ export const SelectField = React.forwardRef(
             placeholder = "",
             options = [],
             setSelectedItem = () => {},
+            myOnChange,
             ...other
         },
         ref
@@ -37,6 +38,7 @@ export const SelectField = React.forwardRef(
                 ? selectedOption.map((option) => option.value)
                 : selectedOption.value;
             onChange(newValue);
+            myOnChange(newValue);
             if (selectedOption) {
                 setSelectedItem(selectedOption);
             }

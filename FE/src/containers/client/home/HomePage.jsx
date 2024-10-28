@@ -34,20 +34,11 @@ const HomePage = () => {
 
     return (
         <Col md={12} lg={12}>
-            {/* <CardTitleWrap>
-                <CardTitle>Home page</CardTitle>
-            </CardTitleWrap> */}
-
             <Card>
                 <MyCardBody>
-                    <Gallery products={products} tags={tags} />
+                    <Gallery products={products || []} tags={tags || []} />
                 </MyCardBody>
             </Card>
-            {/* <Card>
-                <CardBody>
-                    
-                </CardBody>
-            </Card> */}
         </Col>
     );
 };
@@ -58,7 +49,7 @@ const MyCardBody = styled(Card.Body)`
     /* border-radius: ${borderRadius}; */ //!
     border-radius: 5px;
     box-shadow: ${shadow};
-    padding: 12px;
+    padding: 0 12px;
 `;
 
 export default HomePage;

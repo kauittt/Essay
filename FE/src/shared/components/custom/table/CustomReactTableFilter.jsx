@@ -12,6 +12,8 @@ const CustomReactTableFilter = ({
     setFilterValue = () => {},
     placeholder = "Search...",
     dataLength,
+    style = {}, // Thêm prop style với giá trị mặc định là đối tượng rỗng
+    customWidth,
 }) => {
     const { t } = useTranslation(["common", "errors"]);
 
@@ -22,8 +24,9 @@ const CustomReactTableFilter = ({
     }, 200);
 
     return (
-        <SearchWrap>
+        <SearchWrap style={style}>
             <SearchInput
+                style={customWidth}
                 type="search"
                 placeholder={placeholder}
                 onChange={(e) => onChange(e.target.value)}
