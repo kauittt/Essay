@@ -19,6 +19,7 @@
         "invalidNumber": "Invalid number",
         "invalidDate": "Invalid date",
         "negativeNumber": "Negative number is not allowed",
+        "positive": "Only positive number (> 0)",
 
         "incorrectPassword": "The password is incorrect",
         "required": "Required"

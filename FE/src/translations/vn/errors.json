@@ -19,6 +19,7 @@
         "invalidNumber": "Số không hợp lệ.",
         "invalidDate": "Ngày không hợp lệ.",
         "negativeNumber": "Không được phép nhập số âm.",
+        "positive": "Chỉ điền số dương (> 0)",
 
         "incorrectPassword": "Mật khẩu không chính xác",
         "required": "Bắt buộc"

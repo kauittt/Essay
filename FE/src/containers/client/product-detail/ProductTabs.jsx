@@ -9,6 +9,7 @@ import {
 import { BorderedBottomTabs } from "../../../shared/components/Tabs";
 import { PanelTabs } from "../home/styled";
 
+//* Thông báo chung về ...
 const ProductTabs = () => (
     <BorderedBottomTabs>
         <PanelTabs>

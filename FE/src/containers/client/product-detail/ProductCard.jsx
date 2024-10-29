@@ -22,7 +22,6 @@ import {
     FormGroupLabel,
 } from "@/shared/components/form/FormElements";
 import ProductGallery from "./ProductGallery";
-import images from "./imgs";
 import ProductTabs from "./ProductTabs";
 import ColorSelect from "./ColorSelect";
 import { FaStar } from "react-icons/fa";
@@ -42,7 +41,7 @@ const ProductCard = ({ product = {} }) => {
         }
     };
 
-    console.log("Product at detail", product);
+    console.log("Product at detail ", product);
 
     return (
         <Col md={12} lg={12}>

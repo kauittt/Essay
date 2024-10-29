@@ -1,5 +1,5 @@
 import React from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import PropTypes from "prop-types";
 import { renderComponentField } from "@/shared/components/form/FormField";
 import styled from "styled-components";
@@ -10,13 +10,10 @@ import {
     colorFieldsBorder,
     colorIcon,
     colorText,
-    colorAdditional,
-    colorBlackBackground,
 } from "@/utils/palette";
 import { borderRight } from "@/utils/directions";
-
-// console.log("colorBackground", colorBackground);
-// console.log("colorBlackBackground", colorBlackBackground);
+import { Card, CardBody } from "@/shared/components/Card";
+import { Table } from "@/shared/components/TableElements";
 
 export const SelectField = React.forwardRef(
     (
@@ -24,35 +21,36 @@ export const SelectField = React.forwardRef(
             onChange,
             value,
             name,
-            placeholder = "",
-            options = [],
-            setSelectedItem = () => {},
-            myOnChange = () => {},
+            placeholder,
+            options,
+            setSelectedItem,
+            onCellChange,
+            columnId,
+            cellValue,
             ...other
         },
         ref
     ) => {
-        // console.log("Values select", value);
-        const selectedOptions = Array.isArray(value)
-            ? options.filter((option) => value.includes(option.value))
-            : options.find((option) => option.value === value);
+        cellValue = cellValue + "";
+        const selectedOptions = Array.isArray(cellValue)
+            ? options.filter((option) => cellValue.includes(option.value))
+            : options.find((option) => option.value === cellValue);
 
         const handleChange = (selectedOption) => {
-            console.log(selectedOption);
             const newValue = Array.isArray(selectedOption)
                 ? selectedOption.map((option) => option.value)
                 : selectedOption.value;
             onChange(newValue);
-            myOnChange(newValue);
+            onCellChange(newValue); //! line Table: updateEditableData
             if (selectedOption) {
-                setSelectedItem(selectedOption);
+                setSelectedItem("selectedOption");
             }
         };
 
         return (
             <StyledSelect
                 name={name}
-                value={selectedOptions || value}
+                value={selectedOptions || cellValue}
                 onChange={handleChange}
                 options={options}
                 clearable={false}
@@ -60,6 +58,20 @@ export const SelectField = React.forwardRef(
                 placeholder={placeholder}
                 classNamePrefix="react-select"
                 ref={ref}
+                menuPortalTarget={document.body}
+                menuPosition="absolute"
+                styles={{
+                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    control: (base) => ({
+                        ...base,
+                        minWidth: "100%",
+                    }),
+                    menu: (base) => ({
+                        ...base,
+                        width: "auto",
+                        minWidth: base.width,
+                    }),
+                }}
                 {...other}
             />
         );
@@ -86,9 +98,9 @@ SelectField.propTypes = {
         PropTypes.shape({
             value: PropTypes.oneOfType([
                 PropTypes.string,
-                PropTypes.number, // Support both strings and numbers
+                PropTypes.number, //* Support both strings and numbers
             ]),
-            label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+            label: PropTypes.string,
         })
     ),
     value: PropTypes.oneOfType([
@@ -96,26 +108,28 @@ SelectField.propTypes = {
         PropTypes.arrayOf(valuePropType),
     ]).isRequired,
     setSelectedItem: PropTypes.func,
+    onCellChange: PropTypes.func, //* thêm props
+};
+
+SelectField.defaultProps = {
+    placeholder: "",
+    options: [],
+    setSelectedItem: () => {},
 };
 
 export default renderComponentField(SelectField);
 
 // region STYLES
 
-const defaultBg = "#DEEBFF";
-
 const StyledSelect = styled(Select)`
     width: 100%;
-    /* height: 40px; */
-    height: ${({ value }) =>
-        Array.isArray(value) && value.length > 0 ? "auto" : "40px"};
+    height: 40px;
     font-size: 12px;
 
     .react-select__control {
-        /* height: 32px; */
-        height: ${({ value }) =>
-            Array.isArray(value) && value.length > 0 ? "auto" : "32px"};
-        border-radius: 0 !important;
+        height: 32px;
+        /* border-radius: 0 !important; */
+        border-radius: 0.375rem !important; //! Override
         transition: all 0.3s;
         border: 1px solid ${colorFieldsBorder};
         background-color: ${colorBackground};
@@ -129,8 +143,7 @@ const StyledSelect = styled(Select)`
     }
 
     .react-select__input {
-        /* height: 30px; */
-        height: auto;
+        height: 30px;
         color: ${colorText};
     }
 
@@ -147,12 +160,12 @@ const StyledSelect = styled(Select)`
             height: 16px;
             width: 16px;
         }
+        display: none;
     }
 
     .react-select__multi-value {
         background-color: transparent;
         border: 1px solid ${colorBlue};
-        margin: 3px;
 
         .react-select__multi-value__label {
             padding: 3px 6px;
@@ -181,9 +194,8 @@ const StyledSelect = styled(Select)`
         box-shadow: none !important;
         margin-top: 6px;
         margin-bottom: 6px;
-
-        //* thêm
-        background-color: ${colorBackground};
+        position: absolute; //! Ensure the menu is positioned absolutely
+        z-index: 9999; //! High z-index to avoid clipping
     }
 
     .react-select__menu-list {
@@ -191,7 +203,7 @@ const StyledSelect = styled(Select)`
         border-radius: 0;
         box-shadow: none;
         font-size: 12px;
-        overflow: auto;
+        overflow: hidden;
         background: ${colorBackground};
         border: 1px solid ${colorFieldsBorder};
     }
@@ -211,38 +223,13 @@ const StyledSelect = styled(Select)`
     }
 
     .react-select__value-container {
-        /* padding-top: 0;
-        padding-bottom: 0; */
-        padding-top: 8px;
-        padding-bottom: 8px;
+        padding-top: 0;
+        padding-bottom: 0;
 
         & > div {
             margin-top: 0;
             margin-bottom: 0;
         }
-    }
-
-    //* thêm
-    .react-select__option {
-        color: ${({ theme }) =>
-            colorBackground({ theme }) !== colorBlackBackground
-                ? colorBlackBackground //* Nền trắng
-                : colorText}; //* Nền đen
-
-        background-color: ${colorBackground};
-
-        &:hover:not(.react-select__option--is-selected) {
-            background-color: ${defaultBg};
-            color: ${({ theme }) =>
-                colorBackground({ theme }) !== colorBlackBackground
-                    ? colorBlackBackground //* Nền trắng
-                    : colorBackground({ theme })}; //* Nền đen
-        }
-    }
-
-    .react-select__option--is-selected {
-        background-color: ${colorAccent};
-        color: ${colorBackground};
     }
 `;
 

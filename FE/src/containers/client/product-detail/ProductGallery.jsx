@@ -9,6 +9,7 @@ import "@brainhubeu/react-carousel/lib/style.css";
 import { colorBorder } from "@/utils/palette";
 import { marginRight } from "@/utils/directions";
 
+//* Có thể mở rộng thành nhiều image
 const ProductGallery = ({ image }) => {
     return (
         <ProductGalleryWrap>

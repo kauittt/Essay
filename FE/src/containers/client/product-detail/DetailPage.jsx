@@ -2,10 +2,11 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import { Col, Container, Row } from "react-bootstrap";
-import RelatedItems from "./RelatedItems";
 import { useSelector } from "react-redux";
 import { selectProducts } from "@/redux/reducers/productSlice";
 import { useParams } from "react-router-dom/cjs/react-router-dom";
+import { Card, CardBody } from "@/shared/components/Card";
+import Feedback from "./feedback/Feedback";
 
 const DetailPage = () => {
     const { id } = useParams();
@@ -23,15 +24,11 @@ const DetailPage = () => {
             </Row>
 
             <Row>
-                <Col md={12}>
-                    <h3 className="page-title page-title--not-last">
-                        Related Items
-                    </h3>
-                </Col>
-            </Row>
-
-            <Row>
-                <RelatedItems />
+                <Card>
+                    <CardBody>
+                        <Feedback product={product} />
+                    </CardBody>
+                </Card>
             </Row>
         </Container>
     );

@@ -27,6 +27,7 @@ SelectOption.defaultProps = {
     isDisabled: false,
 };
 
+//* Đổi thành size sau
 const ColorSelect = ({ options, placeholder }) => {
     const [value, setValue] = useState("");
 

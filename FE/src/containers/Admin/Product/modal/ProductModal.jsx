@@ -19,6 +19,10 @@ import { createGlobalStyle } from "styled-components";
 import { fetchVouchers } from "@/redux/actions/voucherAction";
 import { fetchCategories } from "@/redux/actions/categoryAction";
 import { fetchOrders } from "../../../../redux/actions/orderAction";
+import CreateTableSizeHeader from "./table/CreateTableSizeHeader";
+import Collapse from "@/shared/components/Collapse";
+import LineEditableReactTable from "./table/LineEditableReactTable";
+import { selectSizes } from "../../../../redux/reducers/sizeSlice";
 
 const bigDecimalFields = ["price"];
 const integerFields = ["stock"];
@@ -48,11 +52,17 @@ const validateInteger = (value, t) => {
 const ProductModal = ({ toggle, data, action }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
-    const enter = t("action.enter");
     const dispatch = useDispatch();
+    const reactTableData = CreateTableSizeHeader(t);
+    const enter = t("action.enter");
 
+    console.log("product in modal", data);
+
+    let categories = useSelector(selectCategories);
+    let sizes = useSelector(selectSizes);
+
+    //* Từ form
     const [formData, setFormData] = useState(data);
-
     const submitForm = async (values) => {
         console.log("Root -----------");
         console.log(values);
@@ -76,6 +86,11 @@ const ProductModal = ({ toggle, data, action }) => {
         }, {});
 
         console.log("process -----------");
+        processedValues = {
+            ...processedValues,
+            sizes: sizes,
+            quantities: tableData.map((row) => row.stock),
+        };
         console.log(processedValues);
 
         const actionText =
@@ -126,6 +141,7 @@ const ProductModal = ({ toggle, data, action }) => {
 
     const validate = (values, t) => {
         console.log("Validate values", values);
+        console.log("Table", tableData);
         const errors = {};
 
         const requiredFields = [
@@ -169,13 +185,33 @@ const ProductModal = ({ toggle, data, action }) => {
             }
         });
 
+        //* Table
+        const requiredLineFields = ["stock"];
+
+        tableData.map((row, index) => {
+            //* Empty
+            requiredLineFields.forEach((field) => {
+                if (row[field] == null) {
+                    console.log("row[field]", row[field]);
+                    errors[`${index}-${field}`] = t(
+                        "errors:validation.required"
+                    );
+                }
+            });
+
+            //* Number
+            const numericFields = ["stock"];
+            numericFields.forEach((field) => {
+                const error = validateInteger(row[field], t);
+                if (error) {
+                    errors[`${index}-${field}`] = error;
+                }
+            });
+        });
+
         console.log("Erros", errors);
         return errors;
     };
-
-    let categories = useSelector(selectCategories);
-    console.log("Data to load modal", formData);
-    console.log("Categories to load Modal", categories);
 
     const leftFields = [
         {
@@ -234,6 +270,17 @@ const ProductModal = ({ toggle, data, action }) => {
         },
     ];
 
+    //* Dữ liệu từ table
+    const [tableData, setTableData] = useState([]);
+
+    const handleTableData = (dataFromTable) => {
+        console.log("invoke update data table");
+        setTableData(dataFromTable);
+    };
+
+    // console.log("Data to load modal", formData);
+    // console.log("Categories to load Modal", categories);
+
     return (
         <Container>
             <Form
@@ -254,6 +301,21 @@ const ProductModal = ({ toggle, data, action }) => {
                                             max={5}
                                             isButton={false}
                                         ></CustomForm>
+
+                                        <Collapse
+                                            title={t(
+                                                "SaleTranslations:sale.modal.collapse.line"
+                                            )}
+                                            className="with-shadow"
+                                        >
+                                            <LineEditableReactTable
+                                                reactTableData={reactTableData}
+                                                onTableDataUpdate={
+                                                    handleTableData
+                                                } // Sử dụng callback này để cập nhật dữ liệu
+                                                data={data}
+                                            />
+                                        </Collapse>
                                     </CardBody>
 
                                     {/*//* Button  */}
