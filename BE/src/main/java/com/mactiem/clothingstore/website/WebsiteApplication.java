@@ -2,8 +2,10 @@ package com.mactiem.clothingstore.website;
 
 import com.mactiem.clothingstore.website.entity.Authority;
 import com.mactiem.clothingstore.website.entity.Category;
+import com.mactiem.clothingstore.website.entity.Size;
 import com.mactiem.clothingstore.website.repository.AuthorityRepository;
 import com.mactiem.clothingstore.website.repository.CategoryRepository;
+import com.mactiem.clothingstore.website.repository.SizeRepository;
 import com.mactiem.clothingstore.website.service.AuthorityService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,7 +28,7 @@ public class WebsiteApplication {
     public static void main(String[] args) {
         SpringApplication.run(WebsiteApplication.class, args);
     }
-    
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -63,6 +65,26 @@ public class WebsiteApplication {
                     Authority newAuthority = new Authority();
                     newAuthority.setAuthority(authority);
                     authorityRepository.save(newAuthority); // Ensure this method exists in your AuthorityService
+                }
+            });
+        };
+    }
+
+    @Bean
+    public CommandLineRunner setupDefaultSizes(SizeRepository sizeRepository) {
+        return args -> {
+            List<String> requiredSizes = List.of("S", "L", "XL");
+            List<Size> existingSizes = sizeRepository.findAll();
+            List<String> existingSizeNames = existingSizes.stream()
+                    .map(Size::getName)
+                    .toList();
+
+            requiredSizes.forEach(sizeName -> {
+                if (!existingSizeNames.contains(sizeName)) {
+                    Size newSize = Size.builder()
+                            .name(sizeName)
+                            .build();
+                    sizeRepository.save(newSize);
                 }
             });
         };

@@ -24,6 +24,7 @@ public class ProductResponseDTO {
     private Double price;
     private String image;
     private List<FeedBackResponseDTO> feedBacks;
+    private List<SizeProductDTO> sizeProducts;
     private Double star;
 
     public List<FeedBackResponseDTO> getFeedBacks() {

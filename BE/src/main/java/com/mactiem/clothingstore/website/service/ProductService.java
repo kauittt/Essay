@@ -3,10 +3,12 @@ package com.mactiem.clothingstore.website.service;
 import com.mactiem.clothingstore.website.DTO.CategoryProductsDTO;
 import com.mactiem.clothingstore.website.DTO.ProductRequestDTO;
 import com.mactiem.clothingstore.website.DTO.ProductResponseDTO;
+import com.mactiem.clothingstore.website.DTO.SizeProductDTO;
 import com.mactiem.clothingstore.website.entity.*;
 import com.mactiem.clothingstore.website.mapstruct.ProductMapper;
 import com.mactiem.clothingstore.website.repository.CategoryRepository;
 import com.mactiem.clothingstore.website.repository.ProductRepository;
+import com.mactiem.clothingstore.website.repository.SizeRepository;
 import com.mactiem.clothingstore.website.validator.ProductValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,15 +25,17 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final SizeRepository sizeRepository;
     private final ProductMapper productMapper;
     private final ProductValidator productValidator;
     private final CategoryRepository categoryRepository;
     private final CategoryService categoryService;
 
     @Autowired
-    public ProductService(ProductMapper productMapper, ProductRepository productRepository, ProductValidator productValidator, CategoryRepository categoryRepository, CategoryService categoryService) {
+    public ProductService(ProductMapper productMapper, ProductRepository productRepository, SizeRepository sizeRepository, ProductValidator productValidator, CategoryRepository categoryRepository, CategoryService categoryService) {
         this.productMapper = productMapper;
         this.productRepository = productRepository;
+        this.sizeRepository = sizeRepository;
         this.productValidator = productValidator;
         this.categoryRepository = categoryRepository;
         this.categoryService = categoryService;
@@ -86,50 +92,99 @@ public class ProductService {
         categories.forEach(category -> category.getProducts().add(product));
 
         //* en_ fields
-        if (productRequestDTO.getEnName() == null || productRequestDTO.getEnName().trim().isEmpty()) {
-            product.setEnName(productRequestDTO.getName());
-        } else {
-            product.setEnName(productRequestDTO.getEnName());
+//        if (productRequestDTO.getEnName() == null || productRequestDTO.getEnName().trim().isEmpty()) {
+//            product.setEnName(productRequestDTO.getName());
+//        } else {
+//            product.setEnName(productRequestDTO.getEnName());
+//        }
+//
+//        if (productRequestDTO.getEnDescription() == null || productRequestDTO.getEnDescription().trim().isEmpty()) {
+//            product.setEnDescription(productRequestDTO.getDescription());
+//        } else {
+//            product.setEnDescription(productRequestDTO.getEnDescription());
+//        }
+
+        //* Size
+        List<Size> sizes = sizeRepository.findAll();
+        Map<String, Integer> sizeQuantities = new HashMap<>();
+
+        for (int i = 0; i < productRequestDTO.getSizes().size(); i++) {
+            sizeQuantities.put(productRequestDTO.getSizes().get(i), Integer.parseInt(productRequestDTO.getQuantities().get(i)));
         }
 
-        if (productRequestDTO.getEnDescription() == null || productRequestDTO.getEnDescription().trim().isEmpty()) {
-            product.setEnDescription(productRequestDTO.getDescription());
-        } else {
-            product.setEnDescription(productRequestDTO.getEnDescription());
+        for (Size size : sizes) {
+            SizeProductId sizeProductId = new SizeProductId(size.getId(), product.getId());
+            Integer stock = sizeQuantities.getOrDefault(size.getName(), 0);
+            SizeProduct sizeProduct = new SizeProduct(sizeProductId,
+                    size,
+                    product,
+                    stock,
+                    LocalDate.now());
+
+            product.getSizeProducts().add(sizeProduct);
+            size.getSizeProducts().add(sizeProduct);
         }
 
-
-        return productMapper.toDTO(productRepository.save(product));
+        Product saved = productRepository.save(product);
+        return productMapper.toDTO(saved);
     }
 
     @Transactional
     public ProductResponseDTO updateProduct(String id, ProductRequestDTO productRequestDTO) {
         Product product = findProductById(id);
-
         productValidator.validateUpdate(productRequestDTO);
 
-        //* Handle Category changes
-        List<String> incomingCategoryIds = productRequestDTO.getCategories(); // Assuming categories is a list of category IDs in ProductRequestDTO
-        List<Category> currentCategories = product.getCategories();
+        if(productRequestDTO.getSizes() != null && productRequestDTO.getQuantities() != null) {
+            System.out.println("Dang set SIZES");
+            updateProductSizes(product, productRequestDTO);
+        }
 
-        // Convert incomingCategoryIds to Category objects
+        if(productRequestDTO.getCategories() != null ) {
+            updateProductCategories(product, productRequestDTO);
+
+        }
+        updateOtherProductFields(product, productRequestDTO);
+
+        return productMapper.toDTO(productRepository.save(product));
+    }
+
+    //* Helper
+    private void updateProductSizes(Product product, ProductRequestDTO productRequestDTO) {
+        Map<String, Integer> sizeQuantities = new HashMap<>();
+
+        for (int i = 0; i < productRequestDTO.getSizes().size(); i++) {
+            sizeQuantities.put(productRequestDTO.getSizes().get(i), Integer.parseInt(productRequestDTO.getQuantities().get(i)));
+        }
+
+        product.getSizeProducts().forEach(sizeProduct -> {
+            System.out.println(sizeProduct);
+            if (sizeQuantities.containsKey(sizeProduct.getSize().getName())) {
+                sizeProduct.setStock(sizeQuantities.get(sizeProduct.getSize().getName()));
+                sizeProduct.setUpdateDate(LocalDate.now());
+            }
+        });
+    }
+
+    private void updateProductCategories(Product product, ProductRequestDTO productRequestDTO) {
+        List<String> incomingCategoryIds = productRequestDTO.getCategories(); // Assuming categories is a list of category IDs
+        List<Category> currentCategories = product.getCategories();
         List<Category> newCategories = categoryService.findAllByNames(incomingCategoryIds);
 
         currentCategories.removeIf(category -> !incomingCategoryIds.contains(category.getName()));
 
-        for (Category newCategory : newCategories) {
-            if (!currentCategories.contains(newCategory)) {
-                currentCategories.add(newCategory);
-            }
-        }
+        newCategories.stream()
+                .filter(newCategory -> !currentCategories.contains(newCategory))
+                .forEach(currentCategories::add);
 
         product.setCategories(currentCategories);
+    }
 
+    private void updateOtherProductFields(Product product, ProductRequestDTO productRequestDTO) {
         Field[] fields = productRequestDTO.getClass().getDeclaredFields();
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
-                if (!field.getName().equals("categories")) {
+                if (!field.getName().equals("categories") && !field.getName().equals("sizes") && !field.getName().equals("quantities")) {
                     Object value = field.get(productRequestDTO);
                     if (value != null) {
                         Field dbField = Product.class.getDeclaredField(field.getName());
@@ -138,21 +193,70 @@ public class ProductService {
                     }
                 }
             }
-
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException("Error updating fields", e);
         }
-
-        if (productRequestDTO.getEnName() == null || productRequestDTO.getEnName().trim().isEmpty()) {
-            product.setEnName(productRequestDTO.getName());
-        }
-
-        if (productRequestDTO.getEnDescription() == null || productRequestDTO.getEnDescription().trim().isEmpty()) {
-            product.setEnDescription(productRequestDTO.getDescription());
-        }
-
-        return productMapper.toDTO(productRepository.save(product));
     }
+
+//    @Transactional
+//    public ProductResponseDTO updateProduct(String id, ProductRequestDTO productRequestDTO) {
+//        Product product = findProductById(id);
+//
+//        productValidator.validateUpdate(productRequestDTO);
+//
+//        //* Sizes
+//        Map<String, Integer> sizeQuantities = new HashMap<>();
+//
+//        for (int i = 0; i < productRequestDTO.getSizes().size(); i++) {
+//            sizeQuantities.put(productRequestDTO.getSizes().get(i), Integer.parseInt(productRequestDTO.getQuantities().get(i)));
+//        }
+//
+//        product.getSizeProducts().forEach(sizeProduct -> {
+//            if (sizeQuantities.containsKey(sizeProduct.getSize().getName())) {
+//                sizeProduct.setStock(sizeQuantities.get(sizeProduct.getSize().getName()));
+//                sizeProduct.setUpdateDate(LocalDate.now());
+//            }
+//        });
+//
+//        //* Handle Category changes
+//        List<String> incomingCategoryIds = productRequestDTO.getCategories(); // Assuming categories is a list of category IDs in ProductRequestDTO
+//        List<Category> currentCategories = product.getCategories();
+//
+//        // Convert incomingCategoryIds to Category objects
+//        List<Category> newCategories = categoryService.findAllByNames(incomingCategoryIds);
+//
+//        currentCategories.removeIf(category -> !incomingCategoryIds.contains(category.getName()));
+//
+//        for (Category newCategory : newCategories) {
+//            if (!currentCategories.contains(newCategory)) {
+//                currentCategories.add(newCategory);
+//            }
+//        }
+//
+//        product.setCategories(currentCategories);
+//
+//        Field[] fields = productRequestDTO.getClass().getDeclaredFields();
+//        try {
+//            for (Field field : fields) {
+//                field.setAccessible(true);
+//                if (!field.getName().equals("categories")
+//                        && !field.getName().equals("sizes")
+//                        && !field.getName().equals("quantities")) {
+//                    Object value = field.get(productRequestDTO);
+//                    if (value != null) {
+//                        Field dbField = Product.class.getDeclaredField(field.getName());
+//                        dbField.setAccessible(true);
+//                        dbField.set(product, value);
+//                    }
+//                }
+//            }
+//
+//        } catch (IllegalAccessException | NoSuchFieldException e) {
+//            throw new RuntimeException("Error updating fields", e);
+//        }
+//
+//        return productMapper.toDTO(productRepository.save(product));
+//    }
 
 
     @Transactional

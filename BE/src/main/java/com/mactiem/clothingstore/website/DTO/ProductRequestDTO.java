@@ -19,4 +19,6 @@ public class ProductRequestDTO {
     private Integer stock;
     private Double price;
     private String image;
+    private List<String> sizes;
+    private List<String> quantities;
 }

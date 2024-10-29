@@ -42,6 +42,9 @@ public class FeedBack {
     @Column(name = "description")
     private String description;//-==...
 
+    @Column(name = "image")
+    private String image;
+
     public User getUser() {
         if (user == null) {
             user = new User();

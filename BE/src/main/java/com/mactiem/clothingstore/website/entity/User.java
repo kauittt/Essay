@@ -66,6 +66,9 @@ public class User {
     @Column(name = "update_date")
     private LocalDate updateDate;//---
 
+    @Column(name = "image")
+    private String image;
+
     public List<Authority> getAuthorities() {
         if (authorities == null) {
             authorities = new ArrayList<>();

@@ -16,6 +16,7 @@ public class FeedBackResponseDTO {
     private LocalDate updateDate;
     private Double point;
     private String description;
-    private String user;
+    private Long user;
+    private String image;
 //    private Product product;
 }

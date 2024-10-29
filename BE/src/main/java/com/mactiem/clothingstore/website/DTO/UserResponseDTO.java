@@ -24,6 +24,8 @@ public class UserResponseDTO {
 
     private String address;
 
+    private String image;
+
     private LocalDate createDate;
 
     private LocalDate updateDate;
@@ -40,12 +42,14 @@ public class UserResponseDTO {
         }
         return cart;
     }
+
     public List<AuthorityDTO> getAuthorities() {
         if (authorities == null) {
             authorities = new ArrayList<>();
         }
         return authorities;
     }
+
     public List<OrderResponseDTO> getOrders() {
         if (orders == null) {
             orders = new ArrayList<>();

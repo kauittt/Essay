@@ -17,4 +17,5 @@ public class FeedBackRequestDTO {
     private Double point; //- update
     private String description; //- update
     private String product;
+    private String image;
 }

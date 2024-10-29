@@ -50,6 +50,13 @@ public class UserValidator {
         validatePhone(userRequestDTO.getPhone());
         validateAddress(userRequestDTO.getAddress());
         validateAuthorities(userRequestDTO.getAuthorities());
+//         validateImage(userRequestDTO.getImage());
+    }
+
+    public void validateImage(String image) {
+        if (image == null || image.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Image cannot be empty");
+        }
     }
 
     public void validateUsername(String username) {

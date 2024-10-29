@@ -22,8 +22,8 @@ public interface FeedBackMapper {
     @Mapping(target = "user", expression = "java(mapUser(feedBack))")
     FeedBackResponseDTO toDTO(FeedBack feedBack);
 
-    default String mapUser(FeedBack feedback) {
-        return feedback.getUser().getName();
+    default Long mapUser(FeedBack feedback) {
+        return feedback.getUser().getId();
     }
 
     default List<FeedBackResponseDTO> toListDTOs(List<FeedBack> feedBacks) {

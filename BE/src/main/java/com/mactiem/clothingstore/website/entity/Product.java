@@ -44,6 +44,9 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SizeProduct> sizeProducts;
     //*--------------------------------
     @Column(name = "name")
     private String name;//-==...
@@ -93,5 +96,12 @@ public class Product {
             feedBacks = new ArrayList<>();
         }
         return feedBacks;
+    }
+
+    public List<SizeProduct> getSizeProducts() {
+        if(sizeProducts == null) {
+            return new ArrayList<SizeProduct>();
+        }
+        return sizeProducts;
     }
 }

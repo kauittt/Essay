@@ -17,5 +17,6 @@ public class UserRegistryDTO {
     private String name;
     private String phone;
     private String address;
+    private String image;
 }
 
