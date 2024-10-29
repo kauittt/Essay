@@ -90,6 +90,7 @@ const CollapseToggle = styled.button`
     border: none;
     text-align: ${left};
     color: ${colorText};
+    /* color: red !important; */
 
     span {
         font-weight: 700;

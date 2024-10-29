@@ -91,15 +91,60 @@ const StarRating = ({ rating }) => {
 const Gallery = ({ products = [], tags = [] }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
     const [pageSize, setPageSize] = useState(12); //! Size
-
-    const [currentTag, setCurrentTag] = useState("all");
-
-    const [searchQuery, setSearchQuery] = useState("");
-
     const [currentPage, setCurrentPage] = useState(0);
-
     console.log("products", products);
 
+    //* Tag
+    const [currentTag, setCurrentTag] = useState("all");
+
+    //* Search
+    const [searchQuery, setSearchQuery] = useState("");
+
+    //* Min price
+    const arrayPrice = [
+        [null, null],
+        [0, 200000],
+        [200000, 300000],
+        [300000, 500000],
+        [500000, null],
+    ];
+
+    const [selectedPrice, setSelectedPrice] = useState(0);
+    const handleSelectedPrice = (value) => {
+        console.log("selectedPrice selected:", value);
+        setSelectedPrice(value);
+    };
+    console.log("selected price", selectedPrice);
+    const selectedPriceInput = {
+        label: "Price",
+        name: "price",
+        type: "select",
+        options: [
+            {
+                value: 0,
+                label: "All",
+            },
+            {
+                value: 1,
+                label: "0 to 200.000",
+            },
+            {
+                value: 2,
+                label: "200.000 to 300.000",
+            },
+            {
+                value: 3,
+                label: "300.000 to 500.000",
+            },
+            {
+                value: 4,
+                label: "More than 500.000",
+            },
+        ],
+        myOnChange: handleSelectedPrice,
+    };
+
+    //* Star
     const [selectedStar, setSelectedStar] = useState(0);
     const handleStarSelect = (value) => {
         console.log("Star selected:", value);
@@ -139,16 +184,33 @@ const Gallery = ({ products = [], tags = [] }) => {
         return filteredBySearch.filter((p) => p.star >= selectedStar);
     }, [filteredBySearch, selectedStar]);
 
+    const filteredByPrice = useMemo(() => {
+        const price = arrayPrice[selectedPrice];
+
+        let finalProducts = filteredByStar;
+        console.log("Start", finalProducts);
+        if (price[0]) {
+            finalProducts = filteredByStar.filter((p) => p.price >= price[0]);
+        }
+        if (price[1]) {
+            finalProducts = finalProducts.filter((p) => p.price <= price[1]);
+        }
+
+        console.log("Filtered", finalProducts);
+        return finalProducts;
+    }, [filteredByStar, selectedPrice]);
+
+    //* use
     const currentProducts = useMemo(() => {
-        return filteredByStar.slice(
+        return filteredByPrice.slice(
             currentPage * pageSize,
             (currentPage + 1) * pageSize
         );
-    }, [filteredByStar, currentPage, pageSize]);
+    }, [filteredByPrice, currentPage, pageSize]);
 
     const totalPages = useMemo(() => {
-        return Math.ceil(filteredByStar.length / pageSize);
-    }, [filteredByStar.length, pageSize]);
+        return Math.ceil(filteredByPrice.length / pageSize);
+    }, [filteredByPrice.length, pageSize]);
 
     // Reset trang khi thay đổi search query
     useEffect(() => {
@@ -187,10 +249,6 @@ const Gallery = ({ products = [], tags = [] }) => {
     const pageOptions = useMemo(() => {
         return Array.from({ length: totalPages }, (_, i) => i);
     }, [totalPages]);
-
-    let initValue = {
-        star: selectedStar,
-    };
 
     console.log("rating", selectedStar);
 
@@ -235,7 +293,7 @@ const Gallery = ({ products = [], tags = [] }) => {
                     </PanelTabs>
                 </BorderedBottomTabs>
 
-                <Collapse title={"Loc"} className="with-shadow">
+                <Collapse title={"Lọc"} className="with-shadow">
                     <div className="tw-flex tw-justify-between tw-items-center tw-gap-[50px]">
                         {/*//* Search  */}
                         <div className="" style={{ flex: 2 }}>
@@ -244,7 +302,7 @@ const Gallery = ({ products = [], tags = [] }) => {
                                     marginBottom: "5px",
                                 }}
                                 customWidth={{ maxWidth: "90%" }}
-                                rows={filteredByStar}
+                                rows={filteredByPrice}
                                 setGlobalFilter={setSearchQuery}
                                 setFilterValue={setSearchQuery}
                                 placeholder={`${t(
@@ -262,7 +320,9 @@ const Gallery = ({ products = [], tags = [] }) => {
                                 onSubmit={() => {
                                     console.log("Submit");
                                 }}
-                                initialValues={initValue}
+                                initialValues={{
+                                    star: selectedStar,
+                                }}
                             >
                                 {({ handleSubmit, form }) => {
                                     //* Handle việc select No/Name
@@ -288,15 +348,40 @@ const Gallery = ({ products = [], tags = [] }) => {
                             </Form>
                         </div>
 
-                        {/*//* Slider money  */}
-                        <div dir="ltr" className="" style={{ flex: 1 }}>
-                            <Slider
-                                range
-                                min={0}
-                                max={1000}
-                                value={[350, 635]}
-                                tipFormatter={(value) => `$${value}`}
-                            />
+                        {/*//* Price  */}
+                        <div className="" style={{ flex: 1 }}>
+                            <Form
+                                onSubmit={() => {
+                                    console.log("Submit");
+                                }}
+                                initialValues={{
+                                    price: selectedPrice,
+                                }}
+                            >
+                                {({ handleSubmit, form }) => {
+                                    //* Handle việc select No/Name
+                                    return (
+                                        <FormContainer onSubmit={handleSubmit}>
+                                            <Col md={12} lg={12}>
+                                                <Card
+                                                    style={{
+                                                        marginBottom: "0px",
+                                                        paddingBottom: "0px",
+                                                    }}
+                                                >
+                                                    <CardBody>
+                                                        <FormInput
+                                                            data={
+                                                                selectedPriceInput
+                                                            }
+                                                        ></FormInput>
+                                                    </CardBody>
+                                                </Card>
+                                            </Col>
+                                        </FormContainer>
+                                    );
+                                }}
+                            </Form>
                         </div>
                     </div>
                 </Collapse>
@@ -304,10 +389,10 @@ const Gallery = ({ products = [], tags = [] }) => {
 
             <ProductItems items={currentProducts} />
 
-            {filteredByStar.length > 0 && (
+            {filteredByPrice.length > 0 && (
                 <PaginationWrap>
                     <ReactTablePagination
-                        dataLength={filteredByStar.length} // Total products after all filters
+                        dataLength={filteredByPrice.length} // Total products after all filters
                         page={currentProducts}
                         gotoPage={gotoPage}
                         canPreviousPage={canPreviousPage}
@@ -364,48 +449,11 @@ const GalleryButtons = styled.div`
     gap: 15px;
 `;
 
-const GalleryButton = styled.button`
-    background: transparent;
-    padding: 0;
-    text-transform: uppercase;
-    color: ${(props) => (props.active ? colorAccent : colorAdditional)};
-    font-size: 14px;
-    border: none;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s;
-    ${marginRight}: 20px;
-
-    &:focus,
-    &:active {
-        outline: none;
-    }
-
-    &:hover {
-        color: ${colorAdditionalHover};
-    }
-`;
-
-const GalleryImageButton = styled.button`
-    width: 100%;
-    overflow: hidden;
-    cursor: pointer;
-    border: none;
-    padding: 0;
-
-    @media screen and (min-width: 768px) {
-        width: 50%;
-    }
-
-    @media screen and (min-width: 992px) {
-        width: 25%;
-    }
-`;
-
 const PaginationWrap = styled.div`
     width: 100%;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: center;
 
     padding: 10px 10px;
     border-radius: 5px;

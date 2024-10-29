@@ -1,11 +1,6 @@
 import React from "react";
 import { Col } from "react-bootstrap";
-import {
-    Card,
-    CardBody,
-    CardTitleWrap,
-    CardTitle,
-} from "@/shared/components/Card";
+import { Card } from "@/shared/components/Card";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { selectProducts } from "@/redux/reducers/productSlice";
@@ -21,16 +16,12 @@ const HomePage = () => {
 
     const products = useSelector(selectProducts);
     const categories = useSelector(selectCategories);
-    // console.log("Products", products);
-    // console.log("categories", categories);
     const tags = categories?.map((category) => {
         return {
             tag: category.name,
             title: language == "en" ? category.enName : category.name,
         };
     });
-
-    // console.log("Tag", tags);
 
     return (
         <Col md={12} lg={12}>

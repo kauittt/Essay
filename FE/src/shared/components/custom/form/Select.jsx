@@ -10,8 +10,13 @@ import {
     colorFieldsBorder,
     colorIcon,
     colorText,
+    colorAdditional,
+    colorBlackBackground,
 } from "@/utils/palette";
 import { borderRight } from "@/utils/directions";
+
+console.log("colorBackground", colorBackground);
+console.log("colorBlackBackground", colorBlackBackground);
 
 export const SelectField = React.forwardRef(
     (
@@ -22,7 +27,7 @@ export const SelectField = React.forwardRef(
             placeholder = "",
             options = [],
             setSelectedItem = () => {},
-            myOnChange,
+            myOnChange = () => {},
             ...other
         },
         ref
@@ -83,7 +88,7 @@ SelectField.propTypes = {
                 PropTypes.string,
                 PropTypes.number, // Support both strings and numbers
             ]),
-            label: PropTypes.string,
+            label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
         })
     ),
     value: PropTypes.oneOfType([
@@ -96,6 +101,8 @@ SelectField.propTypes = {
 export default renderComponentField(SelectField);
 
 // region STYLES
+
+const defaultBg = "#DEEBFF";
 
 const StyledSelect = styled(Select)`
     width: 100%;
@@ -174,6 +181,9 @@ const StyledSelect = styled(Select)`
         box-shadow: none !important;
         margin-top: 6px;
         margin-bottom: 6px;
+
+        //* thêm
+        background-color: ${colorBackground};
     }
 
     .react-select__menu-list {
@@ -210,6 +220,29 @@ const StyledSelect = styled(Select)`
             margin-top: 0;
             margin-bottom: 0;
         }
+    }
+
+    //* thêm
+    .react-select__option {
+        color: ${({ theme }) =>
+            colorBackground({ theme }) !== colorBlackBackground
+                ? colorBlackBackground //* Nền trắng
+                : colorText}; //* Nền đen
+
+        background-color: ${colorBackground};
+
+        &:hover:not(.react-select__option--is-selected) {
+            background-color: ${defaultBg};
+            color: ${({ theme }) =>
+                colorBackground({ theme }) !== colorBlackBackground
+                    ? colorBlackBackground //* Nền trắng
+                    : colorBackground({ theme })}; //* Nền đen
+        }
+    }
+
+    .react-select__option--is-selected {
+        background-color: ${colorAccent};
+        color: ${colorBackground};
     }
 `;
 

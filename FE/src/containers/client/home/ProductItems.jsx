@@ -10,10 +10,7 @@ import {
     colorBackground,
 } from "@/utils/palette";
 import { right, left, marginRight } from "@/utils/directions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/shared/components/Button";
-import TimepickerStyles from "./../../../shared/components/form/date-pickers/timepickerStyles";
 import { FaStar } from "react-icons/fa";
 
 const StarRating = ({ rating }) => {
@@ -86,10 +83,8 @@ const ProductItems = ({ items = [] }) => {
                             <ProductItemLink
                                 to={{
                                     pathname: `/pages/product-detail/${item.id}`,
-                                    state: { product: item }, // Passing the product data
                                 }}
                             >
-                                {/* <ProductItemLink> */}
                                 {/*//* Image  */}
                                 <ProductItemImageWrap>
                                     <ProductItemImage
@@ -99,20 +94,21 @@ const ProductItems = ({ items = [] }) => {
                                 </ProductItemImageWrap>
 
                                 {/*//* Info */}
-                                {/* <ProductItemInfo>
-                                </ProductItemInfo> */}
                                 <div
                                     className="tw-flex tw-flex-col tw-items-center tw-gap-[5px]
                                     bg-gradient-to-r from-green-400 to-blue-500
                                  "
                                     // style={{ width: "calc(100% - 90px)" }}
                                 >
+                                    {/*//* Title/Name  */}
                                     <ProductItemTitle
                                         className="tw-text-xl tw-font-medium"
                                         style={{}}
                                     >
                                         {item.name}
                                     </ProductItemTitle>
+
+                                    {/*//* Description  */}
                                     <div
                                         className="tw-flex tw-items-center tw-justify-center
                                     tw-min-h-[34px] tw-max-h-[34px]"
@@ -122,6 +118,7 @@ const ProductItems = ({ items = [] }) => {
                                         </ProductItemDescription>
                                     </div>
 
+                                    {/*//* Price  */}
                                     <ProductItemPrice
                                         className="tw-text-2xl tw-font-semibold tw-mt-[10px] 
                                         tw-flex tw-items-center tw-justify-center"
@@ -130,6 +127,7 @@ const ProductItems = ({ items = [] }) => {
                                         {`${item.price.toLocaleString()} VNĐ`}
                                     </ProductItemPrice>
 
+                                    {/*//* Star  */}
                                     <StarRating rating={item.star} />
                                 </div>
                             </ProductItemLink>
@@ -139,7 +137,7 @@ const ProductItems = ({ items = [] }) => {
                                 <Button
                                     variant="primary"
                                     onClick={(e) => {
-                                        e.stopPropagation(); // Prevents the click event from propagating to the Link
+                                        e.stopPropagation();
                                         console.log("Add to cart");
                                     }}
                                     style={{ margin: "0" }}

@@ -75,6 +75,10 @@ const SearchInput = styled(Form.Control)`
     margin-right: 20px;
     color: ${colorText};
     background: ${colorBackground};
+
+    ::placeholder {
+        color: ${colorAdditional};
+    }
 `;
 
 // endregion
