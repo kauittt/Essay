@@ -20,7 +20,6 @@ public interface ProductMapper {
     @Mapping(target = "star", expression = "java(mapStar(product.getFeedBacks()))")
     @Mapping(target = "stock", expression = "java(mapStock(product.getSizeProducts()))")
     ProductResponseDTO toDTO(Product product);
-
     default int mapStock(List<SizeProduct> sizeProducts) {
         if (sizeProducts != null && !sizeProducts.isEmpty()) {
             return sizeProducts.stream()

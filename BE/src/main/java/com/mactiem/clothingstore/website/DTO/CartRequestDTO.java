@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CartRequestDTO {
+    private List<String> sizes;
     private List<String> products;
     private List<String> quantities;
 }

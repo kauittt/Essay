@@ -2,6 +2,7 @@ package com.mactiem.clothingstore.website.validator;
 
 import com.mactiem.clothingstore.website.DTO.CartRequestDTO;
 import com.mactiem.clothingstore.website.entity.Product;
+import com.mactiem.clothingstore.website.entity.SizeProduct;
 import com.mactiem.clothingstore.website.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,31 +23,32 @@ public class CartValidator {
     }
 
     public void validateCartRequest(CartRequestDTO cartRequestDTO) {
-        if (cartRequestDTO.getProducts() == null || cartRequestDTO.getProducts().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product list cannot be empty");
-        }
-
-        if (cartRequestDTO.getQuantities() == null || cartRequestDTO.getQuantities().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantities list cannot be empty");
-        }
-
-        if (cartRequestDTO.getProducts().size() != cartRequestDTO.getQuantities().size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between product IDs and quantities");
-        }
+        validateRequired(cartRequestDTO);
 
         // Lấy danh sách sản phẩm từ productService
         List<Product> products = validateProductIdsExist(cartRequestDTO.getProducts());
 
         // Map để lưu trữ thông tin sản phẩm và tồn kho (stock)
         Map<String, Integer> productStockMap = new HashMap<>();
+        List<String> sizes = cartRequestDTO.getSizes();
+        int count = 0;
+
         for (Product product : products) {
-            productStockMap.put(String.valueOf(product.getId()), product.getStock());
+            for (SizeProduct sizeProduct : product.getSizeProducts()) {
+                if (sizeProduct.getSize().getName().equals(sizes.get(count++))) {
+                    productStockMap.put(String.valueOf(product.getId()), sizeProduct.getStock());
+                }
+            }
+//            productStockMap.put(String.valueOf(product.getId()), product.getStock());
         }
+
+
 
         // Duyệt qua danh sách quantity để validate
         for (int i = 0; i < cartRequestDTO.getProducts().size(); i++) {
             String productId = cartRequestDTO.getProducts().get(i);
             String quantityStr = cartRequestDTO.getQuantities().get(i);
+            String size = cartRequestDTO.getSizes().get(i);
 
             try {
                 int quantity = Integer.parseInt(quantityStr);
@@ -59,12 +61,34 @@ public class CartValidator {
                 Integer stock = productStockMap.get(productId);
                 if (stock != null && quantity > stock) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                            "Quantity for product ID " + productId + " exceeds available stock. Available stock: " + stock);
+                            String.format("Quantity for product ID: %s, size: %s exceeds available stock. Available stock: %d", productId, size, stock));
                 }
 
             } catch (NumberFormatException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid quantity format");
             }
+        }
+    }
+
+    public void validateRequired(CartRequestDTO cartRequestDTO) {
+        if (cartRequestDTO.getProducts() == null || cartRequestDTO.getProducts().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product list cannot be empty");
+        }
+
+        if (cartRequestDTO.getQuantities() == null || cartRequestDTO.getQuantities().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantities list cannot be empty");
+        }
+
+        if (cartRequestDTO.getSizes() == null || cartRequestDTO.getSizes().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sizes list cannot be empty");
+        }
+
+        if (cartRequestDTO.getProducts().size() != cartRequestDTO.getQuantities().size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between Product IDs and quantities");
+        }
+
+        if (cartRequestDTO.getProducts().size() != cartRequestDTO.getSizes().size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between Product IDs and Sizes");
         }
     }
 

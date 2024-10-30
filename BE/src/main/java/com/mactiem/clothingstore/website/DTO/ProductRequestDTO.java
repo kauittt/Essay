@@ -16,7 +16,7 @@ public class ProductRequestDTO {
     private String description;
     private String enName;
     private String enDescription;
-    private Integer stock;
+//    private Integer stock;
     private Double price;
     private String image;
     private List<String> sizes;

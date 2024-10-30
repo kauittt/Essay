@@ -40,7 +40,7 @@ public class ProductValidator {
         validateProductPrice(productRequestDTO.getPrice());
         validateProductImage(productRequestDTO.getImage());
         validateProductCategory(productRequestDTO.getCategories());
-        validateProductStock(productRequestDTO.getStock());
+//        validateProductStock(productRequestDTO.getStock());
 
         validateSizes(productRequestDTO.getSizes());
         validateQuantities(productRequestDTO.getQuantities(), productRequestDTO.getSizes().size());
@@ -51,9 +51,9 @@ public class ProductValidator {
             validateProductPrice(productRequestDTO.getPrice());
         }
 
-        if (productRequestDTO.getStock() != null) {
-            validateProductStock(productRequestDTO.getStock());
-        }
+//        if (productRequestDTO.getStock() != null) {
+//            validateProductStock(productRequestDTO.getStock());
+//        }
 
         if (productRequestDTO.getCategories() != null) {
             validateProductCategory(productRequestDTO.getCategories());
@@ -158,11 +158,11 @@ public class ProductValidator {
     }
 
     // Validate product stock
-    public void validateProductStock(Integer stock) {
-        if (stock == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product stock is required");
-        } else if (stock <= 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product stock must be positive");
-        }
-    }
+//    public void validateProductStock(Integer stock) {
+//        if (stock == null) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product stock is required");
+//        } else if (stock <= 0) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product stock must be positive");
+//        }
+//    }
 }

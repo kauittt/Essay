@@ -18,6 +18,7 @@ import java.util.List;
 @Builder
 public class OrderRequestDTO {
     private String user;
+    private List<String> sizes;
     private List<String> products;
     private List<String> quantities;
 
