@@ -21,7 +21,7 @@ import { fetchCategories } from "@/redux/actions/categoryAction";
 import { fetchOrders } from "../../../../redux/actions/orderAction";
 import CreateTableSizeHeader from "./table/CreateTableSizeHeader";
 import Collapse from "@/shared/components/Collapse";
-import LineEditableReactTable from "./table/LineEditableReactTable";
+import EditableReactTable from "./table/EditableReactTable";
 import { selectSizes } from "../../../../redux/reducers/sizeSlice";
 
 const bigDecimalFields = ["price"];
@@ -151,7 +151,7 @@ const ProductModal = ({ toggle, data, action }) => {
             "enDescription",
 
             "price",
-            "stock",
+            // "stock",
             "image",
         ];
 
@@ -186,11 +186,11 @@ const ProductModal = ({ toggle, data, action }) => {
         });
 
         //* Table
-        const requiredLineFields = ["stock"];
+        const requiredTableFields = ["stock"];
 
         tableData.map((row, index) => {
             //* Empty
-            requiredLineFields.forEach((field) => {
+            requiredTableFields.forEach((field) => {
                 if (row[field] == null) {
                     console.log("row[field]", row[field]);
                     errors[`${index}-${field}`] = t(
@@ -238,15 +238,6 @@ const ProductModal = ({ toggle, data, action }) => {
             type: "text",
             placeholder: `${enter} ${t("store:product.enDescription")}...`,
         },
-        {
-            label: t("store:product.category"),
-            name: "categories",
-            type: "multiSelect",
-            options: categories.map((category) => ({
-                value: category.name,
-                label: language == "en" ? category.enName : category.name,
-            })),
-        },
     ];
 
     const rightFields = [
@@ -256,11 +247,20 @@ const ProductModal = ({ toggle, data, action }) => {
             type: "text",
             placeholder: `${enter} ${t("store:product.price")}...`,
         },
+        // {
+        //     label: t("store:product.stock"),
+        //     name: "stock",
+        //     type: "text",
+        //     placeholder: `${enter} ${t("store:product.stock")}...`,
+        // },
         {
-            label: t("store:product.stock"),
-            name: "stock",
-            type: "text",
-            placeholder: `${enter} ${t("store:product.stock")}...`,
+            label: t("store:product.category"),
+            name: "categories",
+            type: "multiSelect",
+            options: categories.map((category) => ({
+                value: category.name,
+                label: language == "en" ? category.enName : category.name,
+            })),
         },
         {
             label: t("store:product.image"),
@@ -304,11 +304,11 @@ const ProductModal = ({ toggle, data, action }) => {
 
                                         <Collapse
                                             title={t(
-                                                "SaleTranslations:sale.modal.collapse.line"
+                                                "store:product.manageStock"
                                             )}
                                             className="with-shadow"
                                         >
-                                            <LineEditableReactTable
+                                            <EditableReactTable
                                                 reactTableData={reactTableData}
                                                 onTableDataUpdate={
                                                     handleTableData

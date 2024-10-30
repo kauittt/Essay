@@ -1,6 +1,11 @@
 {
     "no": "STT",
 
+    "size": {
+        "title": "Kích thước",
+        "titles": "Kích thước"
+    },
+
     "product": {
         "title": "Sản phẩm",
         "titles": "Sản phẩm",
@@ -17,7 +22,9 @@
         "category": "Danh mục",
 
         "price": "Giá",
+        "totalStock": "Tổng tồn kho",
         "stock": "Tồn kho",
+        "manageStock": "Quản lý tồn kho",
         "image": "Hình ảnh",
 
         "feedback": "Phản hồi khách hàng",

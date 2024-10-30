@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Error from "@/shared/components/form/Error";
 import styled from "styled-components";
 
-const LineFormField = ({
+const TableFormField = ({
     input = null,
     meta: { touched, error },
     component: Component = "input",
@@ -51,7 +51,7 @@ const LineFormField = ({
     );
 };
 
-LineFormField.propTypes = {
+TableFormField.propTypes = {
     input: PropTypes.shape(),
     meta: PropTypes.shape({
         touched: PropTypes.bool,
@@ -63,9 +63,9 @@ LineFormField.propTypes = {
 };
 
 export const renderComponentField = (component) => (props) =>
-    <LineFormField component={component} {...props} />;
+    <TableFormField component={component} {...props} />;
 
-export default LineFormField;
+export default TableFormField;
 
 // region STYLES
 

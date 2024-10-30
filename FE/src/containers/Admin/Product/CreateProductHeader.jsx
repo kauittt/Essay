@@ -39,8 +39,8 @@ const CreateProductHeader = (t) => {
                 accessor: "convertedCategories",
             },
             {
-                Header: t("store:product.stock"), // "Kho hàng"
-                accessor: "stock",
+                Header: t("store:product.totalStock"), // "Kho hàng"
+                accessor: "totalStock",
             },
             {
                 Header: t("store:product.price"), // "Giá"

@@ -9,22 +9,17 @@ import {
 } from "@/shared/components/Card";
 import { Button } from "@/shared/components/Button";
 import { useTranslation } from "react-i18next";
-import LineReactTableBase from "./LineReactTableBase";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { selectSizes } from "../../../../../redux/reducers/sizeSlice";
+import ReactTableBase from "./ReactTableBase";
 
-const LineEditableReactTable = ({
-    reactTableData,
-    onTableDataUpdate,
-    data,
-    setDeletedLines,
-}) => {
+const EditableReactTable = ({ reactTableData, onTableDataUpdate, data }) => {
     const { t } = useTranslation(["common", "SaleTranslations", "errors"]);
     const dispatch = useDispatch();
     const sizes = useSelector(selectSizes);
 
+    //* init/setup data
     const [rows, setData] = useState(
         data?.sizeProducts?.map((item) => ({
             id: item.size.id,
@@ -41,62 +36,12 @@ const LineEditableReactTable = ({
     const [isSortable, setIsSortable] = useState(false);
     const [withSearchEngine, setWithSearchEngine] = useState(false);
 
-    // console.log("rows", rows);
-
-    //* Add action button
+    //* Row in table
     const rowsData = useMemo(() => {
-        return rows?.map((item, index) => ({
+        return rows?.map((item) => ({
             ...item,
-            action: (
-                <Col
-                    key={index}
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                    }}
-                >
-                    <Button
-                        variant="danger"
-                        onClick={() => handleDelete(item, index)}
-                        style={{ margin: "0" }}
-                    >
-                        <span>{t("action.delete")}</span>
-                    </Button>
-                </Col>
-            ),
         }));
     }, [rows, t]);
-
-    const handleDelete = async (item, index) => {
-        // console.log("Delete Line index: ", index);
-        // console.log("rows", rows);
-        setData((currentRows) =>
-            currentRows.filter((row, idx) => idx !== index)
-        );
-        setDeletedLines((prev) => [...prev, item]);
-    };
-
-    //* Add new ROW
-    const handleAddRow = () => {
-        setData([
-            ...rows,
-            {
-                type: 1,
-                no: "",
-                description: "",
-                locationCode: "",
-                quantity: "",
-                qtyToAssembleToOrder: "",
-                unitOfMeasureCode: "",
-                unitPrice: "",
-                lineDiscount: "",
-                lineAmount: "",
-                qtyToAssign: "",
-                qtyAssigned: "",
-            },
-        ]);
-    };
 
     //* update CELL
     const updateEditableData = (rowIndex, columnId, value) => {
@@ -186,22 +131,15 @@ const LineEditableReactTable = ({
         withPagination,
         withSearchEngine,
         manualPageSize: [10, 20, 30, 40],
-        placeholder: "Search by First name...",
+        placeholder: "Search by ...",
     };
 
     return (
         <Col md={12} lg={12}>
             <Card>
                 <CardBody>
-                    {/*//* Title  */}
-                    {/* <div className="d-flex justify-content-end align-items-center bs">
-                        <Button variant="primary" onClick={handleAddRow}>
-                            {t("action.add")}
-                        </Button>
-                    </div> */}
-
                     {/*//* Table  */}
-                    <LineReactTableBase
+                    <ReactTableBase
                         key={withSearchEngine ? "searchable" : "common"}
                         columns={reactTableData.tableHeaderData}
                         data={rowsData}
@@ -214,7 +152,7 @@ const LineEditableReactTable = ({
     );
 };
 
-LineEditableReactTable.propTypes = {
+EditableReactTable.propTypes = {
     reactTableData: PropTypes.shape({
         tableHeaderData: PropTypes.arrayOf(
             PropTypes.shape({
@@ -226,7 +164,6 @@ LineEditableReactTable.propTypes = {
     }).isRequired,
     onTableDataUpdate: PropTypes.func,
     data: PropTypes.object,
-    setDeletedLines: PropTypes.func,
 };
 
-export default LineEditableReactTable;
+export default EditableReactTable;

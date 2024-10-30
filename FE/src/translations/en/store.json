@@ -1,6 +1,11 @@
 {
     "no": "No.",
 
+    "size": {
+        "title": "Size",
+        "titles": "Sizes"
+    },
+
     "product": {
         "title": "Product",
         "titles": "Products",
@@ -17,7 +22,9 @@
         "category": "Category",
 
         "price": "Price",
-        "stock": "Stock Available",
+        "stock": "Stock",
+        "totalStock": "Total Stock ",
+        "manageStock": "Manage Stock",
         "image": "Image",
 
         "feedback": "Customer Feedback",

@@ -5,12 +5,12 @@ const CreateTableSizeHeader = (t) => {
     const columns = useMemo(
         () => [
             {
-                Header: "Size",
+                Header: t("store:size.title"),
                 accessor: "size",
                 disabled: true,
             },
             {
-                Header: "Stock",
+                Header: t("store:product.stock"),
                 accessor: "stock",
             },
         ],

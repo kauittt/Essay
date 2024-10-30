@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { Col, Container } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
-import ReactTableBase from "@/shared/components/table/ReactTableBase";
 import ReactTableCustomizer from "@/shared/components/table/components/ReactTableCustomizer";
 import {
     Card,
@@ -11,9 +10,7 @@ import {
     CardTitle,
 } from "@/shared/components/Card";
 import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { Button } from "@/shared/components/Button";
-import Modal from "@/shared/components/Modal";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -95,6 +92,10 @@ const ProductPage = () => {
             tableName: language == "en" ? product.enName : product.name,
         };
     }));
+
+    products = products?.map((product) => {
+        return { ...product, totalStock: product.stock };
+    });
     console.log("Products", products);
 
     //* Add edit/delete Button

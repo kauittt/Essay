@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import { useFlexLayout } from "react-table";
 import ReactTableCellEditable from "@/shared/components/table/components/ReactTableEditableCell";
 import ReactTableCell from "@/shared/components/table/components/ReactTableCell";
-import LineReactTableConstructor from "./LineReactTableConstructor";
+import ReactTableConstructor from "./ReactTableConstructor";
 
-const LineReactTableBase = ({
+const ReactTableBase = ({
     tableConfig = {
         isEditable: false,
         isResizable: false,
@@ -84,7 +84,7 @@ const LineReactTableBase = ({
     }
 
     return (
-        <LineReactTableConstructor
+        <ReactTableConstructor
             key={isResizable || isEditable ? "modified" : "common"}
             tableConfig={tableConfig}
             tableOptions={tableOptions}
@@ -93,7 +93,7 @@ const LineReactTableBase = ({
     );
 };
 
-LineReactTableBase.propTypes = {
+ReactTableBase.propTypes = {
     tableConfig: PropTypes.shape({
         isEditable: PropTypes.bool,
         isResizable: PropTypes.bool,
@@ -114,4 +114,4 @@ LineReactTableBase.propTypes = {
     updateEditableData: PropTypes.func,
 };
 
-export default LineReactTableBase;
+export default ReactTableBase;

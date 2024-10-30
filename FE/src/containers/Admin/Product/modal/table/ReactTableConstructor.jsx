@@ -12,14 +12,12 @@ import styled from "styled-components";
 import { scrollbarStyles } from "@/utils/palette";
 
 import ReactTableHeader from "@/shared/components/table/components/ReactTableHeader";
-import LineBodyReactTable from "./LineReactTableBody";
 import ReactTableFooter from "@/shared/components/table/components/ReactTableFooter";
-import ReactTablePagination from "@/shared/components/table/components/ReactTablePagination";
 import { Table } from "@/shared/components/TableElements";
 import { useTranslation } from "react-i18next";
-import CustomReactTableFilter from "@/shared/components/custom/table/CustomReactTableFilter";
+import BodyReactTable from "./ReactTableBody";
 
-const LineReactTableConstructor = ({
+const ReactTableConstructor = ({
     tableConfig = {
         isEditable: false,
         isResizable: false,
@@ -94,18 +92,6 @@ const LineReactTableConstructor = ({
 
     return (
         <div>
-            {/*//* Search  */}
-            {withSearchEngine && (
-                <CustomReactTableFilter
-                    rows={rows}
-                    setGlobalFilter={setGlobalFilter}
-                    setFilterValue={tableOptions.setFilterValue}
-                    globalFilter={state.globalFilter}
-                    placeholder={placeholder}
-                    dataLength={dataLength}
-                />
-            )}
-
             {/*//* Table  */}
             <TableWrap pagination={withPagination}>
                 <Table {...getTableProps()} bordered>
@@ -114,7 +100,7 @@ const LineReactTableConstructor = ({
                         isSortable={isSortable}
                         isResizable={isResizable}
                     />
-                    <LineBodyReactTable
+                    <BodyReactTable
                         page={page}
                         getTableBodyProps={getTableBodyProps}
                         prepareRow={prepareRow}
@@ -129,30 +115,11 @@ const LineReactTableConstructor = ({
                     )}
                 </Table>
             </TableWrap>
-
-            {/*//* Pagination  */}
-            {withPagination && rows.length > 0 && (
-                <ReactTablePagination
-                    page={page}
-                    gotoPage={gotoPage}
-                    previousPage={previousPage}
-                    nextPage={nextPage}
-                    canPreviousPage={canPreviousPage}
-                    canNextPage={canNextPage}
-                    pageOptions={pageOptions}
-                    pageSize={pageSize}
-                    pageIndex={pageIndex}
-                    pageCount={pageCount}
-                    setPageSize={setPageSize}
-                    manualPageSize={manualPageSize}
-                    dataLength={dataLength}
-                />
-            )}
         </div>
     );
 };
 
-LineReactTableConstructor.propTypes = {
+ReactTableConstructor.propTypes = {
     tableConfig: PropTypes.shape({
         isEditable: PropTypes.bool,
         isResizable: PropTypes.bool,
@@ -187,7 +154,7 @@ LineReactTableConstructor.propTypes = {
     tableOptionalHook: PropTypes.arrayOf(PropTypes.func).isRequired,
 };
 
-export default LineReactTableConstructor;
+export default ReactTableConstructor;
 
 // region STYLES
 
