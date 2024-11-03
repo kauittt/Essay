@@ -29,4 +29,8 @@ public class OrderProduct {
 
     @Column(name = "quantity")
     private int quantity;
+
+    @Column(name = "size")
+    private String size;
+
 }

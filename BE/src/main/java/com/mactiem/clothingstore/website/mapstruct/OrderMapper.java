@@ -78,13 +78,16 @@ public interface OrderMapper {
             requestedQuantities.put(productIds.get(i), Integer.parseInt(quantities.get(i)));
         }
 
-        for (Product product : products) {
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+
             OrderProduct op = new OrderProduct();
 
             OrderProductId opId = new OrderProductId(order.getId(), product.getId());
             op.setId(opId);
             op.setOrder(order);
             op.setProduct(product);
+            op.setSize(orderRequestDTO.getSizes().get(i));
             op.setQuantity(requestedQuantities.get(String.valueOf(product.getId())));
             orderProducts.add(op);
         }

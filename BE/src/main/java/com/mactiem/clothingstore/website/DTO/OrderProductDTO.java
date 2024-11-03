@@ -10,4 +10,5 @@ import lombok.*;
 public class OrderProductDTO {
     private ProductResponseDTO product;
     private int quantity;
+    private String size;
 }
