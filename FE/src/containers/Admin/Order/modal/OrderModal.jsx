@@ -125,9 +125,10 @@ const OrderModal = ({ toggle, data, action }) => {
     console.log("Form data", formData);
 
     const flattenedData = formData.orderProducts
-        ?.map(({ product, quantity }) => ({
+        ?.map(({ product, quantity, size }) => ({
             ...product,
             quantity,
+            size,
         }))
         .flat();
 

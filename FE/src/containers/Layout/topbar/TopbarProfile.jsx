@@ -32,7 +32,6 @@ const TopbarProfile = () => {
     };
 
     const user = useSelector(selectUser);
-    console.log("User", user);
 
     return (
         <TopbarProfileWrap>

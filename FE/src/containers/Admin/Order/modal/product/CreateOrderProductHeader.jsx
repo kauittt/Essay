@@ -31,6 +31,10 @@ const CreateOrderProductHeader = (t) => {
                     ),
             },
             {
+                Header: t("store:size.title"), // "Kho hàng"
+                accessor: "size",
+            },
+            {
                 Header: t("store:product.quantity"), // "Kho hàng"
                 accessor: "quantity",
             },

@@ -66,34 +66,38 @@ const NewOrders = () => {
     const orders = useSelector(selectOrders);
     let newOrder = [];
 
-    // console.log("order", orders);
-    // console.log("Products", products);
+    //* sửa nè
 
     //* Xử lý data
     const productSalesMap = products?.reduce((acc, product) => {
-        acc[product.id] = {
-            id: product.id,
-            name: language === "en" ? product.enName : product.name,
-            stock: product.stock,
-            sold: 0,
-            total: 0,
-            latestCreateDate: "",
-            price: product.price,
-            image: product.image,
-        };
+        product.sizeProducts.forEach((sizeProduct) => {
+            let key = `${product.id}-${sizeProduct.size.name}`;
+            acc[key] = {
+                id: product.id,
+                name: language === "en" ? product.enName : product.name,
+                size: sizeProduct.size.name,
+                stock: sizeProduct.stock,
+                sold: 0,
+                total: 0,
+                latestCreateDate: "",
+                price: product.price,
+                image: product.image,
+            };
+        });
         return acc;
     }, {});
 
     orders?.forEach((order) => {
-        const orderDate = new Date(order.createDate);
         order.orderProducts.forEach((item) => {
-            const product = productSalesMap[item.product.id];
+            let key = `${item.product.id}-${item.size}`;
+            const product = productSalesMap[key];
             if (product) {
                 product.sold += item.quantity;
                 product.total += item.quantity * item.product.price;
                 const productDate = product.latestCreateDate
                     ? new Date(product.latestCreateDate)
                     : new Date(0);
+                const orderDate = new Date(order.createDate);
                 if (orderDate > productDate) {
                     product.latestCreateDate = order.createDate;
                 }
@@ -109,11 +113,12 @@ const NewOrders = () => {
                 (a, b) =>
                     new Date(b.latestCreateDate) - new Date(a.latestCreateDate)
             )
-            .slice(0, 6)
+            // .slice(0, 7)
             .map((product) => ({
                 id: product.id,
                 title: product.name,
                 quantity: product.stock,
+                size: product.size,
                 sold: product.sold,
                 total: `${product.total.toLocaleString()} VNĐ`,
                 img: product.image,
@@ -132,18 +137,19 @@ const NewOrders = () => {
         >
             <DashboardOrdersTable responsive striped>
                 <thead>
-                    <tr>
+                    <tr className="">
                         <th>{t("store:product.title")}</th>
-                        <th>{t("store:product.stock")}</th>
-                        <th>{t("store:product.sold")}</th>
+                        <th className="stock">{t("store:product.stock")}</th>
+                        <th className="size">{t("store:size.title")}</th>
+                        <th className="sold">{t("store:product.sold")}</th>
                         <th>{t("store:product.totalPrice")}</th>
-                        <th aria-label="dashboard__table" />
+                        {/* <th aria-label="dashboard__table" /> */}
                     </tr>
                 </thead>
                 <tbody>
                     {newOrder.map((order, index) => {
                         return (
-                            <tr key={order.id}>
+                            <tr key={index}>
                                 <td>
                                     <DashboardOrdersTitle>
                                         <DashboardOrdersImageWrap>
@@ -154,14 +160,18 @@ const NewOrders = () => {
                                         {order.title}
                                     </DashboardOrdersTitle>
                                 </td>
-                                <td>
+
+                                <td className="stock">
                                     <NewOrderAmount quantity={order.quantity} />
                                 </td>
-                                <td>{order.sold}</td>
+
+                                <td className="size">{order.size}</td>
+
+                                <td className="sold">{order.sold}</td>
+
                                 <DashboardOrdersTotalCell dir="ltr">
-                                    {order.total}
+                                    {`${order.total}`}
                                 </DashboardOrdersTotalCell>
-                                <td></td>
                             </tr>
                         );
                     })}
@@ -181,8 +191,36 @@ const DashboardOrdersTable = styled(Table)`
     overflow: hidden;
     min-width: 410px;
 
+    tbody {
+        max-height: 336px;
+        overflow-y: auto;
+        display: block;
+    }
+
+    thead th.size,
+    tbody td.size {
+        width: 60px;
+    }
+
+    thead th.stock,
+    tbody td.stock {
+        width: 120px;
+    }
+
+    thead th.sold,
+    tbody td.sold {
+        width: 80px;
+    }
+
+    thead,
+    tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
     tbody td {
-        padding: 8px 10px;
+        padding: 8px 10px; //* 10
         vertical-align: middle;
     }
 `;

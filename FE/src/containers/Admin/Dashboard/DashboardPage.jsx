@@ -31,7 +31,7 @@ const DashboardPage = () => {
     const users = useSelector(selectTotalUsers);
     console.log("order", orders);
     console.log("Products", products);
-    console.log("Users", users);
+    // console.log("Users", users);
     let currentRevenue = 0;
     let revenuePercent = 0;
 
@@ -195,15 +195,16 @@ const DashboardPage = () => {
             </Row>
 
             <Row>
-                <TopSellingProducts dir={rtl.direction} />
-                <NewOrders />
-            </Row>
-
-            <Row>
                 <ProductSalesAreaChart
                     orders={orders}
                     products={products}
                 ></ProductSalesAreaChart>
+            </Row>
+
+            <Row>
+                <TopSellingProducts dir={rtl.direction} />
+
+                <NewOrders />
             </Row>
         </Container>
     );
