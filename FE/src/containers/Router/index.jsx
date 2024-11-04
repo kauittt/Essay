@@ -21,23 +21,23 @@ import UserPage from "../Admin/User/UserPage";
 import OrderPage from "../Admin/Order/OrderPage";
 import { fetchOrders } from "./../../redux/actions/orderAction";
 import DashboardPage from "../Admin/Dashboard/DashboardPage";
-import HomePage from "../client/home/HomePage";
 import DetailPage from "../client/product-detail/DetailPage";
 import CartPage from "../client/cart/CartPage";
+import ClientProductPage from "../client/product/ClientProductPage";
 
 const Pages = () => (
     <Switch>
-        <Route path="/pages/test" component={() => <h1>Test</h1>} />
-        <Route path="/pages/products" component={ProductPage} />
-        <Route path="/pages/categories" component={CategoryPage} />
-        <Route path="/pages/vouchers" component={VoucherPage} />
-        <Route path="/pages/users" component={UserPage} />
-        <Route path="/pages/orders" component={OrderPage} />
-        <Route path="/pages/dashboard" component={DashboardPage} />
+        <Route path="/pages/admin/test" component={() => <h1>Test</h1>} />
+        <Route path="/pages/admin/products" component={ProductPage} />
+        <Route path="/pages/admin/categories" component={CategoryPage} />
+        <Route path="/pages/admin/vouchers" component={VoucherPage} />
+        <Route path="/pages/admin/users" component={UserPage} />
+        <Route path="/pages/admin/orders" component={OrderPage} />
+        <Route path="/pages/admin/dashboard" component={DashboardPage} />
 
-        <Route path="/pages/home" component={HomePage} />
-        <Route path="/pages/product-detail/:id" component={DetailPage} />
-        <Route path="/pages/cart" component={CartPage} />
+        <Route path="/pages/client/product" component={ClientProductPage} />
+        <Route path="/pages/client/product-detail/:id" component={DetailPage} />
+        <Route path="/pages/client/cart" component={CartPage} />
     </Switch>
 );
 

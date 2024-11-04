@@ -13,9 +13,13 @@ const UserInfo = ({ user = {} }) => {
     return (
         <UserInfoWrap>
             <UserInfoAvatarWrap>
-                <img src={user.image || Ava} alt="" />
+                <img
+                    src={user.image || Ava}
+                    alt="Avatar"
+                    className="tw-object-cover"
+                />
             </UserInfoAvatarWrap>
-            <div>
+            <div className="tw-flex tw-flex-col tw-gap-[5px]">
                 <UserInfoName>{user.name}</UserInfoName>
                 <UserInfoPost>{user.username}</UserInfoPost>
             </div>
@@ -64,6 +68,7 @@ const UserInfoAvatarWrap = styled.div`
     height: 40px;
     overflow: hidden;
     border-radius: 50%;
+    object-fit: cover;
     ${marginRight}: 10px;
 
     img {

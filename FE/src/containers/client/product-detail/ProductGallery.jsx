@@ -17,7 +17,11 @@ const ProductGallery = ({ image }) => {
                 type="button"
                 onClick={() => console.log("Click image detail")}
             >
-                <img src={image} alt="product-img" />
+                <img
+                    src={image}
+                    alt="product-img"
+                    className="tw-object-cover tw-w-[100%] tw-h-[100%]"
+                />
             </ProductGalleryImageButton>
         </ProductGalleryWrap>
     );
@@ -41,6 +45,8 @@ const ProductGalleryWrap = styled.div`
 `;
 
 const ProductGalleryImageButton = styled.button`
+    width: 350px;
+    height: 350px;
     width: 440px;
     height: 440px;
     display: flex;
@@ -51,6 +57,10 @@ const ProductGalleryImageButton = styled.button`
     border: 1px solid ${colorBorder};
     padding: 0;
     border-radius: 5px;
+
+    //* thêm
+    object-fit: cover;
+    cursor: default !important;
 
     @media screen and (max-width: 568px) {
         max-width: 350px;

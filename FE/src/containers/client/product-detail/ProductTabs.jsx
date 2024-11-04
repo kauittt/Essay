@@ -7,7 +7,7 @@ import {
     TabsWrap,
 } from "@/shared/components/Tabs";
 import { BorderedBottomTabs } from "../../../shared/components/Tabs";
-import { PanelTabs } from "../home/styled";
+import { PanelTabs } from "../product/styled";
 
 //* Thông báo chung về ...
 const ProductTabs = () => (

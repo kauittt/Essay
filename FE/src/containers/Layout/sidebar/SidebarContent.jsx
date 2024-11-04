@@ -50,14 +50,18 @@ const SidebarContent = ({
 
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
-                    title="Homepage"
+                    title="Client Product"
                     icon="store"
-                    route="/pages/home"
+                    route="/pages/client/product"
                 />
             </SidebarBlock>
 
             <SidebarBlock collapse={collapse}>
-                <SidebarLink title="Cart" icon="store" route="/pages/cart" />
+                <SidebarLink
+                    title="Cart"
+                    icon="store"
+                    route="/pages/client/cart"
+                />
             </SidebarBlock>
 
             {/*//* Dashboard  */}
@@ -65,7 +69,7 @@ const SidebarContent = ({
                 <SidebarLink
                     title={t("store:dashboard.title")}
                     icon="store"
-                    route="/pages/dashboard"
+                    route="/pages/admin/dashboard"
                 />
             </SidebarBlock>
 
@@ -74,7 +78,7 @@ const SidebarContent = ({
                 <SidebarLink
                     title={t("store:order.titles")}
                     icon="store"
-                    route="/pages/orders"
+                    route="/pages/admin/orders"
                 />
             </SidebarBlock>
 
@@ -83,7 +87,7 @@ const SidebarContent = ({
                 <SidebarLink
                     title={t("store:product.titles")}
                     icon="store"
-                    route="/pages/products"
+                    route="/pages/admin/products"
                 />
             </SidebarBlock>
 
@@ -92,7 +96,7 @@ const SidebarContent = ({
                 <SidebarLink
                     title={t("store:category.titles")}
                     icon="store"
-                    route="/pages/categories"
+                    route="/pages/admin/categories"
                 />
             </SidebarBlock>
 
@@ -101,7 +105,7 @@ const SidebarContent = ({
                 <SidebarLink
                     title={t("store:voucher.titles")}
                     icon="store"
-                    route="/pages/vouchers"
+                    route="/pages/admin/vouchers"
                 />
             </SidebarBlock>
 
@@ -110,7 +114,7 @@ const SidebarContent = ({
                 <SidebarLink
                     title={t("store:user.titles")}
                     icon="store"
-                    route="/pages/users"
+                    route="/pages/admin/users"
                 />
             </SidebarBlock>
 
