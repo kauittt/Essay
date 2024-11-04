@@ -45,6 +45,9 @@ public class FeedBack {
     @Column(name = "image")
     private String image;
 
+    @Column(name = "size")
+    private String size;
+
     public User getUser() {
         if (user == null) {
             user = new User();

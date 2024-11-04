@@ -59,7 +59,9 @@ public class FeedBackService {
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
-                if (!field.getName().equals("user") && !field.getName().equals("product")) {
+                if (!field.getName().equals("user")
+                        && !field.getName().equals("product")
+                        && !field.getName().equals("size")) {
                     Object value = field.get(feedBackRequestDTO);
                     if (value != null) {
                         Field dbField = FeedBack.class.getDeclaredField(field.getName());

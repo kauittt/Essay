@@ -14,8 +14,9 @@ public class FeedBackRequestDTO {
 //    private LocalDate createDate;
 //    private LocalDate updateDate;
     private String user;
+    private String product;
+    private String size;
     private Double point; //- update
     private String description; //- update
-    private String product;
     private String image;
 }

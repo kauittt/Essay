@@ -20,6 +20,7 @@ public interface FeedBackMapper {
     //* DTO
 //    @Mapping(target = "user", ignore = true)
     @Mapping(target = "user", expression = "java(mapUser(feedBack))")
+    @Mapping(target = "size", source = "size")
     FeedBackResponseDTO toDTO(FeedBack feedBack);
 
     default Long mapUser(FeedBack feedback) {
@@ -32,6 +33,7 @@ public interface FeedBackMapper {
 
     //* Entity
     @Mapping(target = "user", source = "user", qualifiedByName = "byId")
+    @Mapping(target = "size", source = "size")
     @Mapping(target = "product", source = "product", ignore = true)
     FeedBack toEntity(FeedBackRequestDTO feedBackRequestDTO);
 

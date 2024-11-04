@@ -18,5 +18,6 @@ public class FeedBackResponseDTO {
     private String description;
     private Long user;
     private String image;
+    private String size;
 //    private Product product;
 }

@@ -32,6 +32,7 @@ public class FeedBackValidator {
         validateDescription(feedBackRequestDTO.getDescription());
         validateUser(feedBackRequestDTO.getUser());
         validateProduct(feedBackRequestDTO.getProduct());
+        validateSize(feedBackRequestDTO.getSize());
 //        validateImage(feedBackRequestDTO.getImage());
     }
 
@@ -54,6 +55,12 @@ public class FeedBackValidator {
     public void validateDescription(String description) {
         if (description == null || description.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Description cannot be empty");
+        }
+    }
+
+    public void validateSize(String size) {
+        if (size == null || size.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size cannot be empty");
         }
     }
 
