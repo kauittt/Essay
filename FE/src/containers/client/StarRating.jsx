@@ -55,7 +55,7 @@ const StarRating = ({ rating }) => {
                     )}
                 </div>
             ))}
-            ({rating.toFixed(2)})
+            ({Number.isInteger(rating) ? rating : rating.toFixed(2)})
         </div>
     );
 };

@@ -1,5 +1,20 @@
 {
     "no": "No.",
+    "manage": "Manage {{title}}",
+
+    "filter": {
+        "title": "Filter",
+        "rating": "Rating",
+        "priceRange": "Price range",
+        "priceToPrice": "{{a}} to {{b}}",
+        "moreThan": "More than {{a}}",
+        "all": "All"
+    },
+
+    "feedback": {
+        "title": "Feedback",
+        "titles": "Feedbacks"
+    },
 
     "size": {
         "title": "Size",

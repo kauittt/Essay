@@ -1,5 +1,20 @@
 {
     "no": "STT",
+    "manage": "Quản lý {{title}}",
+
+    "filter": {
+        "title": "Bộ lọc",
+        "rating": "Đánh giá",
+        "priceRange": "Khoảng giá",
+        "priceToPrice": "{{a}} đến {{b}}",
+        "moreThan": "Hơn {{a}}",
+        "all": "Tất cả"
+    },
+
+    "feedback": {
+        "title": "Đánh giá",
+        "titles": "Đánh giá"
+    },
 
     "size": {
         "title": "Kích thước",

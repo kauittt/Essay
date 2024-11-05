@@ -50,7 +50,7 @@ const SidebarContent = ({
 
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
-                    title="Client Product"
+                    title={t("store:product.titles")}
                     icon="store"
                     route="/pages/client/product"
                 />
@@ -76,7 +76,9 @@ const SidebarContent = ({
             {/*//* Orders  */}
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
-                    title={t("store:order.titles")}
+                    title={t("store:manage", {
+                        title: t("store:order.titles").toLowerCase(),
+                    })}
                     icon="store"
                     route="/pages/admin/orders"
                 />
@@ -85,7 +87,9 @@ const SidebarContent = ({
             {/*//* Product  */}
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
-                    title={t("store:product.titles")}
+                    title={t("store:manage", {
+                        title: t("store:product.titles").toLowerCase(),
+                    })}
                     icon="store"
                     route="/pages/admin/products"
                 />
@@ -94,7 +98,9 @@ const SidebarContent = ({
             {/*//* Categories  */}
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
-                    title={t("store:category.titles")}
+                    title={t("store:manage", {
+                        title: t("store:category.titles").toLowerCase(),
+                    })}
                     icon="store"
                     route="/pages/admin/categories"
                 />
@@ -103,7 +109,9 @@ const SidebarContent = ({
             {/*//* Vouchers  */}
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
-                    title={t("store:voucher.titles")}
+                    title={t("store:manage", {
+                        title: t("store:voucher.titles").toLowerCase(),
+                    })}
                     icon="store"
                     route="/pages/admin/vouchers"
                 />
@@ -112,7 +120,9 @@ const SidebarContent = ({
             {/*//* Users  */}
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
-                    title={t("store:user.titles")}
+                    title={t("store:manage", {
+                        title: t("store:user.titles").toLowerCase(),
+                    })}
                     icon="store"
                     route="/pages/admin/users"
                 />

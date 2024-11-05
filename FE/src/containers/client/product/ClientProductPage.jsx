@@ -75,29 +75,40 @@ const ClientProductPage = () => {
     };
     console.log("selected price", selectedPrice);
     const selectedPriceInput = {
-        label: "Price",
+        label: t("store:filter.priceRange"),
         name: "price",
         type: "select",
         options: [
             {
                 value: 0,
-                label: "All",
+                label: t("store:filter.all"),
             },
             {
                 value: 1,
-                label: "0 to 200.000",
+                label: t("store:filter.priceToPrice", {
+                    a: 0,
+                    b: (200000).toLocaleString() + " VNĐ",
+                }),
             },
             {
                 value: 2,
-                label: "200.000 to 300.000",
+                label: t("store:filter.priceToPrice", {
+                    a: (200000).toLocaleString() + " VNĐ",
+                    b: (300000).toLocaleString() + " VNĐ",
+                }),
             },
             {
                 value: 3,
-                label: "300.000 to 500.000",
+                label: t("store:filter.priceToPrice", {
+                    a: (300000).toLocaleString() + " VNĐ",
+                    b: (500000).toLocaleString() + " VNĐ",
+                }),
             },
             {
                 value: 4,
-                label: "More than 500.000",
+                label: t("store:filter.moreThan", {
+                    a: (500000).toLocaleString() + " VNĐ",
+                }),
             },
         ],
         myOnChange: handleSelectedPrice,
@@ -110,7 +121,7 @@ const ClientProductPage = () => {
         setSelectedStar(value);
     };
     const starInput = {
-        label: "Star",
+        label: t("store:filter.rating"),
         name: "star",
         type: "select",
         options: Array.from({ length: 6 }, (_, i) => ({
@@ -234,9 +245,7 @@ const ClientProductPage = () => {
                                                         }
                                                         className="tw-text-2xl"
                                                     >
-                                                        {t(
-                                                            "tables.customizer.page.show"
-                                                        )}
+                                                        {t("store:filter.all")}
                                                     </NavLink>
                                                 </NavItem>
                                                 {tags?.map((btn, index) => (
@@ -266,7 +275,10 @@ const ClientProductPage = () => {
                                 </PanelTabs>
                             </BorderedBottomTabs>
 
-                            <Collapse title={"Lọc"} className="with-shadow">
+                            <Collapse
+                                title={t("store:filter.title")}
+                                className="with-shadow"
+                            >
                                 <div className="tw-flex tw-justify-between tw-items-center tw-gap-[50px]">
                                     {/*//* Search  */}
                                     <div style={{ flex: 2 }}>
@@ -439,7 +451,7 @@ const ClientProductPageButtons = styled.div`
 const PaginationWrap = styled.div`
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 
     padding: 10px 10px;

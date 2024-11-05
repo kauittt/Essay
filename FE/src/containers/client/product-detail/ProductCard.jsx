@@ -23,23 +23,56 @@ import {
 } from "@/shared/components/form/FormElements";
 import ProductGallery from "./ProductGallery";
 import ProductTabs from "./ProductTabs";
-import ColorSelect from "./ColorSelect";
-import { FaStar } from "react-icons/fa";
 import StarRating from "../StarRating";
+import { Form } from "react-final-form";
+import FormInput from "./../../../shared/components/custom/form/FormInput";
+import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ product = {} }) => {
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
+
     if (!product || Object.keys(product).length === 0) {
         return <div>No product data available.</div>;
     }
 
-    const [color, setColor] = useState("white");
+    const inputSie = {
+        label: t("store:size.title"), // "Customer Name"
+        name: "size",
+        type: "expandSelect",
+        options: product.sizeProducts.map((item) => ({
+            value: item.size.name,
+            label: item.size.name,
+            render: [item.size.name, item.stock],
+            isDisabled: item.stock === 0,
+        })),
+        menuList: [t("store:size.title"), t("store:product.stock")],
+    };
 
-    const onLike = () => {
-        if (color === "white") {
-            setColor("#70bbfd");
-        } else {
-            setColor("white");
+    //* Validate
+    const validate = (values, t) => {
+        const errors = {};
+
+        if (!values.size) {
+            errors.size = t("errors:validation.required");
         }
+        return errors;
+    };
+
+    const submitForm = async (values) => {
+        console.log("Submit values", values);
+
+        const action = t("common:action.add");
+        toast.info(t("common:action.success", { type: action }), {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     };
 
     console.log("Product at detail ", product);
@@ -54,7 +87,11 @@ const ProductCard = ({ product = {} }) => {
 
                         <ProductCardInfo>
                             {/*//* Name  */}
-                            <ProductCardTitle>{product.name}</ProductCardTitle>
+                            <ProductCardTitle>
+                                {language == "vn"
+                                    ? product.name
+                                    : product.enName}
+                            </ProductCardTitle>
 
                             {/*//* Star */}
                             <ProductCardRate>
@@ -69,21 +106,49 @@ const ProductCard = ({ product = {} }) => {
 
                             {/*//* Description  */}
                             <p className="typography-message">
-                                {product.description}
+                                {language == "vn"
+                                    ? product.description
+                                    : product.enDescription}
                             </p>
 
                             {/*//* Button  */}
-                            <ProductCardForm>
-                                <FormButtonToolbar>
-                                    <Button
-                                        as={Link}
-                                        variant="primary"
-                                        to="/e-commerce/cart"
-                                    >
-                                        Add to cart
-                                    </Button>
-                                </FormButtonToolbar>
-                            </ProductCardForm>
+                            <Form
+                                onSubmit={submitForm}
+                                validate={(values) => validate(values, t)}
+                            >
+                                {({ handleSubmit, form }) => {
+                                    //* Handle việc select No/Name
+                                    return (
+                                        <FormContainer onSubmit={handleSubmit}>
+                                            <Col md={12} lg={12}>
+                                                <Card
+                                                    style={{
+                                                        marginBottom: "0px",
+                                                        paddingBottom: "0px",
+                                                    }}
+                                                >
+                                                    <div className="tw-my-[20px]">
+                                                        <FormInput
+                                                            data={inputSie}
+                                                        ></FormInput>
+
+                                                        <FormButtonToolbar>
+                                                            <Button
+                                                                type="submit"
+                                                                variant="primary"
+                                                            >
+                                                                {t(
+                                                                    "action.addToCart"
+                                                                )}
+                                                            </Button>
+                                                        </FormButtonToolbar>
+                                                    </div>
+                                                </Card>
+                                            </Col>
+                                        </FormContainer>
+                                    );
+                                }}
+                            </Form>
 
                             {/*//* Tabs  */}
                             <ProductTabs />
@@ -136,7 +201,7 @@ const ProductCardTitle = styled.h3`
 
 const ProductCardRate = styled.div`
     display: flex;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 
     svg {
         fill: ${colorYellow};

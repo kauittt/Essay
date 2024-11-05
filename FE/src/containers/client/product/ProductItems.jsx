@@ -13,9 +13,12 @@ import { right, left, marginRight } from "@/utils/directions";
 import { Button } from "@/shared/components/Button";
 import { FaStar } from "react-icons/fa";
 import StarRating from "../StarRating";
+import { useTranslation } from "react-i18next";
 
 //! Hết hàng -> thêm style
 const ProductItems = ({ items = [] }) => {
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const yellow = "#f6da6e";
     const gray = "#787985";
     return (
@@ -42,14 +45,15 @@ const ProductItems = ({ items = [] }) => {
                                     className="tw-flex tw-flex-col tw-items-center tw-gap-[5px]
                                     bg-gradient-to-r from-green-400 to-blue-500
                                  "
-                                    // style={{ width: "calc(100% - 90px)" }}
                                 >
                                     {/*//* Title/Name  */}
                                     <ProductItemTitle
                                         className="tw-text-xl tw-font-medium"
                                         style={{}}
                                     >
-                                        {item.name}
+                                        {language == "vn"
+                                            ? item.name
+                                            : item.enName}
                                     </ProductItemTitle>
 
                                     {/*//* Description  */}
@@ -58,7 +62,9 @@ const ProductItems = ({ items = [] }) => {
                                     tw-min-h-[34px] tw-max-h-[34px]"
                                     >
                                         <ProductItemDescription className="">
-                                            {item.description}
+                                            {language == "vn"
+                                                ? item.description
+                                                : item.enDescription}
                                         </ProductItemDescription>
                                     </div>
 
@@ -86,7 +92,7 @@ const ProductItems = ({ items = [] }) => {
                                     }}
                                     style={{ margin: "0" }}
                                 >
-                                    <span>Add to cart</span>
+                                    <span>{t("action.addToCart")}</span>
                                 </Button>
                             </div>
                         </ProductItem>

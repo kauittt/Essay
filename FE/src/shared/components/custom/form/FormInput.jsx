@@ -15,6 +15,7 @@ import FormField from "@/shared/components/custom/form/FormField";
 import { useForm, Controller } from "react-hook-form";
 import { FileInputImageField } from "./FileInputImage";
 import { FileInputField } from "../../form/FileInput";
+import renderExpandSelectField from "./ExpandSelect";
 
 const FormInput = ({ data }) => {
     const { handleSubmit, register, reset, control } = useForm();
@@ -71,6 +72,19 @@ const FormInput = ({ data }) => {
                         type="email"
                         placeholder={data.placeholder}
                         style={{ height: "32px" }}
+                    />
+                )}
+                {data.type === "expandSelect" && (
+                    <Field
+                        name={data.name}
+                        component={renderExpandSelectField}
+                        options={data.options}
+                        style={{ height: "32px" }}
+                        value={data.value}
+                        onChange={data.onChange}
+                        // myValue={data.value}
+                        myOnChange={data.myOnChange}
+                        menuList={data.menuList}
                     />
                 )}
                 {data.type === "select" && (

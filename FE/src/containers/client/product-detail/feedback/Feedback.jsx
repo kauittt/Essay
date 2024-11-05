@@ -71,7 +71,7 @@ const Feedback = ({ product = {} }) => {
     };
 
     const ratingInput = {
-        label: t("store:rating.title"),
+        label: t("store:filter.rating"),
         name: "rating",
         type: "select",
         options: Array.from({ length: 6 }, (_, i) => ({
@@ -89,11 +89,14 @@ const Feedback = ({ product = {} }) => {
                 <CardBody>
                     {/*//* Title  */}
                     <CardTitleWrap>
-                        <CardTitle>Feedbacks</CardTitle>
+                        <CardTitle>{t("store:feedback.title")}</CardTitle>
                     </CardTitleWrap>
 
                     {/*//* Filter  */}
-                    <Collapse title="Lọc" className="with-shadow">
+                    <Collapse
+                        title={t("store:filter.title")}
+                        className="with-shadow"
+                    >
                         <div className="tw-flex tw-justify-between tw-items-center tw-gap-[50px]">
                             {/* Search by Description */}
                             <div style={{ flex: 2 }}>
@@ -106,7 +109,7 @@ const Feedback = ({ product = {} }) => {
                                     placeholder={`${t(
                                         "tables.customizer.search.search"
                                     )} ${t(
-                                        "store:product.titles"
+                                        "store:feedback.titles"
                                     ).toLowerCase()}...`}
                                     dataLength={product.feedBacks.length}
                                 />
