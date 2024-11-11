@@ -11,7 +11,10 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    @Query(value = "SELECT * FROM carts WHERE user_id = = CAST(:userId AS bigint)", nativeQuery = true)
+//    @Query(value = "SELECT * FROM carts WHERE user_id = CAST(:userId AS bigint)", nativeQuery = true)
+//    Optional<Cart> findCartByUserId(@Param("userId") String userId);
+
+    @Query(value = "SELECT * FROM carts WHERE user_id = CAST(:userId AS UNSIGNED)", nativeQuery = true)
     Optional<Cart> findCartByUserId(@Param("userId") String userId);
 
     @Query(value = "SELECT c FROM carts c JOIN users u ON c.user_id = u.id" +

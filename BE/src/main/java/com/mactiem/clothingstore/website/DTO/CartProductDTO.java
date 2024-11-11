@@ -11,4 +11,5 @@ import lombok.*;
 public class CartProductDTO {
     private ProductResponseDTO product;
     private int quantity;
+    private String size;
 }
