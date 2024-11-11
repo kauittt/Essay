@@ -14,50 +14,49 @@ import { colorAdditional } from "@/utils/palette";
 import { marginRight, paddingLeft } from "@/utils/directions";
 import { Button } from "@/shared/components/Button";
 
-const CartPurchase = () => (
+const CartPurchase = ({ subTotal = 0 }) => (
     <Form onSubmit={() => {}} initialValues={{ delivery: "russian_post" }}>
         {({ handleSubmit }) => (
             <CartDeliveriesForm onSubmit={handleSubmit}>
                 <FormGroup>
                     <FormGroupLabel>Delivery method:</FormGroupLabel>
                     <CartDeliveryField>
+                        {/*//* Option 1  */}
                         <CartDelivery>
                             <Field
                                 name="delivery"
                                 render={renderRadioButtonField}
-                                label="Russian Post"
+                                label="GHN"
+                                radioValue="dhl"
+                            />
+                            <CartDeliveryTime>
+                                3-5 working days
+                            </CartDeliveryTime>
+                            <CartDeliveryPrice>
+                                {(30000).toLocaleString()} VNĐ
+                            </CartDeliveryPrice>
+                        </CartDelivery>
+
+                        {/*//* Option 2  */}
+                        {/* <CartDelivery>
+                            <Field
+                                name="delivery"
+                                render={renderRadioButtonField}
+                                label="Ninja Van"
                                 radioValue="russian_post"
                             />
                             <CartDeliveryTime>
                                 5-7 working days
                             </CartDeliveryTime>
-                            <CartDeliveryPrice>$20</CartDeliveryPrice>
-                        </CartDelivery>
-                        <CartDelivery>
-                            <Field
-                                name="delivery"
-                                render={renderRadioButtonField}
-                                label="DHL Service"
-                                radioValue="dhl"
-                            />
-                            <CartDeliveryTime>
-                                1-3 working days
-                            </CartDeliveryTime>
-                            <CartDeliveryPrice>$39</CartDeliveryPrice>
-                        </CartDelivery>
-                        <CartDelivery>
-                            <Field
-                                name="delivery"
-                                render={renderRadioButtonField}
-                                label="Mail Priority"
-                                radioValue="mail_priority"
-                            />
-                            <CartDeliveryTime>Tomorrow</CartDeliveryTime>
-                            <CartDeliveryPrice>$54</CartDeliveryPrice>
-                        </CartDelivery>
+                            <CartDeliveryPrice>
+                                {(25000).toLocaleString()} VNĐ
+                            </CartDeliveryPrice>
+                        </CartDelivery> */}
                     </CartDeliveryField>
                 </FormGroup>
-                <CartTotal>Total Price: $348.00</CartTotal>
+                <CartTotal>
+                    Total Price: {(subTotal + 30000).toLocaleString()} VNĐ
+                </CartTotal>
                 <FormButtonToolbar>
                     <Button
                         as={Link}
