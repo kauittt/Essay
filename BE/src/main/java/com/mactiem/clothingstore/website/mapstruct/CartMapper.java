@@ -19,11 +19,13 @@ import org.springframework.stereotype.Component;
 public interface CartMapper {
     //* DTO
     CartResponseDTO toDTO(Cart cart);
+
     @AfterMapping
     default CartResponseDTO mapCartProduct(@MappingTarget CartResponseDTO cartResponseDTO, Cart cart, ProductMapper productMapper) {
         for (CartProduct cartProduct : cart.getCartProducts()) {
             CartProductDTO dto = new CartProductDTO();
             dto.setQuantity(cartProduct.getQuantity());
+            dto.setSize(cartProduct.getSize());
             dto.setProduct(productMapper.toDTO(cartProduct.getProduct()));
 
             cartResponseDTO.getCartProducts().add(dto);
@@ -37,6 +39,7 @@ public interface CartMapper {
         for (CartProduct cartProduct : cart.getCartProducts()) {
             CartProductDTO dto = new CartProductDTO();
             dto.setQuantity(cartProduct.getQuantity());
+            dto.setSize(cartProduct.getSize());
             dto.setProduct(productMapper.toDTO(cartProduct.getProduct()));
 
             userResponseDTO.getCart().add(dto);

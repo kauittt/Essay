@@ -2,7 +2,9 @@ package com.mactiem.clothingstore.website.validator;
 
 import com.mactiem.clothingstore.website.DTO.CartRequestDTO;
 import com.mactiem.clothingstore.website.entity.Product;
+import com.mactiem.clothingstore.website.entity.Size;
 import com.mactiem.clothingstore.website.entity.SizeProduct;
+import com.mactiem.clothingstore.website.repository.SizeRepository;
 import com.mactiem.clothingstore.website.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,14 +18,17 @@ import java.util.Map;
 @Component
 public class CartValidator {
     private final ProductService productService;
+    private final SizeRepository sizeRepository;
 
     @Autowired
-    public CartValidator(ProductService productService) {
+    public CartValidator(ProductService productService, SizeRepository sizeRepository) {
         this.productService = productService;
+        this.sizeRepository = sizeRepository;
     }
 
     public void validateCartRequest(CartRequestDTO cartRequestDTO) {
         validateRequired(cartRequestDTO);
+        validateSizesExist(cartRequestDTO.getSizes());
 
         // Lấy danh sách sản phẩm từ productService
         List<Product> products = validateProductIdsExist(cartRequestDTO.getProducts());
@@ -35,10 +40,11 @@ public class CartValidator {
 
         for (Product product : products) {
             for (SizeProduct sizeProduct : product.getSizeProducts()) {
-                if (sizeProduct.getSize().getName().equals(sizes.get(count++))) {
+                if (sizeProduct.getSize().getName().equals(sizes.get(count))) {
                     productStockMap.put(String.valueOf(product.getId()), sizeProduct.getStock());
                 }
             }
+            count++;
 //            productStockMap.put(String.valueOf(product.getId()), product.getStock());
         }
 
@@ -99,5 +105,13 @@ public class CartValidator {
         }
 
         return products;
+    }
+
+    public void validateSizesExist(List<String> sizes) {
+        List<Size> dbSize = sizeRepository.findByNameIn(sizes);
+        if (dbSize.size() != sizes.size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more Size do not exist");
+        }
+
     }
 }

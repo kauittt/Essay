@@ -49,49 +49,55 @@ public class CartService {
     }
 
     @Transactional
-    public CartResponseDTO updateCartByUserId(String id, CartRequestDTO cartRequestDTO) {
-        cartValidator.validateCartRequest(cartRequestDTO);
+    public CartResponseDTO updateCartByUserId(String userId, CartRequestDTO cartRequestDTO) {
+        cartValidator.validateCartRequest(cartRequestDTO); // Ensure the request is valid
 
-        Cart cart = findCartByUserId(id);
+        Cart cart = findCartByUserId(userId); // Fetch the cart associated with the user
 
         List<String> productIds = cartRequestDTO.getProducts();
         List<String> quantities = cartRequestDTO.getQuantities();
+        List<String> sizes = cartRequestDTO.getSizes(); // Sizes for the products
 
         Map<Long, Integer> requestedQuantities = new HashMap<>();
+        Map<Long, String> requestedSizes = new HashMap<>();
+
+        // Prepare maps of requested quantities and sizes
         for (int i = 0; i < productIds.size(); i++) {
-            requestedQuantities.put(Long.valueOf(productIds.get(i)), Integer.parseInt(quantities.get(i)));
+            Long productId = Long.valueOf(productIds.get(i));
+            requestedQuantities.put(productId, Integer.parseInt(quantities.get(i)));
+            requestedSizes.put(productId, sizes.get(i));
         }
 
         List<Product> products = productService.findProductsByIds(productIds);
 
         for (Product product : products) {
+            Long productId = product.getId();
+            // Filter existing cart products not only by product but also check sizes
             CartProduct existingCartProduct = cart.getCartProducts().stream()
-                    .filter(cp -> cp.getProduct().getId().equals(product.getId()))
+                    .filter(cp -> cp.getProduct().getId().equals(productId) && cp.getSize().equals(requestedSizes.get(productId)))
                     .findFirst()
                     .orElse(null);
 
-            //- Đã tồn tại
+            // Update existing cart product or add new one
             if (existingCartProduct != null) {
-                int updatedQuantity = existingCartProduct.getQuantity() + requestedQuantities.get(product.getId());
-                if (updatedQuantity > 0) {
-                    existingCartProduct.setQuantity(updatedQuantity);
+                int updatedQuantity = existingCartProduct.getQuantity() + requestedQuantities.get(productId);
+                existingCartProduct.setQuantity(updatedQuantity);
+                if (updatedQuantity <= 0) {
+                    cart.getCartProducts().remove(existingCartProduct); // Remove product if quantity is 0 or less
                 }
-                //- Remove khi <= 0
-                else {
-                    cart.getCartProducts().remove(existingCartProduct);
+            } else {
+                // Check if adding a new product with negative quantity, which should not be allowed
+                int quantityToAdd = requestedQuantities.get(productId);
+                if (quantityToAdd > 0) {
+                    CartProduct newCartProduct = new CartProduct(new CartProductId(cart.getId(), productId), cart, product, quantityToAdd, requestedSizes.get(productId));
+                    cart.getCartProducts().add(newCartProduct);
+                } else {
+                    throw new IllegalArgumentException("Quantity cannot be negative for new product: " + productId);
                 }
-            }
-            //- Thêm mới
-            else {
-                if (requestedQuantities.get(product.getId()) < 0) {
-                    throw new IllegalArgumentException("Quantity cannot be negative for new product: " + product.getId());
-                }
-                CartProductId cartProductId = new CartProductId(cart.getId(), product.getId());
-                CartProduct newCartProduct = new CartProduct(cartProductId, cart, product, requestedQuantities.get(product.getId()));
-                cart.getCartProducts().add(newCartProduct);
             }
         }
 
+        // Save the updated cart and map it to the response DTO
         return cartMapper.toDTO(cartRepository.save(cart));
     }
 }

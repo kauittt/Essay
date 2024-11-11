@@ -27,4 +27,7 @@ public class CartProduct {
 
     @Column(name = "quantity")
     private int quantity;
+
+    @Column(name = "size")
+    private String size;
 }
