@@ -84,7 +84,7 @@ const FeedbackListWrap = styled.div`
     }
 `;
 
-const FeedbackListTitle = styled.p`
+const FeedbackListTitle = styled.div`
     font-size: 16px;
     font-weight: 500;
     color: ${colorBlue};
@@ -102,7 +102,7 @@ const FeedbackListLink = styled.p`
     }
 `;
 
-const FeedbackListPreview = styled.p`
+const FeedbackListPreview = styled.div`
     max-width: 980px;
     margin-top: 5px;
     color: ${colorAdditional};

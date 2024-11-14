@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
-import { Col, Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import ReactTableBase from "@/shared/components/table/ReactTableBase";
 import ReactTableCustomizer from "@/shared/components/table/components/ReactTableCustomizer";
@@ -24,6 +24,24 @@ import { fetchVouchers } from "@/redux/actions/voucherAction";
 import { removeOrder } from "../../../redux/actions/orderAction";
 import CreateOrderHeader from "./CreateOrderHeader";
 import { selectOrders } from "@/redux/reducers/orderSlice";
+
+const formatDate = (date) => {
+    const year = date.getFullYear(); // Gets the full year (e.g., 2024)
+    const month = date.getMonth() + 1; // Gets the month (0-11, hence adding 1)
+    const day = date.getDate(); // Gets the day of the month
+    const hours = date.getHours(); // Gets the hours
+    const minutes = date.getMinutes(); // Gets the minutes
+    const seconds = date.getSeconds(); // Gets the seconds
+
+    // Ensure the month, day, hours, minutes, and seconds are zero-padded
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedDay = day < 10 ? `0${day}` : day;
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+
+    return `${year}-${formattedMonth}-${formattedDay} ${formattedHours}:${formattedMinutes}:${formattedSeconds}`; // Formats to yyyy-mm-dd hh:mm:ss
+};
 
 //! Check stock
 const OrderPage = () => {
@@ -76,6 +94,8 @@ const OrderPage = () => {
 
     orders = orders?.map((order) => ({
         ...order,
+        createDate: formatDate(new Date(order.createDate)),
+        updateDate: formatDate(new Date(order.updateDate)),
         invoiceId: order.invoice.id,
         invoiceCreateDate: order.invoice.createDate,
         invoiceTotalAmount: `${order?.invoice?.totalAmount?.toLocaleString()} VNĐ`,
@@ -158,37 +178,41 @@ const OrderPage = () => {
 
     return (
         <Container>
-            <Col md={12} lg={12}>
-                <Card>
-                    <CardBody>
-                        {/*//* Title  */}
-                        <CardTitleWrap>
-                            <CardTitle>{t("store:order.titles")}</CardTitle>
-                        </CardTitleWrap>
+            <Row>
+                {" "}
+                <Col md={12} lg={12}>
+                    <Card>
+                        <CardBody>
+                            {/*//* Title  */}
+                            <CardTitleWrap>
+                                <CardTitle>{t("store:order.titles")}</CardTitle>
+                            </CardTitleWrap>
 
-                        {/*//*Customizer   */}
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                            }}
-                        >
-                            <ReactTableCustomizer
-                                handleClickIsSortable={handleClickIsSortable}
-                                handleClickWithPagination={
-                                    handleClickWithPagination
-                                }
-                                handleClickWithSearchEngine={
-                                    handleClickWithSearchEngine
-                                }
-                                isSortable={isSortable}
-                                withPagination={withPagination}
-                                withSearchEngine={withSearchEngine}
-                            />
+                            {/*//*Customizer   */}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <ReactTableCustomizer
+                                    handleClickIsSortable={
+                                        handleClickIsSortable
+                                    }
+                                    handleClickWithPagination={
+                                        handleClickWithPagination
+                                    }
+                                    handleClickWithSearchEngine={
+                                        handleClickWithSearchEngine
+                                    }
+                                    isSortable={isSortable}
+                                    withPagination={withPagination}
+                                    withSearchEngine={withSearchEngine}
+                                />
 
-                            {/*//* Button: New  */}
-                            {/* <CustomModal
+                                {/*//* Button: New  */}
+                                {/* <CustomModal
                                 color="primary"
                                 title={
                                     t("action.add") +
@@ -199,19 +223,20 @@ const OrderPage = () => {
                                 action="new"
                                 component="order"
                             /> */}
-                        </div>
+                            </div>
 
-                        {/*//* Table  */}
-                        <CustomReactTableBase
-                            key={withSearchEngine ? "searchable" : "common"}
-                            columns={reactTableData.tableHeaderData}
-                            data={data}
-                            tableConfig={tableConfig}
-                            component="order"
-                        />
-                    </CardBody>
-                </Card>
-            </Col>
+                            {/*//* Table  */}
+                            <CustomReactTableBase
+                                key={withSearchEngine ? "searchable" : "common"}
+                                columns={reactTableData.tableHeaderData}
+                                data={data}
+                                tableConfig={tableConfig}
+                                component="order"
+                            />
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
         </Container>
     );
 };

@@ -100,11 +100,11 @@
         "updateDate": "Update Date",
         "status": {
             "title": "Status",
-            "created": "Created",
-            "confirmed": "Confirmed",
-            "delivering": "Delivering",
-            "done": "Done",
-            "cancel": "Cancel"
+            "created": "CREATED",
+            "confirmed": "CONFIRMED",
+            "delivering": "DELIVERING",
+            "done": "DONE",
+            "cancel": "CANCEL"
         }
     },
 

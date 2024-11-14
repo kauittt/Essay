@@ -87,6 +87,10 @@ const getTextColor = (variant) => {
 
 const getPaddings = (size) => {
     switch (size) {
+        case "customQuantityLeft":
+            return "5px 13.1px";
+        case "customQuantityRight":
+            return "5px 11.34px";
         case "sm":
             return "5px 25px";
         case "lg":
@@ -208,6 +212,8 @@ export const Button = styled(BootstrapButton)`
         border-color: ${colorBackgroundBody};
         color: ${colorDustyWhite};
         pointer-events: none;
+        cursor: not-allowed;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
         span {
             color: ${colorDustyWhite};

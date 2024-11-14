@@ -12,8 +12,9 @@ import {
 const rows = [
     { id: "no", disablePadding: false, label: "No" },
     { id: "name", disablePadding: false, label: "Name" },
-    { id: "quantity", disablePadding: false, label: "Quantity" },
+    { id: "size", disablePadding: false, label: "Size" },
     { id: "price", disablePadding: false, label: "Price" },
+    { id: "quantity", disablePadding: false, label: "Quantity" },
     { id: "total", disablePadding: false, label: "Total" },
     { id: "remove", disablePadding: false, label: "Remove", sortable: false }, // Set sortable to false
 ];

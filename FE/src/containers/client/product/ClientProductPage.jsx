@@ -73,7 +73,7 @@ const ClientProductPage = () => {
         console.log("selectedPrice selected:", value);
         setSelectedPrice(value);
     };
-    console.log("selected price", selectedPrice);
+    // console.log("selected price", selectedPrice);
     const selectedPriceInput = {
         label: t("store:filter.priceRange"),
         name: "price",
@@ -139,6 +139,8 @@ const ClientProductPage = () => {
         );
     }, [currentTag, products]);
 
+    console.log("filteredByTag", filteredByTag);
+
     // Lọc sản phẩm dựa trên search query
     const filteredBySearch = useMemo(() => {
         if (!searchQuery) return filteredByTag;
@@ -146,13 +148,19 @@ const ClientProductPage = () => {
         return filteredByTag.filter(
             (p) =>
                 p.name?.toLowerCase().includes(query) ||
-                p.description?.toLowerCase().includes(query)
+                p.enName?.toLowerCase().includes(query) ||
+                p.description?.toLowerCase().includes(query) ||
+                p.enDescription?.toLowerCase().includes(query)
         );
     }, [searchQuery, filteredByTag]);
+
+    console.log("filteredBySearch", filteredBySearch);
 
     const filteredByStar = useMemo(() => {
         return filteredBySearch.filter((p) => p.star >= selectedStar);
     }, [filteredBySearch, selectedStar]);
+
+    console.log("filteredByStar", filteredByStar);
 
     const filteredByPrice = useMemo(() => {
         const price = arrayPrice[selectedPrice];
@@ -169,6 +177,9 @@ const ClientProductPage = () => {
         console.log("Filtered", finalProducts);
         return finalProducts;
     }, [filteredByStar, selectedPrice]);
+
+    console.log("filteredByPrice", filteredByPrice);
+    console.log("---------------------");
 
     //* use
     const currentProducts = useMemo(() => {
@@ -220,7 +231,7 @@ const ClientProductPage = () => {
         return Array.from({ length: totalPages }, (_, i) => i);
     }, [totalPages]);
 
-    console.log("rating", selectedStar);
+    // console.log("rating", selectedStar);
 
     return (
         <Col md={12} lg={12}>
@@ -422,6 +433,7 @@ const MyCardBody = styled(Card.Body)`
     border-radius: 5px;
     box-shadow: ${shadow};
     padding: 0 12px;
+    padding-left: 15px;
 `;
 
 const ClientProductPageWrap = styled.div`

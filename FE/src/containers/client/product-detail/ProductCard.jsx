@@ -28,10 +28,12 @@ import { Form } from "react-final-form";
 import FormInput from "./../../../shared/components/custom/form/FormInput";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const ProductCard = ({ product = {} }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
+    const history = useHistory();
 
     if (!product || Object.keys(product).length === 0) {
         return <div>No product data available.</div>;
@@ -81,6 +83,17 @@ const ProductCard = ({ product = {} }) => {
         <Col md={12} lg={12}>
             <Card>
                 <CardBody>
+                    <Button
+                        variant="secondary"
+                        onClick={() => history.push("/pages/client/product")}
+                        style={{
+                            margin: "0px",
+                            marginBottom: "20px",
+                        }}
+                    >
+                        Back
+                    </Button>
+
                     <ProductCardContent>
                         {/*//* Image  */}
                         <ProductGallery image={product?.image} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
-import { Col, Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import ReactTableBase from "@/shared/components/table/ReactTableBase";
 import ReactTableCustomizer from "@/shared/components/table/components/ReactTableCustomizer";
@@ -144,60 +144,66 @@ const CategoryPage = () => {
 
     return (
         <Container>
-            <Col md={12} lg={12}>
-                <Card>
-                    <CardBody>
-                        {/*//* Title  */}
-                        <CardTitleWrap>
-                            <CardTitle>{t("store:category.titles")}</CardTitle>
-                        </CardTitleWrap>
+            <Row>
+                <Col md={12} lg={12}>
+                    <Card>
+                        <CardBody>
+                            {/*//* Title  */}
+                            <CardTitleWrap>
+                                <CardTitle>
+                                    {t("store:category.titles")}
+                                </CardTitle>
+                            </CardTitleWrap>
 
-                        {/*//*Customizer   */}
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                            }}
-                        >
-                            <ReactTableCustomizer
-                                handleClickIsSortable={handleClickIsSortable}
-                                handleClickWithPagination={
-                                    handleClickWithPagination
-                                }
-                                handleClickWithSearchEngine={
-                                    handleClickWithSearchEngine
-                                }
-                                isSortable={isSortable}
-                                withPagination={withPagination}
-                                withSearchEngine={withSearchEngine}
-                            />
+                            {/*//*Customizer   */}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <ReactTableCustomizer
+                                    handleClickIsSortable={
+                                        handleClickIsSortable
+                                    }
+                                    handleClickWithPagination={
+                                        handleClickWithPagination
+                                    }
+                                    handleClickWithSearchEngine={
+                                        handleClickWithSearchEngine
+                                    }
+                                    isSortable={isSortable}
+                                    withPagination={withPagination}
+                                    withSearchEngine={withSearchEngine}
+                                />
 
-                            {/*//* Button: New  */}
-                            <CustomModal
-                                color="primary"
-                                title={
-                                    t("action.add") +
-                                    " " +
-                                    t("store:category.title")
-                                }
-                                btn={t("action.add")}
-                                action="new"
+                                {/*//* Button: New  */}
+                                <CustomModal
+                                    color="primary"
+                                    title={
+                                        t("action.add") +
+                                        " " +
+                                        t("store:category.title")
+                                    }
+                                    btn={t("action.add")}
+                                    action="new"
+                                    component="category"
+                                />
+                            </div>
+
+                            {/*//* Table  */}
+                            <CustomReactTableBase
+                                key={withSearchEngine ? "searchable" : "common"}
+                                columns={reactTableData.tableHeaderData}
+                                data={data}
+                                tableConfig={tableConfig}
                                 component="category"
                             />
-                        </div>
-
-                        {/*//* Table  */}
-                        <CustomReactTableBase
-                            key={withSearchEngine ? "searchable" : "common"}
-                            columns={reactTableData.tableHeaderData}
-                            data={data}
-                            tableConfig={tableConfig}
-                            component="category"
-                        />
-                    </CardBody>
-                </Card>
-            </Col>
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
         </Container>
     );
 };

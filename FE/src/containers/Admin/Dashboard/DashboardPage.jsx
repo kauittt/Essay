@@ -156,6 +156,7 @@ const DashboardPage = () => {
     return (
         <Container className="dashboard">
             <Row>
+                {/* <div className="tw-flex tw-gap-[15px]"> */}
                 {/* Revenue */}
                 <MonthlyInfo
                     title={currentRevenue}
@@ -192,6 +193,7 @@ const DashboardPage = () => {
                     gradient="pink"
                     noPercent={true}
                 />
+                {/* </div> */}
             </Row>
 
             <Row>

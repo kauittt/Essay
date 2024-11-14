@@ -24,11 +24,7 @@ const DetailPage = () => {
             </Row>
 
             <Row>
-                <Card>
-                    <CardBody>
-                        <Feedback product={product} />
-                    </CardBody>
-                </Card>
+                <Feedback product={product} />
             </Row>
         </Container>
     );

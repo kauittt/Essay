@@ -24,6 +24,7 @@ import DashboardPage from "../Admin/Dashboard/DashboardPage";
 import DetailPage from "../client/product-detail/DetailPage";
 import CartPage from "../client/cart/CartPage";
 import ClientProductPage from "../client/product/ClientProductPage";
+import InvoicePage from "../client/invoice/InvoicePage";
 
 const Pages = () => (
     <Switch>
@@ -38,6 +39,7 @@ const Pages = () => (
         <Route path="/pages/client/product" component={ClientProductPage} />
         <Route path="/pages/client/product-detail/:id" component={DetailPage} />
         <Route path="/pages/client/cart" component={CartPage} />
+        <Route path="/pages/client/invoice" component={InvoicePage} />
     </Switch>
 );
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import DeleteForeverIcon from "mdi-react/DeleteForeverIcon";
 import {
@@ -21,13 +21,15 @@ import {
     TableCheckbox,
 } from "@/shared/components/MaterialTableElements";
 import TableBody from "@mui/material/TableBody";
-import MatTableHead from "./MatTableHead";
-import MatTableToolbar from "./MatTableToolbar";
+import MatTableHead from "./MaterialTable/MatTableHead";
+import MatTableToolbar from "./MaterialTable/MatTableToolbar";
 import { Button } from "./../../../shared/components/Button";
+import { selectProducts } from "@/redux/reducers/productSlice";
 
 const CartPage = () => {
     const user = useSelector(selectUser);
     const totalUsers = useSelector(selectTotalUsers);
+    const products = useSelector(selectProducts);
 
     const [currentUser, setCurrentUser] = useState({});
     const [cartItems, setCartItems] = useState([]);
@@ -139,195 +141,250 @@ const CartPage = () => {
         );
     };
 
-    const subTotal = cartItems.reduce(
-        (sum, item) => sum + item.product.price * item.quantity,
-        0
-    );
+    //* Process Selected Cart Item
+    const selectedProducts = cartItems?.filter((item) => {
+        return selected.get(item.product.id) === true;
+    });
+
+    // console.log("selectedProducts", selectedProducts);
+
+    let subTotal = 0;
+    subTotal = selectedProducts?.reduce((sum, item) => {
+        return sum + item.product.price * item.quantity;
+    }, 0);
 
     return (
-        <Col md={12} lg={12}>
-            <Card>
-                <CardBody>
-                    <CardTitleWrap>
-                        <CardTitle>Cart</CardTitle>
-                    </CardTitleWrap>
+        <Container>
+            <Row>
+                {" "}
+                <Col md={12} lg={12}>
+                    <Card>
+                        <CardBody>
+                            <CardTitleWrap>
+                                <CardTitle>Cart</CardTitle>
+                            </CardTitleWrap>
 
-                    <MatTableToolbar
-                        numSelected={[...selected].filter((el) => el[1]).length}
-                        handleDeleteSelected={handleDeleteSelected}
-                        onRequestSort={handleRequestSort}
-                    />
-
-                    <TableWrap>
-                        <Table>
-                            <MatTableHead
+                            <MatTableToolbar
                                 numSelected={
                                     [...selected].filter((el) => el[1]).length
                                 }
-                                order={order}
-                                orderBy={orderBy}
-                                onSelectAllClick={(event) =>
-                                    handleSelectAllClick(
-                                        event,
-                                        event.target.checked
-                                    )
-                                }
+                                handleDeleteSelected={handleDeleteSelected}
                                 onRequestSort={handleRequestSort}
-                                rowCount={cartItems.length}
                             />
-                            <TableBody>
-                                {sortedCartItems
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((item, index) => {
-                                        const isItemSelected = isSelected(
-                                            item.product.id
-                                        );
-                                        const calc =
-                                            item.product.price * item.quantity;
-                                        const totalPrice =
-                                            calc % 10 == 0
-                                                ? calc
-                                                : calc.toFixed(2);
-                                        return (
-                                            <TableRow
-                                                key={item.product.id}
-                                                selected={isItemSelected}
-                                                onClick={() =>
-                                                    handleClick(item.product.id)
-                                                }
-                                                style={{ cursor: "pointer" }}
-                                            >
-                                                <TableCell padding="checkbox">
-                                                    <TableCheckbox
-                                                        checked={isItemSelected}
-                                                        onChange={(event) => {
-                                                            event.stopPropagation();
+
+                            <TableWrap>
+                                <Table>
+                                    <MatTableHead
+                                        numSelected={
+                                            [...selected].filter((el) => el[1])
+                                                .length
+                                        }
+                                        order={order}
+                                        orderBy={orderBy}
+                                        onSelectAllClick={(event) =>
+                                            handleSelectAllClick(
+                                                event,
+                                                event.target.checked
+                                            )
+                                        }
+                                        onRequestSort={handleRequestSort}
+                                        rowCount={cartItems.length}
+                                    />
+                                    <TableBody>
+                                        {sortedCartItems
+                                            .slice(
+                                                page * rowsPerPage,
+                                                page * rowsPerPage + rowsPerPage
+                                            )
+                                            .map((item, index) => {
+                                                const isItemSelected =
+                                                    isSelected(item.product.id);
+                                                const calc =
+                                                    item.product.price *
+                                                    item.quantity;
+                                                const totalPrice =
+                                                    calc % 10 == 0
+                                                        ? calc
+                                                        : calc.toFixed(2);
+                                                return (
+                                                    <TableRow
+                                                        key={item.product.id}
+                                                        selected={
+                                                            isItemSelected
+                                                        }
+                                                        onClick={() =>
                                                             handleClick(
                                                                 item.product.id
-                                                            );
-                                                        }}
-                                                    />
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    {index +
-                                                        1 +
-                                                        page * rowsPerPage}
-                                                </TableCell>
-
-                                                {/*//* Image  */}
-                                                <TableCell>
-                                                    <div className="tw-flex tw-justify-start tw-items-center">
-                                                        <CartPreviewImageWrap>
-                                                            <img
-                                                                src={
-                                                                    item.product
-                                                                        .image
-                                                                }
-                                                                alt={
-                                                                    item.product
-                                                                        .name
-                                                                }
-                                                            />
-                                                        </CartPreviewImageWrap>
-                                                        <span>
-                                                            {item.product.name}
-                                                        </span>
-                                                    </div>
-                                                </TableCell>
-
-                                                {/*//* Price  */}
-                                                <TableCell>
-                                                    {item.product.price.toLocaleString()}{" "}
-                                                    VNĐ
-                                                </TableCell>
-
-                                                {/*//* Quantity  */}
-                                                <TableCell>
-                                                    <QuantityControl>
-                                                        <Button
-                                                            variant="primary"
-                                                            size="sm"
-                                                            style={{
-                                                                margin: "0px",
-                                                            }}
-                                                            onClick={(
-                                                                event
-                                                            ) => {
-                                                                event.stopPropagation();
-                                                                decrementQuantity(
-                                                                    item.product
-                                                                        .id
-                                                                );
-                                                            }}
-                                                        >
-                                                            -
-                                                        </Button>
-                                                        <span>
-                                                            {item.quantity}
-                                                        </span>
-                                                        <Button
-                                                            variant="primary"
-                                                            size="sm"
-                                                            style={{
-                                                                margin: "0px",
-                                                            }}
-                                                            onClick={(
-                                                                event
-                                                            ) => {
-                                                                event.stopPropagation();
-                                                                incrementQuantity(
-                                                                    item.product
-                                                                        .id
-                                                                );
-                                                            }}
-                                                        >
-                                                            +
-                                                        </Button>
-                                                    </QuantityControl>
-                                                </TableCell>
-
-                                                {/*//* Total  */}
-                                                <TableCell>
-                                                    {totalPrice.toLocaleString()}{" "}
-                                                    VNĐ
-                                                </TableCell>
-
-                                                {/*//* Button Remove  */}
-                                                <TableCell>
-                                                    <Button
-                                                        variant="danger"
-                                                        size="sm"
+                                                            )
+                                                        }
                                                         style={{
-                                                            margin: "0px",
-                                                        }}
-                                                        onClick={(event) => {
-                                                            event.stopPropagation();
-                                                            handleRemoveItem(
-                                                                item.product.id
-                                                            );
+                                                            cursor: "pointer",
                                                         }}
                                                     >
-                                                        Remove
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                            </TableBody>
-                        </Table>
-                    </TableWrap>
+                                                        <TableCell padding="checkbox">
+                                                            <TableCheckbox
+                                                                checked={
+                                                                    isItemSelected
+                                                                }
+                                                                onChange={(
+                                                                    event
+                                                                ) => {
+                                                                    event.stopPropagation();
+                                                                    handleClick(
+                                                                        item
+                                                                            .product
+                                                                            .id
+                                                                    );
+                                                                }}
+                                                            />
+                                                        </TableCell>
 
-                    <CartSubTotal>
-                        Sub-total: {`${subTotal.toLocaleString()} VNĐ`}
-                    </CartSubTotal>
-                    <CartPurchase subTotal={subTotal} onSubmit />
-                </CardBody>
-            </Card>
-        </Col>
+                                                        {/*//* No  */}
+                                                        <TableCell>
+                                                            {index +
+                                                                1 +
+                                                                page *
+                                                                    rowsPerPage}
+                                                        </TableCell>
+
+                                                        {/*//* Image-Name  */}
+                                                        <TableCell>
+                                                            <div className="tw-flex tw-justify-start tw-items-center">
+                                                                <CartPreviewImageWrap>
+                                                                    <img
+                                                                        src={
+                                                                            item
+                                                                                .product
+                                                                                .image
+                                                                        }
+                                                                        alt={
+                                                                            item
+                                                                                .product
+                                                                                .name
+                                                                        }
+                                                                    />
+                                                                </CartPreviewImageWrap>
+                                                                <span>
+                                                                    {
+                                                                        item
+                                                                            .product
+                                                                            .name
+                                                                    }
+                                                                </span>
+                                                            </div>
+                                                        </TableCell>
+
+                                                        {/*//* Size  */}
+                                                        <TableCell>
+                                                            {item.size}
+                                                        </TableCell>
+
+                                                        {/*//* Price  */}
+                                                        <TableCell>
+                                                            {item.product.price.toLocaleString()}{" "}
+                                                            VNĐ
+                                                        </TableCell>
+
+                                                        {/*//* Quantity  */}
+                                                        <TableCell>
+                                                            <QuantityControl>
+                                                                <Button
+                                                                    variant="primary"
+                                                                    size="customQuantityLeft"
+                                                                    style={{
+                                                                        margin: "0px",
+                                                                    }}
+                                                                    onClick={(
+                                                                        event
+                                                                    ) => {
+                                                                        event.stopPropagation();
+                                                                        decrementQuantity(
+                                                                            item
+                                                                                .product
+                                                                                .id
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    -
+                                                                </Button>
+                                                                <span>
+                                                                    {
+                                                                        item.quantity
+                                                                    }
+                                                                </span>
+                                                                <Button
+                                                                    variant="primary"
+                                                                    size="customQuantityRight"
+                                                                    style={{
+                                                                        margin: "0px",
+                                                                    }}
+                                                                    onClick={(
+                                                                        event
+                                                                    ) => {
+                                                                        event.stopPropagation();
+                                                                        incrementQuantity(
+                                                                            item
+                                                                                .product
+                                                                                .id
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    +
+                                                                </Button>
+                                                            </QuantityControl>
+                                                        </TableCell>
+
+                                                        {/*//* Total  */}
+                                                        <TableCell>
+                                                            {totalPrice.toLocaleString()}{" "}
+                                                            VNĐ
+                                                        </TableCell>
+
+                                                        {/*//* Button Remove  */}
+                                                        <TableCell>
+                                                            <Button
+                                                                variant="danger"
+                                                                size="sm"
+                                                                style={{
+                                                                    margin: "0px",
+                                                                }}
+                                                                onClick={(
+                                                                    event
+                                                                ) => {
+                                                                    event.stopPropagation();
+                                                                    handleRemoveItem(
+                                                                        item
+                                                                            .product
+                                                                            .id
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Remove
+                                                            </Button>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                    </TableBody>
+                                </Table>
+                            </TableWrap>
+
+                            <CartSubTotal>
+                                Sub-total:{" "}
+                                {subTotal
+                                    ? `${subTotal.toLocaleString()} VNĐ`
+                                    : `0 VNĐ`}
+                            </CartSubTotal>
+                            <CartPurchase
+                                subTotal={subTotal}
+                                selectedProducts={selectedProducts}
+                                onSubmit
+                            />
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 

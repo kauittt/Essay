@@ -19,8 +19,6 @@ import { useTranslation } from "react-i18next";
 const ProductItems = ({ items = [] }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
-    const yellow = "#f6da6e";
-    const gray = "#787985";
     return (
         <ProductItemsWrap>
             <ProductItemsList>
@@ -124,6 +122,7 @@ const ProductItemsWrap = styled.div`
     overflow: hidden;
     padding: 10px 0;
     width: 100%;
+    /* background-color: red; */
 `;
 
 const ProductItemsList = styled.div`
@@ -154,7 +153,8 @@ const ProductCard = styled(Card)`
 const ProductItem = styled(CardBody)`
     margin-bottom: 30px;
     height: 440px;
-    ${marginRight}: 30px;
+    /* ${marginRight}: 30px; */
+    ${marginRight}: 20px;
     position: relative;
     background-color: ${colorBackground};
     transition: all 0.3s;
