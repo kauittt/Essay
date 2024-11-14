@@ -2,9 +2,9 @@
 import axios from "@/utils/axiosConfig";
 
 const CartService = {
-    postCart: (id, body) => {
+    putCart: (id, body) => {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"));
-        return axios.post(`carts/${id}`, body, {
+        return axios.put(`carts/${id}`, body, {
             timeout: 5000,
             headers: {
                 "Content-Type": "application/json",
@@ -15,7 +15,7 @@ const CartService = {
 
     cleanCart: (id) => {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"));
-        return axios.post(`carts/clean/${id}`, {
+        return axios.put(`carts/clean/${id}`, null, {
             timeout: 5000,
             headers: {
                 "Content-Type": "application/json",

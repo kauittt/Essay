@@ -25,8 +25,16 @@ import MatTableHead from "./MaterialTable/MatTableHead";
 import MatTableToolbar from "./MaterialTable/MatTableToolbar";
 import { Button } from "./../../../shared/components/Button";
 import { selectProducts } from "@/redux/reducers/productSlice";
+import { toast } from "react-toastify";
+import CartService from "../../../services/CartService";
+import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { fetchUsers } from "../../../redux/actions/userAction";
 
 const CartPage = () => {
+    const { t } = useTranslation(["common", "errors", "store"]);
+    const dispatch = useDispatch();
+
     const user = useSelector(selectUser);
     const totalUsers = useSelector(selectTotalUsers);
     const products = useSelector(selectProducts);
@@ -49,18 +57,109 @@ const CartPage = () => {
         }
     }, [user, totalUsers]);
 
-    const handleRemoveItem = (id) => {
-        setCartItems(cartItems.filter((item) => item.product.id !== id));
+    const handleRemoveItem = async (id) => {
+        // setCartItems(cartItems.filter((item) => item.product.id !== id));
+
+        const item = cartItems.find((item) => item.product.id == id);
+        console.log("item", item);
+        const cartRequest = {
+            products: [item.product.id],
+            sizes: [item.size],
+            quantities: [-999999],
+        };
+
+        try {
+            let response = await CartService.putCart(
+                currentUser.id,
+                cartRequest
+            );
+
+            if (response) {
+                dispatch(fetchUsers());
+                toast.info(t("common:action.success", { type: "Delete" }), {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error(t("common:action.fail", { type: "Delete" }), {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
     };
 
-    const handleDeleteSelected = () => {
+    const handleDeleteSelected = async () => {
+        console.log("click delete selected");
         const selectedIds = [...selected]
             .filter(([, value]) => value)
             .map(([key]) => key);
-        setCartItems(
-            cartItems.filter((item) => !selectedIds.includes(item.product.id))
+
+        const selectedCartItems = sortedCartItems.filter((cartItem) =>
+            selectedIds.some((i) => cartItem.product.id == i)
         );
-        setSelected(new Map([]));
+
+        console.log("selectedIds", selectedIds);
+        console.log("selectedCartItems", selectedCartItems);
+
+        try {
+            let response;
+            if (selectedIds.length == sortedCartItems.length) {
+                response = await CartService.cleanCart(currentUser.id);
+            } else {
+                const promises = selectedCartItems.map((cartItem) => {
+                    const cartRequest = {
+                        products: [cartItem.product.id],
+                        sizes: [cartItem.size],
+                        quantities: [-999999],
+                    };
+                    return CartService.putCart(currentUser.id, cartRequest);
+                });
+
+                // Chờ tất cả các tác vụ cập nhật hoàn thành
+                response = await Promise.all(promises);
+            }
+
+            if (response) {
+                dispatch(fetchUsers());
+                toast.info(t("common:action.success", { type: "Delete" }), {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error(t("common:action.fail", { type: "Delete" }), {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+
+        // setCartItems(
+        //     cartItems.filter((item) => !selectedIds.includes(item.product.id))
+        // );
+        // setSelected(new Map([]));
     };
 
     const handleRequestSort = (event, property) => {
@@ -121,7 +220,11 @@ const CartPage = () => {
         return 0;
     });
 
-    const incrementQuantity = (id) => {
+    console.log("CurrentUser", currentUser.cart);
+    console.log("sortedCartItems", sortedCartItems);
+    console.log("-----------");
+
+    const incrementQuantity = async (id) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
                 item.product.id === id
@@ -129,9 +232,51 @@ const CartPage = () => {
                     : item
             )
         );
+
+        const item = cartItems.find((item) => item.product.id == id);
+        console.log("item", item);
+        const cartRequest = {
+            products: [item.product.id],
+            sizes: [item.size],
+            quantities: [1],
+        };
+
+        // console.log("cartRequest", cartRequest);
+        try {
+            let response = await CartService.putCart(
+                currentUser.id,
+                cartRequest
+            );
+
+            // console.log("response", response);
+
+            if (response) {
+                // dispatch(fetchOrders());
+                // toast.info(t("common:action.success", { type: "Add" }), {
+                //     position: "top-right",
+                //     autoClose: 5000,
+                //     hideProgressBar: false,
+                //     closeOnClick: true,
+                //     pauseOnHover: true,
+                //     draggable: true,
+                //     progress: undefined,
+                // });
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error(t("common:action.fail", { type: "Update" }), {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
     };
 
-    const decrementQuantity = (id) => {
+    const decrementQuantity = async (id) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
                 item.product.id === id && item.quantity > 1
@@ -139,6 +284,45 @@ const CartPage = () => {
                     : item
             )
         );
+
+        const item = cartItems.find((item) => item.product.id == id);
+        console.log("item", item);
+        const cartRequest = {
+            products: [item.product.id],
+            sizes: [item.size],
+            quantities: [-1],
+        };
+
+        try {
+            let response = await CartService.putCart(
+                currentUser.id,
+                cartRequest
+            );
+
+            if (response) {
+                // dispatch(fetchOrders());
+                // toast.info(t("common:action.success", { type: "Add" }), {
+                //     position: "top-right",
+                //     autoClose: 5000,
+                //     hideProgressBar: false,
+                //     closeOnClick: true,
+                //     pauseOnHover: true,
+                //     draggable: true,
+                //     progress: undefined,
+                // });
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error(t("common:action.fail", { type: "Update" }), {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
     };
 
     //* Process Selected Cart Item
@@ -152,6 +336,14 @@ const CartPage = () => {
     subTotal = selectedProducts?.reduce((sum, item) => {
         return sum + item.product.price * item.quantity;
     }, 0);
+
+    //* Update totalUser ở redux khi unmount. Để cập nhật quantity,
+    //* vì đang render dựa theo useState, db đã thay đổi nhưng redux thì chưa đc update
+    useEffect(() => {
+        return () => {
+            dispatch(fetchUsers());
+        };
+    }, []);
 
     return (
         <Container>
@@ -288,8 +480,14 @@ const CartPage = () => {
                                                         {/*//* Quantity  */}
                                                         <TableCell>
                                                             <QuantityControl>
+                                                                {/*//* Desc btn  */}
                                                                 <Button
-                                                                    variant="primary"
+                                                                    variant={
+                                                                        item.quantity <=
+                                                                        1
+                                                                            ? "secondary"
+                                                                            : "primary"
+                                                                    }
                                                                     size="customQuantityLeft"
                                                                     style={{
                                                                         margin: "0px",
@@ -298,6 +496,12 @@ const CartPage = () => {
                                                                         event
                                                                     ) => {
                                                                         event.stopPropagation();
+
+                                                                        if (
+                                                                            item.quantity <=
+                                                                            1
+                                                                        )
+                                                                            return;
                                                                         decrementQuantity(
                                                                             item
                                                                                 .product
@@ -312,8 +516,23 @@ const CartPage = () => {
                                                                         item.quantity
                                                                     }
                                                                 </span>
+
+                                                                {/*//* Incre btn  */}
                                                                 <Button
-                                                                    variant="primary"
+                                                                    variant={
+                                                                        item.quantity >=
+                                                                        item.product.sizeProducts.find(
+                                                                            (
+                                                                                sizeProduct
+                                                                            ) =>
+                                                                                sizeProduct
+                                                                                    .size
+                                                                                    .name ==
+                                                                                item.size
+                                                                        ).stock
+                                                                            ? "secondary"
+                                                                            : "primary"
+                                                                    }
                                                                     size="customQuantityRight"
                                                                     style={{
                                                                         margin: "0px",
@@ -322,6 +541,22 @@ const CartPage = () => {
                                                                         event
                                                                     ) => {
                                                                         event.stopPropagation();
+
+                                                                        if (
+                                                                            item.quantity >=
+                                                                            item.product.sizeProducts.find(
+                                                                                (
+                                                                                    sizeProduct
+                                                                                ) =>
+                                                                                    sizeProduct
+                                                                                        .size
+                                                                                        .name ==
+                                                                                    item.size
+                                                                            )
+                                                                                .stock
+                                                                        )
+                                                                            return;
+
                                                                         incrementQuantity(
                                                                             item
                                                                                 .product

@@ -32,7 +32,7 @@ import { Button } from "@/shared/components/Button";
 }
 
 const CartPurchase = ({ subTotal = 0, selectedProducts = [] }) => {
-    console.log("Selected Products Length:", selectedProducts.length);
+    // console.log("Selected Products Length:", selectedProducts.length);
     const shippingFee = 30000;
     return (
         <Form onSubmit={() => {}} initialValues={{ delivery: "dhl" }}>

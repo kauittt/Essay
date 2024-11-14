@@ -142,6 +142,7 @@ const InvoicePage = () => {
 
             if (response) {
                 dispatch(fetchOrders());
+                history.push("/pages/client/product");
                 toast.info(t("common:action.success", { type: "Add" }), {
                     position: "top-right",
                     autoClose: 5000,
@@ -268,6 +269,7 @@ const InvoicePage = () => {
                                                     <tr>
                                                         <th>No</th>
                                                         <th>Item Name</th>
+                                                        <th>Size</th>
                                                         <th>Quantity</th>
                                                         <th>Price</th>
                                                         <th>Total</th>
@@ -288,6 +290,9 @@ const InvoicePage = () => {
                                                                             .product
                                                                             .name
                                                                     }
+                                                                </td>
+                                                                <td>
+                                                                    {item.size}
                                                                 </td>
                                                                 <td>
                                                                     {
