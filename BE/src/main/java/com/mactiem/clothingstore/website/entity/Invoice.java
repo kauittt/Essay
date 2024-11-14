@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @NoArgsConstructor
@@ -25,7 +26,7 @@ public class Invoice {
     private Order order;//-==...
 
     @Column(name = "create_date")
-    private LocalDate createDate;//-==...
+    private LocalDateTime createDate;//-==...
 
     @Column(name = "total_amount")
     private double totalAmount;//-==...

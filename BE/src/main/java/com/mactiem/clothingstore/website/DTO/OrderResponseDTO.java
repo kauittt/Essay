@@ -6,6 +6,7 @@ import com.mactiem.clothingstore.website.entity.OrderProduct;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +22,8 @@ public class OrderResponseDTO {
     private String phone;
     private String address;
     private String status;
-    private LocalDate createDate;
-    private LocalDate updateDate;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
     private List<OrderProductDTO> orderProducts;
     private InvoiceResponseDTO invoice;
 

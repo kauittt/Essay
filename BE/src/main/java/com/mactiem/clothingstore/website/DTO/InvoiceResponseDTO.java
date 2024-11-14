@@ -4,6 +4,7 @@ import com.mactiem.clothingstore.website.entity.Order;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Setter
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 public class InvoiceResponseDTO {
     private Long id;
 //    private Order order;
-    private LocalDate createDate;
+    private LocalDateTime createDate;
 //    private String status;
     private Double totalAmount;
     private Double discountAmount;

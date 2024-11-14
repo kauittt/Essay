@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -62,8 +63,8 @@ public class OrderService {
         orderValidator.validateOrderRequest(orderRequestDTO);
 
         Order order = orderMapper.toEntity(orderRequestDTO);
-        order.setCreateDate(LocalDate.now());
-        order.setUpdateDate(LocalDate.now());
+        order.setCreateDate(LocalDateTime.now());
+        order.setUpdateDate(LocalDateTime.now());
         orderMapper.mapOrderProductsEntity(order, orderRequestDTO, productService);
 
         return orderMapper.toDTO(orderRepository.save(order));
@@ -89,7 +90,7 @@ public class OrderService {
             order.setStatus(orderRequestDTO.getStatus());
         }
 
-        order.setUpdateDate(LocalDate.now());
+        order.setUpdateDate(LocalDateTime.now());
         return orderMapper.toDTO(orderRepository.save(order));
     }
 

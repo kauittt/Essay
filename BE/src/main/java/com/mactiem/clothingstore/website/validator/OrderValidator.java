@@ -120,10 +120,11 @@ public class OrderValidator {
         int count = 0;
         for (Product product : products) {
             for (SizeProduct sizeProduct : product.getSizeProducts()) {
-                if (sizeProduct.getSize().getName().equals(sizes.get(count++))) {
+                if (sizeProduct.getSize().getName().equals(sizes.get(count))) {
                     productStockMap.put(product.getId(), sizeProduct.getStock());
                 }
             }
+            count++;
         }
 
         for (int i = 0; i < productIds.size(); i++) {

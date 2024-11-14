@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -58,7 +59,7 @@ public class InvoiceService {
         invoiceValidator.validateInvoiceRequest(invoiceRequestDTO);
 
         Invoice invoice = invoiceMapper.toEntity(invoiceRequestDTO);
-        invoice.setCreateDate(LocalDate.now());
+        invoice.setCreateDate(LocalDateTime.now());
         return invoiceMapper.toDTO(invoiceRepository.save(invoice));
     }
 }
