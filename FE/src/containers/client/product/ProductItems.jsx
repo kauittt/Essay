@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -14,11 +14,71 @@ import { Button } from "@/shared/components/Button";
 import { FaStar } from "react-icons/fa";
 import StarRating from "../StarRating";
 import { useTranslation } from "react-i18next";
+import CartService from "../../../services/CartService";
+import { fetchUsers } from "../../../redux/actions/userAction";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../../redux/reducers/userSlice";
+import { useDispatch } from "react-redux";
 
 //! Hết hàng -> thêm style
 const ProductItems = ({ items = [] }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
+    const user = useSelector(selectUser);
+    const dispatch = useDispatch();
+    console.log("User", user);
+
+    const addToCart = async (product) => {
+        console.log("Add to cart", product);
+
+        const cartRequest = {
+            products: [product.id],
+            sizes: ["L"],
+            quantities: [1],
+        };
+
+        console.log("cartRequest", cartRequest);
+
+        // console.log("cartRequest", cartRequest);
+        try {
+            let response = await CartService.putCart(user.id, cartRequest);
+
+            // console.log("response", response);
+
+            if (response) {
+                // dispatch(fetchUsers());
+                toast.info(t("common:action.success", { type: "Add" }), {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error(t("common:action.fail", { type: "Add" }), {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+    };
+
+    //* Fetch lại users
+    useEffect(() => {
+        return () => {
+            dispatch(fetchUsers());
+        };
+    }, []);
+
     return (
         <ProductItemsWrap>
             <ProductItemsList>
@@ -86,7 +146,7 @@ const ProductItems = ({ items = [] }) => {
                                     variant="primary"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        console.log("Add to cart");
+                                        addToCart(item);
                                     }}
                                     style={{ margin: "0" }}
                                 >

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col } from "react-bootstrap";
 import styled from "styled-components";
 import HeartIcon from "mdi-react/HeartIcon";
@@ -29,11 +29,18 @@ import FormInput from "./../../../shared/components/custom/form/FormInput";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import CartService from "../../../services/CartService";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../../redux/reducers/userSlice";
+import { useDispatch } from "react-redux";
+import { fetchUsers } from "../../../redux/actions/userAction";
 
 const ProductCard = ({ product = {} }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
     const history = useHistory();
+    const user = useSelector(selectUser);
+    const dispatch = useDispatch();
 
     if (!product || Object.keys(product).length === 0) {
         return <div>No product data available.</div>;
@@ -65,17 +72,52 @@ const ProductCard = ({ product = {} }) => {
     const submitForm = async (values) => {
         console.log("Submit values", values);
 
-        const action = t("common:action.add");
-        toast.info(t("common:action.success", { type: action }), {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+        const cartRequest = {
+            products: [product.id],
+            sizes: [values.size],
+            quantities: [1],
+        };
+
+        console.log("cartRequest", cartRequest);
+
+        // console.log("cartRequest", cartRequest);
+        try {
+            let response = await CartService.putCart(user.id, cartRequest);
+
+            // console.log("response", response);
+
+            if (response) {
+                // dispatch(fetchUsers());
+                toast.info(t("common:action.success", { type: "Add" }), {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error(t("common:action.fail", { type: "Add" }), {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
     };
+
+    //* Fetch lại users
+    useEffect(() => {
+        return () => {
+            dispatch(fetchUsers());
+        };
+    }, []);
 
     console.log("Product at detail ", product);
 

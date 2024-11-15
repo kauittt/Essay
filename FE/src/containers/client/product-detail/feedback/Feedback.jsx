@@ -82,7 +82,7 @@ const Feedback = ({ product = {} }) => {
     };
 
     //* Something else
-    console.log("product in feedback", product);
+    // console.log("product in feedback", product);
     return (
         <Col md={12} lg={12}>
             <Card>

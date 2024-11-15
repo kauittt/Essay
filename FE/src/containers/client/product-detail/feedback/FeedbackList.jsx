@@ -37,7 +37,7 @@ const FeedbackList = ({ data = {} }) => {
     }
 
     // console.log("Found User", user);
-    console.log("Feed back", data);
+    // console.log("Feed back", data);
     return (
         <FeedbackListWrap>
             <FeedbackListTitle>

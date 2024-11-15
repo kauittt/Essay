@@ -139,7 +139,7 @@ const ClientProductPage = () => {
         );
     }, [currentTag, products]);
 
-    console.log("filteredByTag", filteredByTag);
+    // console.log("filteredByTag", filteredByTag);
 
     // Lọc sản phẩm dựa trên search query
     const filteredBySearch = useMemo(() => {
@@ -154,19 +154,19 @@ const ClientProductPage = () => {
         );
     }, [searchQuery, filteredByTag]);
 
-    console.log("filteredBySearch", filteredBySearch);
+    // console.log("filteredBySearch", filteredBySearch);
 
     const filteredByStar = useMemo(() => {
         return filteredBySearch.filter((p) => p.star >= selectedStar);
     }, [filteredBySearch, selectedStar]);
 
-    console.log("filteredByStar", filteredByStar);
+    // console.log("filteredByStar", filteredByStar);
 
     const filteredByPrice = useMemo(() => {
         const price = arrayPrice[selectedPrice];
 
         let finalProducts = filteredByStar;
-        console.log("Start", finalProducts);
+        // console.log("Start", finalProducts);
         if (price[0]) {
             finalProducts = filteredByStar.filter((p) => p.price >= price[0]);
         }
@@ -174,12 +174,12 @@ const ClientProductPage = () => {
             finalProducts = finalProducts.filter((p) => p.price <= price[1]);
         }
 
-        console.log("Filtered", finalProducts);
+        // console.log("Filtered", finalProducts);
         return finalProducts;
     }, [filteredByStar, selectedPrice]);
 
-    console.log("filteredByPrice", filteredByPrice);
-    console.log("---------------------");
+    // console.log("filteredByPrice", filteredByPrice);
+    // console.log("---------------------");
 
     //* use
     const currentProducts = useMemo(() => {
