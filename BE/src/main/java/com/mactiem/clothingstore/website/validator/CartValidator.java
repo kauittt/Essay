@@ -100,18 +100,22 @@ public class CartValidator {
 
     public List<Product> validateProductIdsExist(List<String> productIds) {
         List<Product> products = productService.findProductsByIds(productIds);
-        if (products.size() != productIds.size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more product IDs do not exist");
-        }
+
+        //* Case 1 sp 3 size
+//        if (products.size() != productIds.size()) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more product IDs do not exist");
+//        }
 
         return products;
     }
 
     public void validateSizesExist(List<String> sizes) {
         List<Size> dbSize = sizeRepository.findByNameIn(sizes);
-        if (dbSize.size() != sizes.size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more Size do not exist");
-        }
+
+        //* 3 sp 1 size
+//        if (dbSize.size() != sizes.size()) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more Size do not exist");
+//        }
 
     }
 }

@@ -38,6 +38,7 @@ public class JWTGenerator {
         Map<String, Object> userClaims = new HashMap<>();
         userClaims.put("username", username);
         userClaims.put("name", user.getName());
+        userClaims.put("id", user.getId());
         userClaims.put("roles", authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));

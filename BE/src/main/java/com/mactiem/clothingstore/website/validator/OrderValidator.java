@@ -82,14 +82,17 @@ public class OrderValidator {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product sizes list cannot be empty");
         }
 
-        List<Size> dbSizes = sizeRepository.findByNameIn(sizes);
-        if (sizes.size() != dbSizes.size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more product's Size IDs do not exist");
-        }
-
-        if (dbSizes.size() != expectedSize) {
+        if (sizes.size() != expectedSize) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sizes list must match the number of products");
         }
+
+        //* Nếu 3 item cùng 1 size thì k check v đc
+//        List<Size> dbSizes = sizeRepository.findByNameIn(sizes);
+//        if (sizes.size() != dbSizes.size()) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more product's Size IDs do not exist");
+//        }
+
+
     }
 
     // Validate quantities

@@ -22,6 +22,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findCartByUsername(@Param("username") String username);
 
     @Modifying
-    @Query(value = "DELETE FROM carts_products WHERE cart_id = CAST(:cartId AS bigint)", nativeQuery = true)
+    @Query(value = "DELETE FROM carts_products WHERE cart_id = CAST(:cartId AS UNSIGNED)", nativeQuery = true)
     void deleteProductsByCartId(@Param("cartId") String cartId);
 }

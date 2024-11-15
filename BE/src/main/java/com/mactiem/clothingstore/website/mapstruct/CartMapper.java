@@ -25,7 +25,7 @@ public interface CartMapper {
         for (CartProduct cartProduct : cart.getCartProducts()) {
             CartProductDTO dto = new CartProductDTO();
             dto.setQuantity(cartProduct.getQuantity());
-            dto.setSize(cartProduct.getSize());
+            dto.setSize(cartProduct.getId().getSize());
             dto.setProduct(productMapper.toDTO(cartProduct.getProduct()));
 
             cartResponseDTO.getCartProducts().add(dto);
@@ -39,7 +39,7 @@ public interface CartMapper {
         for (CartProduct cartProduct : cart.getCartProducts()) {
             CartProductDTO dto = new CartProductDTO();
             dto.setQuantity(cartProduct.getQuantity());
-            dto.setSize(cartProduct.getSize());
+            dto.setSize(cartProduct.getId().getSize());
             dto.setProduct(productMapper.toDTO(cartProduct.getProduct()));
 
             userResponseDTO.getCart().add(dto);
