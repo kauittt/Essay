@@ -11,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class CartValidator {
@@ -30,48 +28,31 @@ public class CartValidator {
         validateRequired(cartRequestDTO);
         validateSizesExist(cartRequestDTO.getSizes());
 
-        // Lấy danh sách sản phẩm từ productService
         List<Product> products = validateProductIdsExist(cartRequestDTO.getProducts());
-
-        // Map để lưu trữ thông tin sản phẩm và tồn kho (stock)
-        Map<String, Integer> productStockMap = new HashMap<>();
-        List<String> sizes = cartRequestDTO.getSizes();
-        int count = 0;
-
-        for (Product product : products) {
-            for (SizeProduct sizeProduct : product.getSizeProducts()) {
-                if (sizeProduct.getSize().getName().equals(sizes.get(count))) {
-                    productStockMap.put(String.valueOf(product.getId()), sizeProduct.getStock());
-                }
-            }
-            count++;
-//            productStockMap.put(String.valueOf(product.getId()), product.getStock());
-        }
-
-
-
-        // Duyệt qua danh sách quantity để validate
+        
         for (int i = 0; i < cartRequestDTO.getProducts().size(); i++) {
-            String productId = cartRequestDTO.getProducts().get(i);
-            String quantityStr = cartRequestDTO.getQuantities().get(i);
+            Long id = Long.valueOf(cartRequestDTO.getProducts().get(i));
+            int quantity = Integer.parseInt(cartRequestDTO.getQuantities().get(i));
             String size = cartRequestDTO.getSizes().get(i);
 
-            try {
-                int quantity = Integer.parseInt(quantityStr);
+            Optional<Product> productOpt = products.stream().filter(p -> p.getId().equals(id)).findFirst();
 
-                if (quantity == 0) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity cannot be zero");
+            if (productOpt.isEmpty()) {
+                throw new IllegalArgumentException("Product with ID " + id + " not found in the provided product list.");
+            }
+            Product product = productOpt.get();
+
+            Optional<SizeProduct> sizeProductOpt = product.getSizeProducts().stream()
+                    .filter(sp -> sp.getSize().getName().equals(size))
+                    .findFirst();
+
+            if (sizeProductOpt.isPresent()) {
+                SizeProduct sizeProduct = sizeProductOpt.get();
+                if (quantity > sizeProduct.getStock()) {
+                    throw new IllegalArgumentException("Not enough stock for product ID: " + id + " and size: " + size);
                 }
-
-                // Kiểm tra quantity có lớn hơn stock của product không
-                Integer stock = productStockMap.get(productId);
-                if (stock != null && quantity > stock) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                            String.format("Quantity for product ID: %s, size: %s exceeds available stock. Available stock: %d", productId, size, stock));
-                }
-
-            } catch (NumberFormatException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid quantity format");
+            } else {
+                throw new NoSuchElementException("No size product found for product ID: " + id + " and size: " + size);
             }
         }
     }

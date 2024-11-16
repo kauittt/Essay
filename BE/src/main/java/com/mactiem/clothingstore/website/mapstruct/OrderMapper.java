@@ -12,10 +12,7 @@ import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Mapper(componentModel = "spring", uses = {
         ProductMapper.class
@@ -72,25 +69,43 @@ public interface OrderMapper {
 
         List<String> productIds = orderRequestDTO.getProducts();
         List<String> quantities = orderRequestDTO.getQuantities();
+        List<String> sizes = orderRequestDTO.getSizes();
 
-        Map<String, Integer> requestedQuantities = new HashMap<>();
         for (int i = 0; i < productIds.size(); i++) {
-            requestedQuantities.put(productIds.get(i), Integer.parseInt(quantities.get(i)));
-        }
+            Long id = Long.parseLong(productIds.get(i));
+            String size = sizes.get(i);
+            int quantity = Integer.parseInt(quantities.get(i));
 
-        for (int i = 0; i < products.size(); i++) {
-            Product product = products.get(i);
+            Optional<Product> productOpt = products.stream().filter(p -> p.getId().equals(id)).findFirst();
+
+            if (productOpt.isEmpty()) {
+                throw new IllegalArgumentException("Product with ID " + id + " not found in the provided product list.");
+            }
+
+            Product product = productOpt.get();
+
+            OrderProductId opId = new OrderProductId(order.getId(), product.getId(), size);
 
             OrderProduct op = new OrderProduct();
-
-            OrderProductId opId = new OrderProductId(order.getId(), product.getId());
             op.setId(opId);
             op.setOrder(order);
             op.setProduct(product);
-            op.setSize(orderRequestDTO.getSizes().get(i));
-            op.setQuantity(requestedQuantities.get(String.valueOf(product.getId())));
+            op.setQuantity(quantity);
             orderProducts.add(op);
+
+            //* Trừ stock vì đã order
+            Optional<SizeProduct> sizeProductOpt = product.getSizeProducts().stream()
+                    .filter(sp -> sp.getSize().getName().equals(size))
+                    .findFirst();
+
+            if (sizeProductOpt.isPresent()) {
+                SizeProduct sizeProduct = sizeProductOpt.get();
+                sizeProduct.setStock(sizeProduct.getStock() - quantity);
+            } else {
+                throw new NoSuchElementException("No size product found for product ID: " + id + " and size: " + size);
+            }
         }
+
         order.setOrderProducts(orderProducts);
     }
 }

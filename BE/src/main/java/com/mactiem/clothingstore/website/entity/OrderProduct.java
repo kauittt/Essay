@@ -30,7 +30,7 @@ public class OrderProduct {
     @Column(name = "quantity")
     private int quantity;
 
-    @Column(name = "size")
+    @Column(name = "size", insertable = false, updatable = false)
     private String size;
 
 }

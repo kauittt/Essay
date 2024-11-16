@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -37,7 +37,7 @@ public class OrderService {
         this.productService = productService;
     }
 
-    //- Helper
+    //* Helper
     public Order findOrderById(String id) {
         return orderRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException(Response.notFound("Order", id)));
@@ -47,8 +47,7 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    //- Methods
-
+    //* Methods
     public OrderResponseDTO getOrderById(String id) {
         Order order = findOrderById(id);
         return orderMapper.toDTO(order);
@@ -67,7 +66,9 @@ public class OrderService {
         order.setUpdateDate(LocalDateTime.now());
         orderMapper.mapOrderProductsEntity(order, orderRequestDTO, productService);
 
-        return orderMapper.toDTO(orderRepository.save(order));
+        Order savedOrder = orderRepository.save(order);
+
+        return orderMapper.toDTO(savedOrder);
     }
 
     @Transactional

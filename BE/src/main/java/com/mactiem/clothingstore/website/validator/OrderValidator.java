@@ -14,9 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Component
@@ -72,9 +70,9 @@ public class OrderValidator {
         }
 
         List<Product> dbProducts = productService.findProductsByIds(products);
-        if (products.size() != dbProducts.size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more product IDs do not exist");
-        }
+//        if (products.size() != dbProducts.size()) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "One or more product IDs do not exist");
+//        }
     }
 
     public void validateSizes(List<String> sizes, int expectedSize) {
@@ -119,32 +117,30 @@ public class OrderValidator {
 
     private void validateQuantitiesDoNotExceedStock(List<String> productIds, List<String> quantities, List<String> sizes) {
         List<Product> products = productService.findProductsByIds(productIds);
-        Map<Long, Integer> productStockMap = new HashMap<>();
-        int count = 0;
-        for (Product product : products) {
-            for (SizeProduct sizeProduct : product.getSizeProducts()) {
-                if (sizeProduct.getSize().getName().equals(sizes.get(count))) {
-                    productStockMap.put(product.getId(), sizeProduct.getStock());
-                }
-            }
-            count++;
-        }
 
         for (int i = 0; i < productIds.size(); i++) {
-            long productId = Long.valueOf(productIds.get(i));
-            int quantityStr = Integer.parseInt(quantities.get(i));
+            Long id = Long.valueOf(productIds.get(i));
+            int quantity = Integer.parseInt(quantities.get(i));
             String size = sizes.get(i);
 
-            try {
-                Integer stock = productStockMap.get(productId);
+            Optional<Product> productOpt = products.stream().filter(p -> p.getId().equals(id)).findFirst();
 
-                if (stock != null && quantityStr > stock) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                            String.format("Quantity for product ID: %d, size: %s exceeds available stock. Available stock: %d", productId, size, stock));
+            if (productOpt.isEmpty()) {
+                throw new IllegalArgumentException("Product with ID " + id + " not found in the provided product list.");
+            }
+            Product product = productOpt.get();
+
+            Optional<SizeProduct> sizeProductOpt = product.getSizeProducts().stream()
+                    .filter(sp -> sp.getSize().getName().equals(size))
+                    .findFirst();
+
+            if (sizeProductOpt.isPresent()) {
+                SizeProduct sizeProduct = sizeProductOpt.get();
+                if (quantity > sizeProduct.getStock()) {
+                    throw new IllegalArgumentException("Not enough stock for product ID: " + id + " and size: " + size);
                 }
-            } catch (NumberFormatException e) {
-                // This exception should already be handled in validateQuantities, but it's good to have a fallback
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid quantity format for product ID " + productId);
+            } else {
+                throw new NoSuchElementException("No size product found for product ID: " + id + " and size: " + size);
             }
         }
     }
