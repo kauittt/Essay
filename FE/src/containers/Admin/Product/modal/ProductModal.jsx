@@ -23,6 +23,7 @@ import CreateTableSizeHeader from "./table/CreateTableSizeHeader";
 import Collapse from "@/shared/components/Collapse";
 import EditableReactTable from "./table/EditableReactTable";
 import { selectSizes } from "../../../../redux/reducers/sizeSlice";
+import { fetchUsers } from "../../../../redux/actions/userAction";
 
 const bigDecimalFields = ["price"];
 const integerFields = ["stock"];
@@ -113,6 +114,7 @@ const ProductModal = ({ toggle, data, action }) => {
                 dispatch(fetchVouchers());
                 dispatch(fetchCategories());
                 dispatch(fetchOrders());
+                dispatch(fetchUsers());
 
                 toast.info(t("common:action.success", { type: actionText }), {
                     position: "top-right",

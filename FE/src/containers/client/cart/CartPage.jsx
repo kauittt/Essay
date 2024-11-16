@@ -8,7 +8,6 @@ import {
     CardTitleWrap,
     CardTitle,
 } from "@/shared/components/Card";
-import { colorAdditional, colorRedHover } from "@/utils/palette";
 import { left } from "@/utils/directions";
 import CartPurchase from "./CartPurchase";
 import { useSelector } from "react-redux";
@@ -30,10 +29,28 @@ import CartService from "../../../services/CartService";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { fetchUsers } from "../../../redux/actions/userAction";
+import {
+    colorAccent,
+    colorBlue,
+    colorAdditional,
+    colorBackground,
+    colorRedHover,
+} from "@/utils/palette";
+import {
+    FormButtonToolbar,
+    FormContainer,
+    FormGroup,
+    FormGroupField,
+    FormGroupLabel,
+} from "@/shared/components/form/FormElements";
+import { Form } from "react-final-form";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import FormInput from "./../../../shared/components/custom/form/FormInput";
 
 const CartPage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const user = useSelector(selectUser);
     const totalUsers = useSelector(selectTotalUsers);
@@ -102,7 +119,7 @@ const CartPage = () => {
         }
     };
 
-    console.log("Selected", selected);
+    // console.log("Selected", selected);
     const handleDeleteSelected = async () => {
         console.log("click delete selected");
         const selectedIds = [...selected]
@@ -235,14 +252,14 @@ const CartPage = () => {
     });
 
     // console.log("CurrentUser", currentUser.cart);
-    console.log("sortedCartItems", sortedCartItems);
-    console.log("-----------");
+    // console.log("sortedCartItems", sortedCartItems);
+    // console.log("-----------");
 
     const incrementQuantity = async (id, size) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
-                item.product.id === id && item.size == size
-                    ? { ...item, quantity: item.quantity + 1 }
+                item.product.id == id && item.size == size
+                    ? { ...item, quantity: parseInt(item.quantity) + 1 }
                     : item
             )
         );
@@ -297,8 +314,8 @@ const CartPage = () => {
     const decrementQuantity = async (id, size) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
-                item.product.id === id && item.size == size && item.quantity > 1
-                    ? { ...item, quantity: item.quantity - 1 }
+                item.product.id == id && item.size == size && item.quantity > 1
+                    ? { ...item, quantity: parseInt(item.quantity) - 1 }
                     : item
             )
         );
@@ -366,282 +383,541 @@ const CartPage = () => {
         };
     }, []);
 
+    //* Form
+    // Submit
+    const submitForm = (values) => {
+        console.log("Submit form");
+    };
+
+    // Init
+    const prepareInit = sortedCartItems.reduce((acc, item) => {
+        const size = `${item.product.id}-size-${item.size}`;
+        const quantity = `${item.product.id}-quantity-${item.size}`;
+        acc[size] = item.size;
+        acc[quantity] = item.quantity;
+        return acc;
+    }, {});
+    const initForm = { ...prepareInit };
+
+    // Validate
+    const validate = (values, t) => {
+        console.log("Validate values", values);
+        const errors = {};
+
+        //* Quantity
+        sortedCartItems.map((item) => {
+            const quantity = `${item.product.id}-quantity-${item.size}`;
+            //* Empty
+            if (!values[quantity]) {
+                errors[quantity] = "Required";
+            }
+
+            //* Lớn hơn stock
+            if (
+                values[quantity] >
+                item.product.sizeProducts.find(
+                    (sizeProduct) => sizeProduct.size.name == item.size
+                ).stock
+            ) {
+                errors[quantity] = "Exceeded";
+            }
+
+            //* Nhỏ hơn 1
+            if (values[quantity] < 1) {
+                errors[quantity] = "Không nhỏ hơn 1";
+            }
+        });
+
+        console.log("Errors", errors);
+        return errors;
+    };
+
+    const handleBlurQuantity = async (e, form) => {
+        const { errors } = form.getState();
+        const name = e.target.name;
+        const [id, type, size] = name.split("-");
+        const value = e.target.value;
+        const item = sortedCartItems.find(
+            (item) => item.product.id == id && item.size == size
+        );
+
+        if (!errors[name] && value != item.quantity) {
+            setCartItems((prevItems) =>
+                prevItems.map((item) =>
+                    item.product.id == id && item.size == size
+                        ? { ...item, quantity: value }
+                        : item
+                )
+            );
+
+            const cartRequest = {
+                products: [item.product.id],
+                sizes: [item.size],
+                quantities: [value - item.quantity],
+            };
+
+            console.log("cartRequest", cartRequest);
+
+            // console.log("cartRequest", cartRequest);
+            try {
+                let response = await CartService.putCart(
+                    currentUser.id,
+                    cartRequest
+                );
+
+                if (response) {
+                    // dispatch(fetchOrders());
+                    // toast.info(t("common:action.success", { type: "Add" }), {
+                    //     position: "top-right",
+                    //     autoClose: 5000,
+                    //     hideProgressBar: false,
+                    //     closeOnClick: true,
+                    //     pauseOnHover: true,
+                    //     draggable: true,
+                    //     progress: undefined,
+                    // });
+                }
+            } catch (e) {
+                console.log(e);
+                toast.error(t("common:action.fail", { type: "Update" }), {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        }
+    };
+
+    const handleBlurSize = (name, value) => {
+        console.log("Mouse out or input lost focus:", name, value);
+        // You can call validate here or perform other actions
+    };
+
+    console.log("---------------");
+
     return (
         <Container>
             <Row>
-                {" "}
-                <Col md={12} lg={12}>
-                    <Card>
-                        <CardBody>
-                            <CardTitleWrap>
-                                <CardTitle>Cart</CardTitle>
-                            </CardTitleWrap>
+                <Form
+                    onSubmit={submitForm}
+                    validate={(values) => validate(values, t)}
+                    initialValues={initForm}
+                >
+                    {({ handleSubmit, form }) => {
+                        //* Handle việc select No/Name
+                        return (
+                            <FormContainer onSubmit={handleSubmit}>
+                                <Col md={12} lg={12}>
+                                    <Card
+                                        style={{
+                                            marginBottom: "0px",
+                                            paddingBottom: "0px",
+                                        }}
+                                    >
+                                        <CardBody>
+                                            <CardTitleWrap>
+                                                <CardTitle>Cart</CardTitle>
+                                            </CardTitleWrap>
 
-                            <MatTableToolbar
-                                numSelected={
-                                    [...selected].filter((el) => el[1]).length
-                                }
-                                handleDeleteSelected={handleDeleteSelected}
-                                onRequestSort={handleRequestSort}
-                            />
+                                            <MatTableToolbar
+                                                numSelected={
+                                                    [...selected].filter(
+                                                        (el) => el[1]
+                                                    ).length
+                                                }
+                                                handleDeleteSelected={
+                                                    handleDeleteSelected
+                                                }
+                                                onRequestSort={
+                                                    handleRequestSort
+                                                }
+                                            />
 
-                            <TableWrap>
-                                <Table>
-                                    <MatTableHead
-                                        numSelected={
-                                            [...selected].filter((el) => el[1])
-                                                .length
-                                        }
-                                        order={order}
-                                        orderBy={orderBy}
-                                        onSelectAllClick={(event) =>
-                                            handleSelectAllClick(
-                                                event,
-                                                event.target.checked
-                                            )
-                                        }
-                                        onRequestSort={handleRequestSort}
-                                        rowCount={cartItems.length}
-                                    />
-                                    <TableBody>
-                                        {sortedCartItems.map((item, index) => {
-                                            const isItemSelected = isSelected(
-                                                item.product.id,
-                                                item.size
-                                            );
+                                            <TableWrap>
+                                                <Table>
+                                                    <MatTableHead
+                                                        numSelected={
+                                                            [
+                                                                ...selected,
+                                                            ].filter(
+                                                                (el) => el[1]
+                                                            ).length
+                                                        }
+                                                        order={order}
+                                                        orderBy={orderBy}
+                                                        onSelectAllClick={(
+                                                            event
+                                                        ) =>
+                                                            handleSelectAllClick(
+                                                                event,
+                                                                event.target
+                                                                    .checked
+                                                            )
+                                                        }
+                                                        onRequestSort={
+                                                            handleRequestSort
+                                                        }
+                                                        rowCount={
+                                                            cartItems.length
+                                                        }
+                                                    />
+                                                    <TableBody>
+                                                        {sortedCartItems.map(
+                                                            (item, index) => {
+                                                                const isItemSelected =
+                                                                    isSelected(
+                                                                        item
+                                                                            .product
+                                                                            .id,
+                                                                        item.size
+                                                                    );
 
-                                            const size = item.size;
-                                            const calc =
-                                                item.product.price *
-                                                item.quantity;
-                                            const totalPrice =
-                                                calc % 10 == 0
-                                                    ? calc
-                                                    : calc.toFixed(2);
-                                            return (
-                                                <TableRow
-                                                    key={`${item.product.id}-${item.size}`}
-                                                    selected={isItemSelected}
-                                                    onClick={() =>
-                                                        handleClick(
-                                                            item.product.id,
-                                                            item.size
-                                                        )
-                                                    }
-                                                    style={{
-                                                        cursor: "pointer",
-                                                    }}
-                                                >
-                                                    <TableCell padding="checkbox">
-                                                        <TableCheckbox
-                                                            checked={
-                                                                isItemSelected
+                                                                const size =
+                                                                    item.size;
+                                                                const calc =
+                                                                    item.product
+                                                                        .price *
+                                                                    item.quantity;
+                                                                const totalPrice =
+                                                                    calc % 10 ==
+                                                                    0
+                                                                        ? calc
+                                                                        : calc.toFixed(
+                                                                              2
+                                                                          );
+                                                                return (
+                                                                    <TableRow
+                                                                        key={`${item.product.id}-${item.size}`}
+                                                                        selected={
+                                                                            isItemSelected
+                                                                        }
+                                                                        onClick={() =>
+                                                                            handleClick(
+                                                                                item
+                                                                                    .product
+                                                                                    .id,
+                                                                                item.size
+                                                                            )
+                                                                        }
+                                                                        style={{
+                                                                            cursor: "pointer",
+                                                                        }}
+                                                                    >
+                                                                        <TableCell padding="checkbox">
+                                                                            <TableCheckbox
+                                                                                checked={
+                                                                                    isItemSelected
+                                                                                }
+                                                                                onChange={(
+                                                                                    event
+                                                                                ) => {
+                                                                                    event.stopPropagation();
+                                                                                    handleClick(
+                                                                                        item
+                                                                                            .product
+                                                                                            .id,
+                                                                                        item.size
+                                                                                    );
+                                                                                }}
+                                                                            />
+                                                                        </TableCell>
+
+                                                                        {/*//* No  */}
+                                                                        <TableCell>
+                                                                            {index +
+                                                                                1 +
+                                                                                page *
+                                                                                    rowsPerPage}
+                                                                        </TableCell>
+
+                                                                        {/*//* Image-Name  */}
+                                                                        <TableCell
+                                                                            onClick={(
+                                                                                e
+                                                                            ) => {
+                                                                                e.stopPropagation();
+
+                                                                                window.open(
+                                                                                    `/pages/client/product-detail/${item.product.id}`,
+                                                                                    "_blank"
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            <div className="tw-flex tw-justify-start tw-items-center">
+                                                                                <CartPreviewImageWrap>
+                                                                                    <img
+                                                                                        src={
+                                                                                            item
+                                                                                                .product
+                                                                                                .image
+                                                                                        }
+                                                                                        alt={
+                                                                                            item
+                                                                                                .product
+                                                                                                .name
+                                                                                        }
+                                                                                    />
+                                                                                </CartPreviewImageWrap>
+                                                                                <span className="name">
+                                                                                    {
+                                                                                        item
+                                                                                            .product
+                                                                                            .name
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                        </TableCell>
+
+                                                                        {/*//* Size  */}
+                                                                        <TableCell>
+                                                                            <FormInput
+                                                                                style={{
+                                                                                    marginBottom:
+                                                                                        "13px",
+                                                                                    width: "40px",
+                                                                                }}
+                                                                                data={{
+                                                                                    name: `${item.product.id}-size-${item.size}`,
+                                                                                    type: "expandSelect",
+                                                                                    myOnBlur:
+                                                                                        handleBlurSize,
+                                                                                    options:
+                                                                                        item.product.sizeProducts.map(
+                                                                                            (
+                                                                                                item
+                                                                                            ) => ({
+                                                                                                value: item
+                                                                                                    .size
+                                                                                                    .name,
+                                                                                                label: item
+                                                                                                    .size
+                                                                                                    .name,
+                                                                                                render: [
+                                                                                                    item
+                                                                                                        .size
+                                                                                                        .name,
+                                                                                                    item.stock,
+                                                                                                ],
+                                                                                                isDisabled:
+                                                                                                    item.stock ===
+                                                                                                    0,
+                                                                                            })
+                                                                                        ),
+                                                                                    menuList:
+                                                                                        [
+                                                                                            t(
+                                                                                                "store:size.title"
+                                                                                            ),
+                                                                                            t(
+                                                                                                "store:product.stock"
+                                                                                            ),
+                                                                                        ],
+                                                                                }}
+                                                                            ></FormInput>
+                                                                        </TableCell>
+
+                                                                        {/*//* Price  */}
+                                                                        <TableCell>
+                                                                            {item.product.price.toLocaleString()}{" "}
+                                                                            VNĐ
+                                                                        </TableCell>
+
+                                                                        {/*//* Quantity  */}
+                                                                        <TableCell
+                                                                            onClick={(
+                                                                                e
+                                                                            ) => {
+                                                                                e.stopPropagation();
+                                                                            }}
+                                                                        >
+                                                                            <QuantityControl>
+                                                                                {/*//* Desc btn  */}
+                                                                                <Button
+                                                                                    variant={
+                                                                                        item.quantity <=
+                                                                                        1
+                                                                                            ? "secondary"
+                                                                                            : "primary"
+                                                                                    }
+                                                                                    size="customQuantityLeft"
+                                                                                    style={{
+                                                                                        margin: "0px",
+                                                                                    }}
+                                                                                    onClick={(
+                                                                                        event
+                                                                                    ) => {
+                                                                                        event.stopPropagation();
+
+                                                                                        if (
+                                                                                            item.quantity <=
+                                                                                            1
+                                                                                        )
+                                                                                            return;
+
+                                                                                        console.log(
+                                                                                            "Add quantity Item",
+                                                                                            item
+                                                                                        );
+                                                                                        decrementQuantity(
+                                                                                            item
+                                                                                                .product
+                                                                                                .id,
+                                                                                            size
+                                                                                        );
+                                                                                    }}
+                                                                                >
+                                                                                    -
+                                                                                </Button>
+
+                                                                                {/*//*  Input */}
+                                                                                <FormInput
+                                                                                    data={{
+                                                                                        name: `${item.product.id}-quantity-${item.size}`,
+                                                                                        type: "text",
+                                                                                        myOnBlur:
+                                                                                            (
+                                                                                                e
+                                                                                            ) =>
+                                                                                                handleBlurQuantity(
+                                                                                                    e,
+                                                                                                    form
+                                                                                                ),
+                                                                                    }}
+                                                                                    style={{
+                                                                                        //6px
+                                                                                        marginBottom:
+                                                                                            "6px",
+                                                                                        width: "60px",
+                                                                                    }}
+                                                                                ></FormInput>
+
+                                                                                {/*//* Incr btn  */}
+                                                                                <Button
+                                                                                    variant={
+                                                                                        item.quantity >=
+                                                                                        item.product.sizeProducts.find(
+                                                                                            (
+                                                                                                sizeProduct
+                                                                                            ) =>
+                                                                                                sizeProduct
+                                                                                                    .size
+                                                                                                    .name ==
+                                                                                                item.size
+                                                                                        )
+                                                                                            .stock
+                                                                                            ? "secondary"
+                                                                                            : "primary"
+                                                                                    }
+                                                                                    size="customQuantityRight"
+                                                                                    style={{
+                                                                                        margin: "0px",
+                                                                                    }}
+                                                                                    onClick={(
+                                                                                        event
+                                                                                    ) => {
+                                                                                        event.stopPropagation();
+
+                                                                                        if (
+                                                                                            item.quantity >=
+                                                                                            item.product.sizeProducts.find(
+                                                                                                (
+                                                                                                    sizeProduct
+                                                                                                ) =>
+                                                                                                    sizeProduct
+                                                                                                        .size
+                                                                                                        .name ==
+                                                                                                    size
+                                                                                            )
+                                                                                                .stock
+                                                                                        )
+                                                                                            return;
+                                                                                        console.log(
+                                                                                            "Add quantity Item",
+                                                                                            item
+                                                                                        );
+                                                                                        incrementQuantity(
+                                                                                            item
+                                                                                                .product
+                                                                                                .id,
+                                                                                            size
+                                                                                        );
+                                                                                    }}
+                                                                                >
+                                                                                    +
+                                                                                </Button>
+                                                                            </QuantityControl>
+                                                                        </TableCell>
+
+                                                                        {/*//* Total  */}
+                                                                        <TableCell>
+                                                                            {totalPrice.toLocaleString()}{" "}
+                                                                            VNĐ
+                                                                        </TableCell>
+
+                                                                        {/*//* Button Remove  */}
+                                                                        <TableCell>
+                                                                            <Button
+                                                                                variant="danger"
+                                                                                size="sm"
+                                                                                style={{
+                                                                                    margin: "0px",
+                                                                                }}
+                                                                                onClick={(
+                                                                                    event
+                                                                                ) => {
+                                                                                    event.stopPropagation();
+                                                                                    handleRemoveItem(
+                                                                                        item
+                                                                                            .product
+                                                                                            .id,
+                                                                                        item.size
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                Remove
+                                                                            </Button>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                );
                                                             }
-                                                            onChange={(
-                                                                event
-                                                            ) => {
-                                                                event.stopPropagation();
-                                                                handleClick(
-                                                                    item.product
-                                                                        .id,
-                                                                    item.size
-                                                                );
-                                                            }}
-                                                        />
-                                                    </TableCell>
+                                                        )}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableWrap>
 
-                                                    {/*//* No  */}
-                                                    <TableCell>
-                                                        {index +
-                                                            1 +
-                                                            page * rowsPerPage}
-                                                    </TableCell>
+                                            <CartSubTotal>
+                                                Sub-total:{" "}
+                                                {subTotal
+                                                    ? `${subTotal.toLocaleString()} VNĐ`
+                                                    : `0 VNĐ`}
+                                            </CartSubTotal>
+                                            {/* <CartPurchase
+                                                subTotal={subTotal}
+                                                selectedProducts={
+                                                    selectedProducts
+                                                }
+                                                onSubmit
+                                            /> */}
+                                        </CardBody>
 
-                                                    {/*//* Image-Name  */}
-                                                    <TableCell>
-                                                        <div className="tw-flex tw-justify-start tw-items-center">
-                                                            <CartPreviewImageWrap>
-                                                                <img
-                                                                    src={
-                                                                        item
-                                                                            .product
-                                                                            .image
-                                                                    }
-                                                                    alt={
-                                                                        item
-                                                                            .product
-                                                                            .name
-                                                                    }
-                                                                />
-                                                            </CartPreviewImageWrap>
-                                                            <span>
-                                                                {
-                                                                    item.product
-                                                                        .name
-                                                                }
-                                                            </span>
-                                                        </div>
-                                                    </TableCell>
-
-                                                    {/*//* Size  */}
-                                                    <TableCell>
-                                                        {item.size}
-                                                    </TableCell>
-
-                                                    {/*//* Price  */}
-                                                    <TableCell>
-                                                        {item.product.price.toLocaleString()}{" "}
-                                                        VNĐ
-                                                    </TableCell>
-
-                                                    {/*//* Quantity  */}
-                                                    <TableCell>
-                                                        <QuantityControl>
-                                                            {/*//* Desc btn  */}
-                                                            <Button
-                                                                variant={
-                                                                    item.quantity <=
-                                                                    1
-                                                                        ? "secondary"
-                                                                        : "primary"
-                                                                }
-                                                                size="customQuantityLeft"
-                                                                style={{
-                                                                    margin: "0px",
-                                                                }}
-                                                                onClick={(
-                                                                    event
-                                                                ) => {
-                                                                    event.stopPropagation();
-
-                                                                    if (
-                                                                        item.quantity <=
-                                                                        1
-                                                                    )
-                                                                        return;
-
-                                                                    console.log(
-                                                                        "Add quantity Item",
-                                                                        item
-                                                                    );
-                                                                    decrementQuantity(
-                                                                        item
-                                                                            .product
-                                                                            .id,
-                                                                        size
-                                                                    );
-                                                                }}
-                                                            >
-                                                                -
-                                                            </Button>
-                                                            <span>
-                                                                {item.quantity}
-                                                            </span>
-
-                                                            {/*//* Incre btn  */}
-                                                            <Button
-                                                                variant={
-                                                                    item.quantity >=
-                                                                    item.product.sizeProducts.find(
-                                                                        (
-                                                                            sizeProduct
-                                                                        ) =>
-                                                                            sizeProduct
-                                                                                .size
-                                                                                .name ==
-                                                                            item.size
-                                                                    ).stock
-                                                                        ? "secondary"
-                                                                        : "primary"
-                                                                }
-                                                                size="customQuantityRight"
-                                                                style={{
-                                                                    margin: "0px",
-                                                                }}
-                                                                onClick={(
-                                                                    event
-                                                                ) => {
-                                                                    event.stopPropagation();
-
-                                                                    if (
-                                                                        item.quantity >=
-                                                                        item.product.sizeProducts.find(
-                                                                            (
-                                                                                sizeProduct
-                                                                            ) =>
-                                                                                sizeProduct
-                                                                                    .size
-                                                                                    .name ==
-                                                                                size
-                                                                        ).stock
-                                                                    )
-                                                                        return;
-                                                                    console.log(
-                                                                        "Add quantity Item",
-                                                                        item
-                                                                    );
-                                                                    incrementQuantity(
-                                                                        item
-                                                                            .product
-                                                                            .id,
-                                                                        size
-                                                                    );
-                                                                }}
-                                                            >
-                                                                +
-                                                            </Button>
-                                                        </QuantityControl>
-                                                    </TableCell>
-
-                                                    {/*//* Total  */}
-                                                    <TableCell>
-                                                        {totalPrice.toLocaleString()}{" "}
-                                                        VNĐ
-                                                    </TableCell>
-
-                                                    {/*//* Button Remove  */}
-                                                    <TableCell>
-                                                        <Button
-                                                            variant="danger"
-                                                            size="sm"
-                                                            style={{
-                                                                margin: "0px",
-                                                            }}
-                                                            onClick={(
-                                                                event
-                                                            ) => {
-                                                                event.stopPropagation();
-                                                                handleRemoveItem(
-                                                                    item.product
-                                                                        .id,
-                                                                    item.size
-                                                                );
-                                                            }}
-                                                        >
-                                                            Remove
-                                                        </Button>
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            </TableWrap>
-
-                            <CartSubTotal>
-                                Sub-total:{" "}
-                                {subTotal
-                                    ? `${subTotal.toLocaleString()} VNĐ`
-                                    : `0 VNĐ`}
-                            </CartSubTotal>
-                            <CartPurchase
-                                subTotal={subTotal}
-                                selectedProducts={selectedProducts}
-                                onSubmit
-                            />
-                        </CardBody>
-                    </Card>
-                </Col>
+                                        <FormButtonToolbar>
+                                            <Button
+                                                type="submit"
+                                                variant="primary"
+                                            >
+                                                {t("action.addToCart")}
+                                            </Button>
+                                        </FormButtonToolbar>
+                                    </Card>
+                                </Col>
+                            </FormContainer>
+                        );
+                    }}
+                </Form>
             </Row>
         </Container>
     );

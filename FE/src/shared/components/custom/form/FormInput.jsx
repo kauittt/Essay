@@ -17,12 +17,12 @@ import { FileInputImageField } from "./FileInputImage";
 import { FileInputField } from "../../form/FileInput";
 import renderExpandSelectField from "./ExpandSelect";
 
-const FormInput = ({ data }) => {
+const FormInput = ({ data, style = {} }) => {
     const { handleSubmit, register, reset, control } = useForm();
     const styleType = "colored";
     // console.log("Data", data);
     return (
-        <FormGroup key={data.name} style={{ minHeight: "65px" }}>
+        <FormGroup key={data.name} style={{ minHeight: "65px", ...style }}>
             {/* Label */}
             {data.type != "checkbox" && (
                 <FormGroupLabel>{data.label}</FormGroupLabel>
@@ -39,6 +39,7 @@ const FormInput = ({ data }) => {
                         style={{ height: "32px" }}
                         disabled={data.disabled}
                         value={data.value}
+                        myOnBlur={data.myOnBlur}
                     />
                 )}
 
@@ -85,6 +86,7 @@ const FormInput = ({ data }) => {
                         // myValue={data.value}
                         myOnChange={data.myOnChange}
                         menuList={data.menuList}
+                        myOnBlur={data.myOnBlur}
                     />
                 )}
                 {data.type === "select" && (

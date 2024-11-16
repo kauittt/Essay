@@ -9,6 +9,7 @@ const FormField = ({
     component: Component = "input",
     isAboveError = false,
     wrapperClassName = "",
+    myOnBlur,
     ...props
 }) => (
     <FormInputWrap className={wrapperClassName}>
@@ -18,6 +19,17 @@ const FormField = ({
                 {...props}
                 {...input}
                 // style={{ border: "0px", height: "40px" }}
+                autoComplete="off"
+                onBlur={(e) => {
+                    // Gọi logic tùy chỉnh từ myOnBlur nếu được truyền
+                    if (myOnBlur) {
+                        myOnBlur(e);
+                    }
+                    // Gọi hàm onBlur mặc định từ react-final-form để cập nhật trạng thái
+                    if (input && input.onBlur) {
+                        input.onBlur(e);
+                    }
+                }}
             />
         </StyledSpan>
         {touched && error && (

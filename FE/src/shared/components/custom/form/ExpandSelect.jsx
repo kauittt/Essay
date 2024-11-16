@@ -10,6 +10,8 @@ import {
     colorFieldsBorder,
     colorIcon,
     colorText,
+    colorBackgroundBody,
+    colorDustyWhite,
 } from "@/utils/palette";
 import { borderRight } from "@/utils/directions";
 import { Card, CardBody } from "@/shared/components/Card";
@@ -57,11 +59,25 @@ const CustomOption = (props) => {
     // console.log("props.data.render", props.data.render);
 
     const cellStyle = { textAlign: "center" };
+    const isDisabled = props.data.isDisabled;
+    const handleClick = (event) => {
+        event.stopPropagation(); // Ngăn chặn sự kiện click lan ra ngoài
+        props.innerProps.onClick && props.innerProps.onClick(event); // Gọi hành vi mặc định của react-select
+    };
     return (
         <tr
             {...props.innerProps}
+            onClick={handleClick}
             style={{
-                cursor: props.data.isDisabled ? "not-allowed" : "pointer",
+                backgroundColor: isDisabled
+                    ? `${colorBackgroundBody}`
+                    : "white", // Nền disabled
+                borderColor: isDisabled
+                    ? `${colorBackgroundBody}`
+                    : "transparent",
+                color: isDisabled ? `${colorDustyWhite}` : "black", // Màu chữ
+                opacity: isDisabled ? 0.7 : 1, // Làm mờ option bị disabled
+                cursor: isDisabled ? "not-allowed" : "pointer",
             }}
         >
             {props.data.render.map((data, index) => {
@@ -85,6 +101,7 @@ export const ExpandSelectField = React.forwardRef(
             options = [],
             setSelectedItem = () => {},
             menuList, //* thêm
+            myOnBlur,
             myOnChange,
             myValue, // Direct value, if provided it will take priority
             ...other
@@ -104,11 +121,14 @@ export const ExpandSelectField = React.forwardRef(
                 ? selectedOption.map((option) => option.value)
                 : selectedOption.value;
 
-            console.log("New value", newValue);
+            // console.log("New value", newValue);
             onChange(newValue);
             if (typeof myOnChange === "function") {
-                console.log("đúng type rồi");
                 myOnChange(newValue);
+            }
+
+            if (typeof myOnBlur === "function") {
+                myOnBlur(name, newValue);
             }
             if (selectedOption) {
                 setSelectedItem(selectedOption);

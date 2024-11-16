@@ -16,6 +16,7 @@ import {
     colorBackground,
     colorBackgroundBody,
     colorIcon,
+    colorBlue,
 } from "@/utils/palette";
 import { marginRight, right, left } from "@/utils/directions";
 
@@ -74,6 +75,11 @@ export const TableCell = styled(MuiTableCell)`
         }
       }
     `}
+    :hover .name {
+            transition: all 0.3s;
+            color: ${colorBlue};
+            text-decoration: underline;
+        }
     }
 `;
 
