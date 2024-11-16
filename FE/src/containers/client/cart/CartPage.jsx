@@ -36,6 +36,7 @@ import {
     colorBackground,
     colorRedHover,
 } from "@/utils/palette";
+import { Link } from "react-router-dom";
 import {
     FormButtonToolbar,
     FormContainer,
@@ -51,6 +52,7 @@ const CartPage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
     const dispatch = useDispatch();
     const history = useHistory();
+    const shippingFee = 30000;
 
     const user = useSelector(selectUser);
     const totalUsers = useSelector(selectTotalUsers);
@@ -251,10 +253,6 @@ const CartPage = () => {
         return 0;
     });
 
-    // console.log("CurrentUser", currentUser.cart);
-    // console.log("sortedCartItems", sortedCartItems);
-    // console.log("-----------");
-
     const incrementQuantity = async (id, size) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
@@ -383,13 +381,13 @@ const CartPage = () => {
         };
     }, []);
 
-    //* Form
-    // Submit
+    //! Form ----------------------------------------------------------------
+    //* Submit
     const submitForm = (values) => {
         console.log("Submit form");
     };
 
-    // Init
+    //* Init
     const prepareInit = sortedCartItems.reduce((acc, item) => {
         const size = `${item.product.id}-size-${item.size}`;
         const quantity = `${item.product.id}-quantity-${item.size}`;
@@ -397,11 +395,11 @@ const CartPage = () => {
         acc[quantity] = item.quantity;
         return acc;
     }, {});
-    const initForm = { ...prepareInit };
+    const initForm = { ...prepareInit, delivery: "ghn" };
 
-    // Validate
+    //* Validate
     const validate = (values, t) => {
-        console.log("Validate values", values);
+        // console.log("Validate values", values);
         const errors = {};
 
         //* Quantity
@@ -428,7 +426,7 @@ const CartPage = () => {
             }
         });
 
-        console.log("Errors", errors);
+        // console.log("Errors", errors);
         return errors;
     };
 
@@ -492,11 +490,54 @@ const CartPage = () => {
         }
     };
 
-    const handleBlurSize = (name, value) => {
-        console.log("Mouse out or input lost focus:", name, value);
-        // You can call validate here or perform other actions
+    const handleBlurSize = async (name, newSize) => {
+        const [id, type, size] = name.split("-");
+
+        const isContain = sortedCartItems.some((item) => item.size == newSize);
+
+        try {
+            const item = sortedCartItems.find(
+                (item) => item.product.id == id && item.size == size
+            );
+            let response = null;
+
+            //* Remove first
+            const cartRequest = {
+                products: [item.product.id],
+                sizes: [item.size],
+                quantities: [-99999],
+            };
+
+            response = await CartService.putCart(currentUser.id, cartRequest);
+
+            if (!isContain) {
+                const cartRequest = {
+                    products: [item.product.id],
+                    sizes: [newSize],
+                    quantities: [item.quantity],
+                };
+
+                await CartService.putCart(currentUser.id, cartRequest);
+            }
+
+            if (response) {
+                dispatch(fetchUsers());
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error(t("common:action.fail", { type: "Update" }), {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
     };
 
+    console.log("sortedCartItems", sortedCartItems);
     console.log("---------------");
 
     return (
@@ -895,23 +936,37 @@ const CartPage = () => {
                                                     ? `${subTotal.toLocaleString()} VNĐ`
                                                     : `0 VNĐ`}
                                             </CartSubTotal>
-                                            {/* <CartPurchase
-                                                subTotal={subTotal}
-                                                selectedProducts={
-                                                    selectedProducts
-                                                }
-                                                onSubmit
-                                            /> */}
-                                        </CardBody>
 
-                                        <FormButtonToolbar>
-                                            <Button
-                                                type="submit"
-                                                variant="primary"
-                                            >
-                                                {t("action.addToCart")}
-                                            </Button>
-                                        </FormButtonToolbar>
+                                            <CartPurchase
+                                                subTotal={subTotal}
+                                                shippingFee={shippingFee}
+                                            />
+
+                                            <FormButtonToolbar>
+                                                <Button
+                                                    variant="primary"
+                                                    to={{
+                                                        pathname:
+                                                            "/pages/client/invoice",
+                                                        state: {
+                                                            selectedProducts:
+                                                                selectedProducts,
+                                                            subTotal: subTotal,
+                                                            shippingFee:
+                                                                shippingFee,
+                                                        },
+                                                    }}
+                                                    disabled={
+                                                        selectedProducts.length ===
+                                                        0
+                                                    }
+                                                    {...(selectedProducts.length >
+                                                        0 && { as: Link })}
+                                                >
+                                                    Purchase
+                                                </Button>
+                                            </FormButtonToolbar>
+                                        </CardBody>
                                     </Card>
                                 </Col>
                             </FormContainer>

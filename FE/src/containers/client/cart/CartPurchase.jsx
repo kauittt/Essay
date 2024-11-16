@@ -31,58 +31,32 @@ import { Button } from "@/shared/components/Button";
                             </CartDelivery> */
 }
 
-const CartPurchase = ({ subTotal = 0, selectedProducts = [] }) => {
+const CartPurchase = ({ subTotal = 0, shippingFee = 0 }) => {
     // console.log("Selected Products Length:", selectedProducts.length);
-    const shippingFee = 30000;
     return (
-        <Form onSubmit={() => {}} initialValues={{ delivery: "dhl" }}>
-            {({ handleSubmit }) => (
-                <CartDeliveriesForm onSubmit={handleSubmit}>
-                    <FormGroup>
-                        <FormGroupLabel>Delivery method:</FormGroupLabel>
-                        <CartDeliveryField>
-                            {/*//* Option 1  */}
-                            <CartDelivery>
-                                <Field
-                                    name="delivery"
-                                    render={renderRadioButtonField}
-                                    label="GHN"
-                                    radioValue="dhl"
-                                />
-                                <CartDeliveryTime>
-                                    3-5 working days
-                                </CartDeliveryTime>
-                                <CartDeliveryPrice>
-                                    {shippingFee.toLocaleString()} VNĐ
-                                </CartDeliveryPrice>
-                            </CartDelivery>
-                        </CartDeliveryField>
-                    </FormGroup>
-
-                    <CartTotal>
-                        Total Price: {(subTotal + shippingFee).toLocaleString()}{" "}
-                        VNĐ
-                    </CartTotal>
-                    <FormButtonToolbar>
-                        <Button
-                            variant="primary"
-                            to={{
-                                pathname: "/pages/client/invoice",
-                                state: {
-                                    selectedProducts: selectedProducts,
-                                    subTotal: subTotal,
-                                    shippingFee: shippingFee,
-                                },
-                            }}
-                            disabled={selectedProducts.length === 0}
-                            {...(selectedProducts.length > 0 && { as: Link })}
-                        >
-                            Purchase
-                        </Button>
-                    </FormButtonToolbar>
-                </CartDeliveriesForm>
-            )}
-        </Form>
+        <div>
+            <FormGroup>
+                <FormGroupLabel>Delivery method:</FormGroupLabel>
+                <CartDeliveryField>
+                    {/*//* Option 1  */}
+                    <CartDelivery>
+                        <Field
+                            name="delivery"
+                            render={renderRadioButtonField}
+                            label="GHN"
+                            radioValue="ghn"
+                        />
+                        <CartDeliveryTime>3-5 working days</CartDeliveryTime>
+                        <CartDeliveryPrice>
+                            {shippingFee.toLocaleString()} VNĐ
+                        </CartDeliveryPrice>
+                    </CartDelivery>
+                </CartDeliveryField>
+            </FormGroup>
+            <CartTotal>
+                Total Price: {(subTotal + shippingFee).toLocaleString()} VNĐ
+            </CartTotal>
+        </div>
     );
 };
 

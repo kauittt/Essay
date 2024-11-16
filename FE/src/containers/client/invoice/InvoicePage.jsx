@@ -118,9 +118,9 @@ const InvoicePage = () => {
         values.sizes = selectedProducts.map((product) => product.size);
         values.products = selectedProducts.map((product) => product.product.id);
 
-        console.log("Submit values");
-        console.log("Information", values);
-        console.log("Product list", selectedProducts);
+        // console.log("Submit values");
+        console.log("Order request", values);
+        // console.log("Product list", selectedProducts);
         console.log("-----------");
 
         try {
