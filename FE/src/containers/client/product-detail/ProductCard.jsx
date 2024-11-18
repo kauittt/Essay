@@ -70,6 +70,7 @@ const ProductCard = ({ product = {} }) => {
     };
 
     const submitForm = async (values) => {
+        console.log("Add to cart");
         console.log("Submit values", values);
 
         const cartRequest = {
@@ -87,7 +88,7 @@ const ProductCard = ({ product = {} }) => {
             // console.log("response", response);
 
             if (response) {
-                // dispatch(fetchUsers());
+                dispatch(fetchUsers());
                 toast.info(t("common:action.success", { type: "Add" }), {
                     position: "top-right",
                     autoClose: 5000,

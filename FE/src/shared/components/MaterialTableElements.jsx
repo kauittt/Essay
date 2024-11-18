@@ -25,6 +25,7 @@ export const TableWrap = styled.div`
 `;
 
 export const Table = styled(MuiTable)`
+    box-shadow: none;
     && th {
         white-space: nowrap;
     }
@@ -75,8 +76,8 @@ export const TableCell = styled(MuiTableCell)`
         }
       }
     `}
-    :hover .name {
-            transition: all 0.3s;
+    div:hover .name {
+            transition: all 0.2s;
             color: ${colorBlue};
             text-decoration: underline;
         }

@@ -109,6 +109,7 @@ export const ExpandSelectField = React.forwardRef(
         ref
     ) => {
         const selectedValue = myValue !== undefined ? myValue + "" : value;
+
         const selectedOptions = Array.isArray(selectedValue)
             ? options.filter((option) => myValue.includes(option.value))
             : options.find((option) => option.value === selectedValue) || null;
@@ -117,6 +118,7 @@ export const ExpandSelectField = React.forwardRef(
         // console.log("SelectedOptions", selectedOptions);
 
         const handleChange = (selectedOption) => {
+            // console.log("Old value", selectedOptions.value);
             const newValue = Array.isArray(selectedOption)
                 ? selectedOption.map((option) => option.value)
                 : selectedOption.value;

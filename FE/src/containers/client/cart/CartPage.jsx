@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
-import DeleteForeverIcon from "mdi-react/DeleteForeverIcon";
 import {
     Card,
     CardBody,
@@ -29,24 +28,15 @@ import CartService from "../../../services/CartService";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { fetchUsers } from "../../../redux/actions/userAction";
-import {
-    colorAccent,
-    colorBlue,
-    colorAdditional,
-    colorBackground,
-    colorRedHover,
-} from "@/utils/palette";
 import { Link } from "react-router-dom";
 import {
     FormButtonToolbar,
     FormContainer,
-    FormGroup,
-    FormGroupField,
-    FormGroupLabel,
 } from "@/shared/components/form/FormElements";
 import { Form } from "react-final-form";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import FormInput from "./../../../shared/components/custom/form/FormInput";
+import { TableContainer, Paper } from "@mui/material";
 
 const CartPage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
@@ -190,8 +180,34 @@ const CartPage = () => {
         }
     };
 
+    const sizeOrder = { S: 1, L: 2, XL: 3 };
+    // const handleRequestSort = (event, property) => {
+    //     const isAsc = orderBy === property && order === "asc";
+    //     setOrder(isAsc ? "desc" : "asc");
+    //     setOrderBy(property);
+    // };
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === "asc";
+
+        const sortedItems = cartItems.slice().sort((a, b) => {
+            if (property === "size") {
+                // So sánh dựa trên mapping thứ tự size
+                return isAsc
+                    ? sizeOrder[a.size] - sizeOrder[b.size]
+                    : sizeOrder[b.size] - sizeOrder[a.size];
+            }
+
+            // Các trường khác (name, quantity, price...)
+            return isAsc
+                ? a[property] > b[property]
+                    ? 1
+                    : -1
+                : a[property] < b[property]
+                ? 1
+                : -1;
+        });
+
+        setCartItems(sortedItems); // Cập nhật dữ liệu
         setOrder(isAsc ? "desc" : "asc");
         setOrderBy(property);
     };
@@ -216,15 +232,6 @@ const CartPage = () => {
         setSelected(newSelected);
     };
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
     // Doi ne
     const isSelected = (id, size) => !!selected.get(`${id}-${size}`);
 
@@ -233,24 +240,50 @@ const CartPage = () => {
         Math.min(rowsPerPage, cartItems.length - page * rowsPerPage);
 
     const sortedCartItems = cartItems.slice().sort((a, b) => {
+        // Sắp xếp theo Name
         if (orderBy === "name") {
-            return order === "asc"
-                ? a.product.name.localeCompare(b.product.name)
-                : b.product.name.localeCompare(a.product.name);
-        } else if (orderBy === "quantity") {
-            return order === "asc"
-                ? a.quantity - b.quantity
-                : b.quantity - a.quantity;
-        } else if (orderBy === "price") {
-            return order === "asc"
-                ? a.product.price - b.product.price
-                : b.product.price - a.product.price;
-        } else if (orderBy === "total") {
+            const nameComparison = a.product.name.localeCompare(b.product.name);
+            if (nameComparison !== 0) {
+                return order === "asc" ? nameComparison : -nameComparison;
+            }
+        }
+
+        // Sắp xếp theo Quantity
+        if (orderBy === "quantity") {
+            const quantityComparison = a.quantity - b.quantity;
+            if (quantityComparison !== 0) {
+                return order === "asc"
+                    ? quantityComparison
+                    : -quantityComparison;
+            }
+        }
+
+        // Sắp xếp theo Price
+        if (orderBy === "price") {
+            const priceComparison = a.product.price - b.product.price;
+            if (priceComparison !== 0) {
+                return order === "asc" ? priceComparison : -priceComparison;
+            }
+        }
+
+        // Sắp xếp theo Total
+        if (orderBy === "total") {
             const totalA = a.product.price * a.quantity;
             const totalB = b.product.price * b.quantity;
-            return order === "asc" ? totalA - totalB : totalB - totalA;
+            const totalComparison = totalA - totalB;
+            if (totalComparison !== 0) {
+                return order === "asc" ? totalComparison : -totalComparison;
+            }
         }
-        return 0;
+
+        if (orderBy === "size") {
+            const sizeComparison = sizeOrder[a.size] - sizeOrder[b.size];
+            return order === "asc" ? sizeComparison : -sizeComparison;
+        }
+
+        // Nếu tất cả các giá trị trên giống nhau, sắp xếp theo Size
+        const sizeComparison = sizeOrder[a.size] - sizeOrder[b.size];
+        return sizeComparison;
     });
 
     const incrementQuantity = async (id, size) => {
@@ -385,6 +418,15 @@ const CartPage = () => {
     //* Submit
     const submitForm = (values) => {
         console.log("Submit form");
+
+        history.push({
+            pathname: "/pages/client/invoice",
+            state: {
+                selectedProducts: selectedProducts,
+                subTotal: subTotal,
+                shippingFee: shippingFee,
+            },
+        });
     };
 
     //* Init
@@ -400,6 +442,7 @@ const CartPage = () => {
     //* Validate
     const validate = (values, t) => {
         // console.log("Validate values", values);
+        // console.log("Validate");
         const errors = {};
 
         //* Quantity
@@ -493,7 +536,16 @@ const CartPage = () => {
     const handleBlurSize = async (name, newSize) => {
         const [id, type, size] = name.split("-");
 
-        const isContain = sortedCartItems.some((item) => item.size == newSize);
+        console.log("Blur size", name);
+        // console.log("Old size", size);
+        // console.log("New size", newSize);
+
+        if (size == newSize) return;
+
+        const isContain = sortedCartItems.some(
+            (item) => item.size == newSize && item.product.id == id
+        );
+        console.log("isContain", isContain);
 
         try {
             const item = sortedCartItems.find(
@@ -509,6 +561,7 @@ const CartPage = () => {
             };
 
             response = await CartService.putCart(currentUser.id, cartRequest);
+            console.log("Response", response);
 
             if (!isContain) {
                 const cartRequest = {
@@ -537,7 +590,8 @@ const CartPage = () => {
         }
     };
 
-    console.log("sortedCartItems", sortedCartItems);
+    // console.log("sortedCartItems");
+    // console.log(sortedCartItems);
     console.log("---------------");
 
     return (
@@ -552,7 +606,7 @@ const CartPage = () => {
                         //* Handle việc select No/Name
                         return (
                             <FormContainer onSubmit={handleSubmit}>
-                                <Col md={12} lg={12}>
+                                <Col lg={10} md={12} sm={12}>
                                     <Card
                                         style={{
                                             marginBottom: "0px",
@@ -578,8 +632,11 @@ const CartPage = () => {
                                                 }
                                             />
 
-                                            <TableWrap>
-                                                <Table>
+                                            <CustomTableContainer
+                                                component={CustomPaper}
+                                                style={{ maxHeight: 525 }}
+                                            >
+                                                <Table stickyHeader>
                                                     <MatTableHead
                                                         numSelected={
                                                             [
@@ -676,19 +733,20 @@ const CartPage = () => {
                                                                         </TableCell>
 
                                                                         {/*//* Image-Name  */}
-                                                                        <TableCell
-                                                                            onClick={(
-                                                                                e
-                                                                            ) => {
-                                                                                e.stopPropagation();
+                                                                        <TableCell>
+                                                                            <div
+                                                                                className="tw-flex tw-justify-start tw-items-center"
+                                                                                onClick={(
+                                                                                    e
+                                                                                ) => {
+                                                                                    e.stopPropagation();
 
-                                                                                window.open(
-                                                                                    `/pages/client/product-detail/${item.product.id}`,
-                                                                                    "_blank"
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            <div className="tw-flex tw-justify-start tw-items-center">
+                                                                                    window.open(
+                                                                                        `/pages/client/product-detail/${item.product.id}`,
+                                                                                        "_blank"
+                                                                                    );
+                                                                                }}
+                                                                            >
                                                                                 <CartPreviewImageWrap>
                                                                                     <img
                                                                                         src={
@@ -719,7 +777,7 @@ const CartPage = () => {
                                                                                 style={{
                                                                                     marginBottom:
                                                                                         "13px",
-                                                                                    width: "40px",
+                                                                                    width: "37px",
                                                                                 }}
                                                                                 data={{
                                                                                     name: `${item.product.id}-size-${item.size}`,
@@ -928,40 +986,97 @@ const CartPage = () => {
                                                         )}
                                                     </TableBody>
                                                 </Table>
-                                            </TableWrap>
+                                            </CustomTableContainer>
+                                        </CardBody>
+                                    </Card>
+                                </Col>
 
+                                <Col lg={2} md={12} sm={12}>
+                                    <Card
+                                        style={{
+                                            marginBottom: "0px",
+                                            paddingBottom: "0px",
+                                        }}
+                                    >
+                                        <CardBody>
                                             <CartSubTotal>
                                                 Sub-total:{" "}
                                                 {subTotal
                                                     ? `${subTotal.toLocaleString()} VNĐ`
                                                     : `0 VNĐ`}
                                             </CartSubTotal>
-
                                             <CartPurchase
                                                 subTotal={subTotal}
                                                 shippingFee={shippingFee}
                                             />
-
                                             <FormButtonToolbar>
                                                 <Button
+                                                    type="submit"
                                                     variant="primary"
-                                                    to={{
-                                                        pathname:
-                                                            "/pages/client/invoice",
-                                                        state: {
-                                                            selectedProducts:
-                                                                selectedProducts,
-                                                            subTotal: subTotal,
-                                                            shippingFee:
-                                                                shippingFee,
-                                                        },
-                                                    }}
                                                     disabled={
                                                         selectedProducts.length ===
                                                         0
                                                     }
-                                                    {...(selectedProducts.length >
-                                                        0 && { as: Link })}
+                                                    onClick={() => {
+                                                        console.log(
+                                                            "Form is being submitted"
+                                                        );
+                                                        // Lấy state của form để xem errors
+                                                        const errors =
+                                                            form.getState()
+                                                                .errors;
+                                                        console.log(
+                                                            "Current form errors:",
+                                                            errors
+                                                        );
+
+                                                        const isExceeded =
+                                                            Object.values(
+                                                                errors
+                                                            ).some(
+                                                                (error) =>
+                                                                    error ===
+                                                                    "Exceeded"
+                                                            );
+
+                                                        console.log(
+                                                            "isExceeded",
+                                                            isExceeded
+                                                        );
+                                                        if (isExceeded) {
+                                                            toast.warn(
+                                                                t(
+                                                                    "Có item vượt quá"
+                                                                ),
+                                                                {
+                                                                    position:
+                                                                        "top-right",
+                                                                    autoClose: 5000,
+                                                                    hideProgressBar: false,
+                                                                    closeOnClick: true,
+                                                                    pauseOnHover: true,
+                                                                    draggable: true,
+                                                                    progress:
+                                                                        undefined,
+                                                                }
+                                                            );
+                                                        }
+                                                    }}
+                                                    // to={{
+                                                    //     pathname:
+                                                    //         "/pages/client/invoice",
+                                                    //     state: {
+                                                    //         selectedProducts:
+                                                    //             selectedProducts,
+                                                    //         subTotal: subTotal,
+                                                    //         shippingFee:
+                                                    //             shippingFee,
+                                                    //     },
+                                                    // }}
+                                                    // {...(selectedProducts.length >
+                                                    //     0 && {
+                                                    //     as: Link,
+                                                    // })}
                                                 >
                                                     Purchase
                                                 </Button>
@@ -980,7 +1095,20 @@ const CartPage = () => {
 
 export default CartPage;
 
-// region STYLES
+export const CustomTableContainer = styled(TableContainer)`
+    && {
+        /* box-shadow: none;  */
+    }
+`;
+
+export const CustomPaper = styled(Paper)`
+    && {
+        /* box-shadow: none; */
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+        /* box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+            rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; */
+    }
+`;
 
 const CartPreviewImageWrap = styled.span`
     width: 50px;

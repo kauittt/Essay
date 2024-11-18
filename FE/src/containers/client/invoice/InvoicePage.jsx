@@ -28,6 +28,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import InvoiceService from "../../../services/InvoiceService";
 import { fetchOrders } from "../../../redux/actions/orderAction";
+import { fetchProducts } from "./../../../redux/actions/productAction";
 
 const formatDate = (date) => {
     const year = date.getFullYear(); // Gets the full year (e.g., 2024)
@@ -142,6 +143,7 @@ const InvoicePage = () => {
 
             if (response) {
                 dispatch(fetchOrders());
+                dispatch(fetchProducts());
                 history.push("/pages/client/product");
                 toast.info(t("common:action.success", { type: "Add" }), {
                     position: "top-right",
@@ -244,6 +246,8 @@ const InvoicePage = () => {
                                             >
                                                 Back
                                             </Button>
+
+                                            {/*//* Information  */}
                                             <div className="tw-flex tw-justify-between tw-items-center">
                                                 <CardTitleWrap>
                                                     <CardTitle>
@@ -260,6 +264,7 @@ const InvoicePage = () => {
                                                 isButton={false}
                                             ></CustomForm>
 
+                                            {/*//* Product list  */}
                                             <CardTitleWrap>
                                                 <CardTitle>Products</CardTitle>
                                             </CardTitleWrap>
@@ -276,7 +281,7 @@ const InvoicePage = () => {
                                                     </tr>
                                                 </thead>
 
-                                                {/*//* Prodct List  */}
+                                                {/*//* Product List  */}
                                                 <tbody>
                                                     {selectedProducts.map(
                                                         (item, index) => (
@@ -285,11 +290,29 @@ const InvoicePage = () => {
                                                                     {index + 1}
                                                                 </td>
                                                                 <td>
-                                                                    {
-                                                                        item
-                                                                            .product
-                                                                            .name
-                                                                    }
+                                                                    <div className="tw-flex tw-justify-start tw-items-center">
+                                                                        <CartPreviewImageWrap>
+                                                                            <img
+                                                                                src={
+                                                                                    item
+                                                                                        .product
+                                                                                        .image
+                                                                                }
+                                                                                alt={
+                                                                                    item
+                                                                                        .product
+                                                                                        .name
+                                                                                }
+                                                                            />
+                                                                        </CartPreviewImageWrap>
+                                                                        <span className="name">
+                                                                            {
+                                                                                item
+                                                                                    .product
+                                                                                    .name
+                                                                            }
+                                                                        </span>
+                                                                    </div>
                                                                 </td>
                                                                 <td>
                                                                     {item.size}
@@ -391,6 +414,24 @@ export default InvoicePage;
 
 const Subtotal = styled.p`
     margin-bottom: 10px;
+`;
+
+const CartPreviewImageWrap = styled.span`
+    width: 50px;
+    height: 45px;
+    border: 1px solid #f0f0f0;
+    display: inline-block;
+    overflow: hidden;
+    text-align: center;
+    padding: 5px;
+    margin-right: 10px;
+
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        max-width: 100%;
+    }
 `;
 
 const InvoiceCardBody = styled(CardBody)`

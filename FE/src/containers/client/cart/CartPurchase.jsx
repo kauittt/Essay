@@ -10,7 +10,7 @@ import {
     FormGroupField,
     FormGroupLabel,
 } from "@/shared/components/form/FormElements";
-import { colorAdditional, colorText } from "@/utils/palette";
+import { colorAdditional, colorText, colorBlue } from "@/utils/palette";
 import { marginRight, paddingLeft } from "@/utils/directions";
 import { Button } from "@/shared/components/Button";
 
@@ -54,7 +54,13 @@ const CartPurchase = ({ subTotal = 0, shippingFee = 0 }) => {
                 </CartDeliveryField>
             </FormGroup>
             <CartTotal>
-                Total Price: {(subTotal + shippingFee).toLocaleString()} VNĐ
+                Total Price
+                <p
+                    className="tw-font-bold"
+                    // style={{ color: colorBlue }}
+                >
+                    {(subTotal + shippingFee).toLocaleString()} VNĐ
+                </p>
             </CartTotal>
         </div>
     );
