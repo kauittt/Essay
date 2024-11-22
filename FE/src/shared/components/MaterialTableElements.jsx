@@ -17,6 +17,12 @@ import {
     colorBackgroundBody,
     colorIcon,
     colorBlue,
+    colorTextAdditional,
+    colorBlack,
+    colorWhite,
+    colorDustyWhite,
+    colorLightText,
+    colorLightGray,
 } from "@/utils/palette";
 import { marginRight, right, left } from "@/utils/directions";
 
@@ -182,6 +188,35 @@ export const MenuItem = styled(MuiMenuItem)`
 
 export const TableSortLabel = styled(MuiTableSortLabel)`
     && {
-        color: ${colorText};
+        /* Màu mặc định */
+        color: ${({ theme }) =>
+            theme.mode === "light" ? colorLightText : colorDustyWhite};
+
+        &:hover {
+            /* Màu khi hover */
+            color: ${({ theme }) =>
+                // theme.mode === "light" ? colorBlack : colorWhite};
+                theme.mode === "light" ? colorLightText : colorDustyWhite};
+        }
+
+        &.Mui-active {
+            /* Màu cho trạng thái active */
+            color: ${({ theme }) =>
+                theme.mode === "light" ? colorBlack : colorWhite};
+
+            /* Ghi đè màu cho icon trong trạng thái active */
+            .MuiTableSortLabel-icon {
+                color: ${({ theme }) =>
+                    theme.mode === "light" ? colorLightText : colorDustyWhite};
+            }
+        }
+    }
+`;
+
+export const TableLabel = styled.span`
+    && {
+        /* Màu mặc định */
+        color: ${({ theme }) =>
+            theme.mode === "light" ? colorLightText : colorDustyWhite};
     }
 `;

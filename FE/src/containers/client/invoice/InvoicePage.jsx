@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import { Card, CardBody } from "@/shared/components/Card";
@@ -29,6 +29,8 @@ import { useDispatch } from "react-redux";
 import InvoiceService from "../../../services/InvoiceService";
 import { fetchOrders } from "../../../redux/actions/orderAction";
 import { fetchProducts } from "./../../../redux/actions/productAction";
+import { selectVouchers } from "../../../redux/reducers/voucherSlice";
+import CustomModal from "./../../../shared/components/custom/modal/CustomModal";
 
 const formatDate = (date) => {
     const year = date.getFullYear(); // Gets the full year (e.g., 2024)
@@ -59,10 +61,13 @@ const InvoicePage = () => {
     const totalUsers = useSelector(selectTotalUsers);
     const location = useLocation();
     const history = useHistory();
+    let vouchers = useSelector(selectVouchers);
+    const [selectedVoucher, setSelectedVoucher] = useState("");
 
     useEffect(() => {}, [totalUsers]);
 
     const { selectedProducts, subTotal, shippingFee } = location.state || {};
+    const discount = subTotal * selectedVoucher.discountPercentage || 0;
     const currentUser = totalUsers?.find((u) => u.username === user.username);
 
     //* Navigate Cart
@@ -70,11 +75,11 @@ const InvoicePage = () => {
         history.push("/pages/client/cart");
     }
 
-    console.log("currentUser", currentUser);
-    console.log("selectedProducts at Invoice", selectedProducts);
-    console.log("shippingFee", shippingFee);
+    // console.log("currentUser", currentUser);
+    // console.log("selectedProducts at Invoice", selectedProducts);
+    // console.log("shippingFee", shippingFee);
 
-    //* Form
+    //! Form
     const leftFields = [
         {
             label: "Create Date",
@@ -133,7 +138,7 @@ const InvoicePage = () => {
             const invoiceRequest = {
                 order: orderId.data.id,
                 createDate: createDate,
-                discountAmount: discountAmount,
+                discountAmount: discount,
                 totalAmount: subTotal + shippingFee,
                 paymentMethod: paymentMethod,
             };
@@ -169,8 +174,9 @@ const InvoicePage = () => {
         }
     };
 
+    //* init
     const createDate = new Date();
-    const discountAmount = 0;
+    // const discountAmount = 0;
     const paymentMethod = "COD";
     const initValue = {
         createDate: formatDate(createDate),
@@ -206,6 +212,22 @@ const InvoicePage = () => {
         // console.log("errors", errors);
         return errors;
     };
+
+    //* Valid voucher
+    const today = new Date();
+    vouchers = vouchers
+        ?.filter((voucher) => new Date(voucher.endDate) >= today)
+        .filter((voucher) =>
+            selectedProducts.every((item) =>
+                voucher.products.some(
+                    (product) => product.id === item.product.id
+                )
+            )
+        );
+    console.log("Vouchers", vouchers);
+
+    console.log("Selected Voucher", selectedVoucher);
+    console.log("----");
 
     // <InvoiceLogo />
 
@@ -268,6 +290,7 @@ const InvoicePage = () => {
                                             <CardTitleWrap>
                                                 <CardTitle>Products</CardTitle>
                                             </CardTitleWrap>
+
                                             <Table bordered responsive>
                                                 {/*//* Header  */}
                                                 <thead>
@@ -341,6 +364,7 @@ const InvoicePage = () => {
 
                                             {/*//* Total  */}
                                             <InvoiceTotal>
+                                                {/*//* Sub-total  */}
                                                 <Subtotal>
                                                     Sub-total:
                                                     <span className="tw-font-semibold">
@@ -348,6 +372,17 @@ const InvoicePage = () => {
                                                         VNĐ
                                                     </span>
                                                 </Subtotal>
+
+                                                {/*//* Discount  */}
+                                                <Subtotal>
+                                                    Discount:
+                                                    <span className="tw-font-semibold">
+                                                        {discount.toLocaleString()}{" "}
+                                                        VNĐ
+                                                    </span>
+                                                </Subtotal>
+
+                                                {/*//* Shipping  */}
                                                 <p>
                                                     Shipping fee:{" "}
                                                     <span className="tw-font-semibold">
@@ -360,13 +395,15 @@ const InvoicePage = () => {
                                                     <span className="tw-font-semibold">
                                                         {(
                                                             subTotal +
-                                                            shippingFee
+                                                            shippingFee -
+                                                            discount
                                                         ).toLocaleString()}{" "}
                                                         VNĐ
                                                     </span>
                                                 </InvoiceGrandTotal>
+
+                                                {/*//* Button  */}
                                                 <InvoiceToolbar>
-                                                    {/*//* Button  */}
                                                     <FormButtonToolbar
                                                         style={{
                                                             width: "100%",
@@ -378,6 +415,18 @@ const InvoicePage = () => {
                                                             gap: "20px",
                                                         }}
                                                     >
+                                                        <CustomModal
+                                                            color="success"
+                                                            title={"Voucher"}
+                                                            btn={t("Voucher")}
+                                                            action="new"
+                                                            data={vouchers}
+                                                            component="selectVoucher"
+                                                            myOnChange={
+                                                                setSelectedVoucher
+                                                            }
+                                                        />
+
                                                         {/*//* Submit */}
                                                         <Button
                                                             variant="primary"

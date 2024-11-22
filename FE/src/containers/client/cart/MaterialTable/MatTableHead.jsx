@@ -7,7 +7,10 @@ import TableRow from "@mui/material/TableRow";
 import {
     TableCheckbox,
     TableSortLabel,
+    TableLabel,
 } from "@/shared/components/MaterialTableElements";
+import styled from "styled-components";
+import { colorBackground, colorText } from "@/utils/palette";
 
 const rows = [
     { id: "no", disablePadding: false, label: "No" },
@@ -35,8 +38,8 @@ const MatTableHead = ({
 
     return (
         <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
+            <StyledTableRow>
+                <StyledTableCell padding="checkbox">
                     <TableCheckbox
                         indeterminate={
                             numSelected > 0 && numSelected < rowCount
@@ -44,16 +47,16 @@ const MatTableHead = ({
                         checked={numSelected === rowCount}
                         onChange={onSelectAllClick}
                     />
-                </TableCell>
+                </StyledTableCell>
                 {rows.map((row) => (
-                    <TableCell
+                    <StyledTableCell
                         key={row.id}
                         align={rtl.direction === "rtl" ? "right" : "left"}
                         padding={row.disablePadding ? "none" : "normal"}
                         sortDirection={orderBy === row.id ? order : false}
                     >
                         {row.sortable === false ? (
-                            row.label
+                            <TableLabel>{row.label}</TableLabel>
                         ) : (
                             <TableSortLabel
                                 active={orderBy === row.id}
@@ -63,13 +66,14 @@ const MatTableHead = ({
                                     onRequestSort
                                 )}
                                 className="material-table__sort-label"
+                                // style={{ color: colorText }}
                             >
                                 {row.label}
                             </TableSortLabel>
                         )}
-                    </TableCell>
+                    </StyledTableCell>
                 ))}
-            </TableRow>
+            </StyledTableRow>
         </TableHead>
     );
 };
@@ -82,5 +86,16 @@ MatTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired,
 };
+
+const StyledTableCell = styled(TableCell)`
+    background-color: ${colorBackground} !important;
+    /* background-color: red !important; // Đảm bảo override stickyHeader styles */
+    z-index: 10; // Sticky headers có thể cần chỉ số z-index
+`;
+
+const StyledTableRow = styled(TableRow)`
+    && {
+    }
+`;
 
 export default MatTableHead;

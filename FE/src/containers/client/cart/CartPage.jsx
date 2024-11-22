@@ -37,6 +37,7 @@ import { Form } from "react-final-form";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import FormInput from "./../../../shared/components/custom/form/FormInput";
 import { TableContainer, Paper } from "@mui/material";
+import { colorBackground, colorBorder } from "@/utils/palette";
 
 const CartPage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
@@ -663,7 +664,7 @@ const CartPage = () => {
                                                             cartItems.length
                                                         }
                                                     />
-                                                    <TableBody>
+                                                    <StyledTableBody className="tw-background-red">
                                                         {sortedCartItems.map(
                                                             (item, index) => {
                                                                 const isItemSelected =
@@ -688,7 +689,7 @@ const CartPage = () => {
                                                                               2
                                                                           );
                                                                 return (
-                                                                    <TableRow
+                                                                    <StyledTableRow
                                                                         key={`${item.product.id}-${item.size}`}
                                                                         selected={
                                                                             isItemSelected
@@ -705,7 +706,7 @@ const CartPage = () => {
                                                                             cursor: "pointer",
                                                                         }}
                                                                     >
-                                                                        <TableCell padding="checkbox">
+                                                                        <StyledTableCell padding="checkbox">
                                                                             <TableCheckbox
                                                                                 checked={
                                                                                     isItemSelected
@@ -722,18 +723,18 @@ const CartPage = () => {
                                                                                     );
                                                                                 }}
                                                                             />
-                                                                        </TableCell>
+                                                                        </StyledTableCell>
 
                                                                         {/*//* No  */}
-                                                                        <TableCell>
+                                                                        <StyledTableCell>
                                                                             {index +
                                                                                 1 +
                                                                                 page *
                                                                                     rowsPerPage}
-                                                                        </TableCell>
+                                                                        </StyledTableCell>
 
                                                                         {/*//* Image-Name  */}
-                                                                        <TableCell>
+                                                                        <StyledTableCell>
                                                                             <div
                                                                                 className="tw-flex tw-justify-start tw-items-center"
                                                                                 onClick={(
@@ -769,10 +770,10 @@ const CartPage = () => {
                                                                                     }
                                                                                 </span>
                                                                             </div>
-                                                                        </TableCell>
+                                                                        </StyledTableCell>
 
                                                                         {/*//* Size  */}
-                                                                        <TableCell>
+                                                                        <StyledTableCell>
                                                                             <FormInput
                                                                                 style={{
                                                                                     marginBottom:
@@ -817,16 +818,16 @@ const CartPage = () => {
                                                                                         ],
                                                                                 }}
                                                                             ></FormInput>
-                                                                        </TableCell>
+                                                                        </StyledTableCell>
 
                                                                         {/*//* Price  */}
-                                                                        <TableCell>
+                                                                        <StyledTableCell>
                                                                             {item.product.price.toLocaleString()}{" "}
                                                                             VNĐ
-                                                                        </TableCell>
+                                                                        </StyledTableCell>
 
                                                                         {/*//* Quantity  */}
-                                                                        <TableCell
+                                                                        <StyledTableCell
                                                                             onClick={(
                                                                                 e
                                                                             ) => {
@@ -949,16 +950,16 @@ const CartPage = () => {
                                                                                     +
                                                                                 </Button>
                                                                             </QuantityControl>
-                                                                        </TableCell>
+                                                                        </StyledTableCell>
 
                                                                         {/*//* Total  */}
-                                                                        <TableCell>
+                                                                        <StyledTableCell>
                                                                             {totalPrice.toLocaleString()}{" "}
                                                                             VNĐ
-                                                                        </TableCell>
+                                                                        </StyledTableCell>
 
                                                                         {/*//* Button Remove  */}
-                                                                        <TableCell>
+                                                                        <StyledTableCell>
                                                                             <Button
                                                                                 variant="danger"
                                                                                 size="sm"
@@ -979,12 +980,12 @@ const CartPage = () => {
                                                                             >
                                                                                 Remove
                                                                             </Button>
-                                                                        </TableCell>
-                                                                    </TableRow>
+                                                                        </StyledTableCell>
+                                                                    </StyledTableRow>
                                                                 );
                                                             }
                                                         )}
-                                                    </TableBody>
+                                                    </StyledTableBody>
                                                 </Table>
                                             </CustomTableContainer>
                                         </CardBody>
@@ -1139,6 +1140,28 @@ const CartSubTotal = styled.h5`
     text-align: ${left};
     margin-top: 20px;
     font-weight: 700;
+`;
+
+const StyledTableBody = styled(TableBody)`
+    background-color: ${colorBackground};
+`;
+
+const StyledTableRow = styled(TableRow)`
+    && {
+        border-bottom: 1px solid
+            ${({ theme }) => (theme.mode === "light" ? "#e0e0e0" : "#424242")};
+
+        &:last-child {
+            border-bottom: none; /* Xóa đường kẻ của dòng cuối nếu không cần */
+        }
+    }
+`;
+
+const StyledTableCell = styled(TableCell)`
+    && {
+        border-bottom: 1px solid
+            ${({ theme }) => (theme.mode === "light" ? "#d6d6d6" : "#333")};
+    }
 `;
 
 // endregion

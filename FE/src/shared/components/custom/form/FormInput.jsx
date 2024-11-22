@@ -16,17 +16,21 @@ import { useForm, Controller } from "react-hook-form";
 import { FileInputImageField } from "./FileInputImage";
 import { FileInputField } from "../../form/FileInput";
 import renderExpandSelectField from "./ExpandSelect";
+import renderRadioButtonField from "@/shared/components/form/RadioButton";
+import renderVoucherRadioButtonField from "@/shared/components/custom/form/VoucherRadioButton";
 
 const FormInput = ({ data, style = {} }) => {
     const { handleSubmit, register, reset, control } = useForm();
     const styleType = "colored";
-    // console.log("Data", data);
+    // console.log("FormInput", data);
     return (
         <FormGroup key={data.name} style={{ minHeight: "65px", ...style }}>
             {/* Label */}
-            {data.type != "checkbox" && (
-                <FormGroupLabel>{data.label}</FormGroupLabel>
-            )}
+            {data.type != "checkbox" &&
+                data.type != "voucherRadio" &&
+                data.type != "radio" && (
+                    <FormGroupLabel>{data.label}</FormGroupLabel>
+                )}
 
             {/* Field */}
             <FormGroupField>
@@ -133,6 +137,25 @@ const FormInput = ({ data, style = {} }) => {
                         component={renderCheckBoxField}
                         label={data.label}
                         styleType={styleType}
+                    />
+                )}
+
+                {data.type === "radio" && (
+                    <Field
+                        name={data.name}
+                        render={renderRadioButtonField}
+                        label={data.label}
+                        radioValue={data.radioValue}
+                    />
+                )}
+
+                {data.type === "voucherRadio" && (
+                    <Field
+                        name={data.name}
+                        render={renderVoucherRadioButtonField}
+                        label={data.label}
+                        radioValue={data.radioValue}
+                        voucher={data.voucher}
                     />
                 )}
             </FormGroupField>

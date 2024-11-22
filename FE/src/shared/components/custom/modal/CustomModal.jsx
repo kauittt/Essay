@@ -25,6 +25,7 @@ import CategoryModal from "@/containers/Admin/Category/modal/CategoryModal";
 import ProductModal from "@/containers/Admin/Product/modal/ProductModal";
 import UserModal from "../../../../containers/Admin/User/modal/UserModal";
 import OrderModal from "../../../../containers/Admin/Order/modal/OrderModal";
+import SelectVoucherModal from "../../../../containers/client/invoice/SelectVoucherModal";
 
 const CustomModal = ({
     color,
@@ -35,6 +36,7 @@ const CustomModal = ({
     header = false,
     data = {},
     component,
+    myOnChange,
 }) => {
     const [modal, setModal] = useState(false);
 
@@ -86,6 +88,15 @@ const CustomModal = ({
                 </ModalHeader>
 
                 <ModalBody>
+                    {component == "selectVoucher" && (
+                        <SelectVoucherModal
+                            action={action}
+                            toggle={toggle}
+                            data={data}
+                            myOnChange={myOnChange}
+                        ></SelectVoucherModal>
+                    )}
+
                     {component == "product" && (
                         <ProductModal
                             action={action}
