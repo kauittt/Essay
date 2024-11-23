@@ -11,7 +11,11 @@ import {
 import TopbarMenuLink, { TopbarLink } from "./TopbarMenuLink";
 import { TopbarBack, TopbarDownIcon } from "./BasicTopbarComponents";
 import { useDispatch } from "react-redux";
-import { selectUser, userLogout } from "../../../redux/reducers/userSlice";
+import {
+    selectTotalUsers,
+    selectUser,
+    userLogout,
+} from "../../../redux/reducers/userSlice";
 import { useSelector } from "react-redux";
 
 const Ava = `/img/topbar/ava.png`;
@@ -31,15 +35,18 @@ const TopbarProfile = () => {
         dispatch(userLogout());
     };
 
-    const user = useSelector(selectUser);
+    let user = useSelector(selectUser);
+    const totalUsers = useSelector(selectTotalUsers);
+
+    user = totalUsers?.find((u) => u.id == user.id);
 
     return (
         <TopbarProfileWrap>
             {/*//* Icon/Button  */}
             <TopbarAvatarButton type="button" onClick={toggleCollapse}>
-                <TopbarAvatarImage src={Ava} alt="avatar" />
+                <TopbarAvatarImage src={user?.image || Ava} alt="avatar" />
                 <TopbarAvatarName className="tw-font-bold">
-                    {user.name}
+                    {user?.name}
                 </TopbarAvatarName>
                 <TopbarDownIcon />
             </TopbarAvatarButton>
@@ -58,9 +65,9 @@ const TopbarProfile = () => {
                     <TopbarMenu>
                         {/*//* Menu Link  */}
                         <TopbarMenuLink
-                            title="Page one"
+                            title="Profile"
                             icon="list"
-                            path="/pages/test"
+                            path="/pages/profile"
                             onClick={toggleCollapse}
                         />
                         <TopbarMenuLink

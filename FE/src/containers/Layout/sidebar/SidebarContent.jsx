@@ -58,7 +58,7 @@ const SidebarContent = ({
 
             <SidebarBlock collapse={collapse}>
                 <SidebarLink
-                    title="Cart"
+                    title={t("store:cart.title")}
                     icon="store"
                     route="/pages/client/cart"
                 />

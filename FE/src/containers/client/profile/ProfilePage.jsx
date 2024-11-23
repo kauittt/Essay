@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     FormContainer,
     FormButtonToolbar,
@@ -6,7 +6,12 @@ import {
 import { Col, Container, Row } from "react-bootstrap";
 import { Button } from "@/shared/components/Button";
 import { Form } from "react-final-form";
-import { Card, CardBody } from "@/shared/components/Card";
+import {
+    Card,
+    CardBody,
+    CardTitleWrap,
+    CardTitle,
+} from "@/shared/components/Card";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -15,10 +20,14 @@ import CustomForm from "@/shared/components/custom/form/CustomForm";
 import { addProduct, updateProduct } from "@/redux/actions/productAction";
 import { createGlobalStyle } from "styled-components";
 import { fetchVouchers } from "@/redux/actions/voucherAction";
-import { addUser, updateUser } from "../../../../redux/actions/userAction";
+import { addUser, updateUser } from "@/redux/actions/userAction";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/redux/reducers/userSlice";
+import { selectTotalUsers } from "./../../../redux/reducers/userSlice";
+import { fetchUsers } from "../../../redux/actions/userAction";
 
-const bigDecimalFields = ["price"];
-const integerFields = ["stock"];
+const bigDecimalFields = [""];
+const integerFields = [""];
 
 const bigDecimalRegex = /^\d+(\.\d{1,20})?$/;
 
@@ -42,14 +51,31 @@ const validateInteger = (value, t) => {
     return undefined;
 };
 
-const UserModal = ({ toggle, data, action }) => {
+const ProfilePage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
     const enter = t("action.enter");
     const update = t("action.update");
-
+    const action = "update";
     const dispatch = useDispatch();
 
-    const [formData, setFormData] = useState(data);
+    let user = useSelector(selectUser);
+    const totalUsers = useSelector(selectTotalUsers);
+    const [formData, setFormData] = useState(null);
+
+    useEffect(() => {
+        if (user && totalUsers) {
+            const found = totalUsers.find((u) => u.id === user.id) || {};
+
+            const authorities = found?.authorities[0]?.authority;
+            setFormData({ ...found, authorities });
+        }
+    }, [user, totalUsers]);
+
+    if (!user || !totalUsers) {
+        return <div>Loading...</div>;
+    }
+
+    // console.log("Form data", formData);
 
     const submitForm = async (values) => {
         console.log("Root -----------");
@@ -73,9 +99,19 @@ const UserModal = ({ toggle, data, action }) => {
             return acc;
         }, {});
 
-        if (typeof processedValues.authorities === "string") {
-            processedValues.authorities = [processedValues.authorities];
-        }
+        processedValues = {
+            id: processedValues.id,
+
+            username: processedValues.username,
+            password: processedValues.password,
+            // <authority></authority>
+            email: processedValues.email,
+
+            name: processedValues.name,
+            phone: processedValues.phone,
+            address: processedValues.address,
+            image: processedValues.image,
+        };
 
         console.log("process -----------");
         console.log(processedValues);
@@ -86,17 +122,12 @@ const UserModal = ({ toggle, data, action }) => {
         try {
             let response;
 
-            if (action === "new") {
-                response = await dispatch(addUser(processedValues));
-            } else if (action === "edit") {
-                response = await dispatch(
-                    updateUser(processedValues.id, processedValues)
-                );
-            } else {
-                throw new Error("Error: No matching action");
-            }
+            response = await dispatch(
+                updateUser(processedValues.id, processedValues)
+            );
 
             if (response) {
+                dispatch(fetchUsers());
                 toast.info(t("common:action.success", { type: actionText }), {
                     position: "top-right",
                     autoClose: 5000,
@@ -106,7 +137,7 @@ const UserModal = ({ toggle, data, action }) => {
                     draggable: true,
                     progress: undefined,
                 });
-                toggle();
+                // toggle();
             }
         } catch (e) {
             console.log(e);
@@ -123,16 +154,16 @@ const UserModal = ({ toggle, data, action }) => {
     };
 
     const validate = (values, t) => {
-        console.log("Validate values", values);
+        // console.log("Validate values", values);
         const errors = {};
 
         const requiredFields = [
             "username",
-
             "email",
             "name",
             "phone",
             "address",
+            "image",
         ];
         //* Empty
         requiredFields.forEach((field) => {
@@ -140,14 +171,6 @@ const UserModal = ({ toggle, data, action }) => {
                 errors[field] = t("errors:validation.required");
             }
         });
-
-        if (action == "new" && !values.password) {
-            errors.password = t("errors:validation.empty");
-        }
-
-        if (!values.authorities || values.authorities.length === 0) {
-            errors.authorities = t("errors:validation.empty");
-        }
 
         //* Validate
         if (!/^0\d{9}$/.test(values.phone)) {
@@ -158,7 +181,7 @@ const UserModal = ({ toggle, data, action }) => {
             errors.email = t("errors:validation.invalidEmail");
         }
 
-        console.log("Erros", errors);
+        // console.log("Erros", errors);
         return errors;
     };
 
@@ -182,17 +205,19 @@ const UserModal = ({ toggle, data, action }) => {
             options: [
                 { value: "ROLE_STAFF", label: t("store:user.staff") },
                 { value: "ROLE_ADMIN", label: t("store:user.admin") },
+                { value: "ROLE_USER", label: "[USER]" },
             ],
+            disabled: true,
         },
-    ];
-
-    const rightFields = [
         {
             label: t("store:user.email"),
             name: "email",
             type: "text",
             placeholder: `${enter} ${t("store:user.email")}...`,
         },
+    ];
+
+    const rightFields = [
         {
             label: t("store:user.name"),
             name: "name",
@@ -211,8 +236,15 @@ const UserModal = ({ toggle, data, action }) => {
             type: "text",
             placeholder: `${enter} ${t("store:user.address")}...`,
         },
+        {
+            label: t("store:product.image"),
+            name: "image",
+            type: "importFile",
+            placeholder: `${enter} ${t("store:product.image")}...`,
+        },
     ];
 
+    console.log("-----");
     return (
         <Container>
             <Form
@@ -226,6 +258,11 @@ const UserModal = ({ toggle, data, action }) => {
                             <Col md={12} lg={12}>
                                 <Card style={{ marginBottom: "0px" }}>
                                     <CardBody>
+                                        <CardTitleWrap>
+                                            <CardTitle>
+                                                {t("store:user.information")}
+                                            </CardTitle>
+                                        </CardTitleWrap>
                                         <CustomForm
                                             leftFields={leftFields}
                                             rightFields={rightFields}
@@ -233,39 +270,30 @@ const UserModal = ({ toggle, data, action }) => {
                                             max={4}
                                             isButton={false}
                                         ></CustomForm>
+
+                                        {/*//* Button  */}
+                                        <FormButtonToolbar
+                                            style={{
+                                                width: "100%",
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                gap: "20px",
+                                            }}
+                                        >
+                                            {/*//* Submit */}
+                                            <Button
+                                                variant="success"
+                                                type="submit"
+                                                onClick={() =>
+                                                    console.log("submit")
+                                                }
+                                                style={{ margin: "0px" }}
+                                            >
+                                                {t("action.save")}
+                                            </Button>
+                                        </FormButtonToolbar>
                                     </CardBody>
-
-                                    {/*//* Button  */}
-                                    <FormButtonToolbar
-                                        style={{
-                                            width: "100%",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            gap: "20px",
-                                        }}
-                                    >
-                                        {/*//* Cancle  */}
-                                        <Button
-                                            variant="secondary"
-                                            onClick={toggle}
-                                            style={{ margin: "0px" }}
-                                        >
-                                            {t("action.cancel")}
-                                        </Button>
-
-                                        {/*//* Submit */}
-                                        <Button
-                                            variant="success"
-                                            type="submit"
-                                            onClick={() =>
-                                                console.log("submit")
-                                            }
-                                            style={{ margin: "0px" }}
-                                        >
-                                            {t("action.save")}
-                                        </Button>
-                                    </FormButtonToolbar>
                                 </Card>
                             </Col>
                         </FormContainer>
@@ -276,10 +304,10 @@ const UserModal = ({ toggle, data, action }) => {
     );
 };
 
-UserModal.propTypes = {
+ProfilePage.propTypes = {
     toggle: PropTypes.func,
     action: PropTypes.string,
     data: PropTypes.object,
 };
 
-export default UserModal;
+export default ProfilePage;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
 import FacebookIcon from "mdi-react/FacebookIcon";
 import GooglePlusIcon from "mdi-react/GooglePlusIcon";
@@ -26,15 +26,18 @@ import { getUserSuccess } from "@/redux/reducers/userSlice";
 import { fetchProducts } from "@/redux/actions/productAction";
 import { fetchCategories } from "@/redux/actions/categoryAction";
 import { fetchVouchers } from "@/redux/actions/voucherAction";
-import { fetchUsers } from "../../redux/actions/userAction";
+import { addUser, fetchUsers } from "../../redux/actions/userAction";
 import { fetchOrders } from "../../redux/actions/orderAction";
+import RegisterForm from "./components/RegisterForm";
+import UserService from "../../services/UserService";
 
 const LogIn = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const { t } = useTranslation(["common", "errors", "store"]);
+    const [purpose, setPurpose] = useState("login");
 
-    const handleFormSubmit = async (values) => {
+    const handleLoginFormSubmit = async (values) => {
         console.log("Submitted Values:", values);
         try {
             const response = await AuthService.postLogin(values);
@@ -83,6 +86,40 @@ const LogIn = () => {
         }
     };
 
+    const handleRegisterFormSubmit = async (values) => {
+        console.log("Hello register");
+        const request = { ...values, authorities: ["ROLE_USER"] };
+        console.log("request", request);
+        try {
+            let response = await UserService.postUser(request);
+
+            if (response) {
+                toast.info(t("common:action.success", { type: "Add" }), {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                setPurpose("login");
+            }
+        } catch (error) {
+            console.log(error);
+            const action = t("common:action.login");
+            toast.error(t("common:action.fail", { type: action }), {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+    };
+
     return (
         <AccountWrap>
             <AccountContent>
@@ -103,15 +140,25 @@ const LogIn = () => {
                     </AccountHead>
 
                     {/*//* Form  */}
-                    <LogInForm onSubmit={handleFormSubmit} />
+                    {purpose == "login" ? (
+                        <LogInForm
+                            onSubmit={handleLoginFormSubmit}
+                            setPurpose={setPurpose}
+                        />
+                    ) : (
+                        <RegisterForm
+                            onSubmit={handleRegisterFormSubmit}
+                            setPurpose={setPurpose}
+                        />
+                    )}
 
                     {/*//* Text Direction  */}
-                    <AccountOr>
+                    {/* <AccountOr>
                         <p>{t("login.direction")}</p>
-                    </AccountOr>
+                    </AccountOr> */}
 
                     {/*//* Other option */}
-                    <AccountSocial>
+                    {/* <AccountSocial>
                         <AccountSocialButtonFacebook
                             as={Link}
                             className="account__social-btn account__social-btn--facebook"
@@ -122,7 +169,7 @@ const LogIn = () => {
                         <AccountSocialButtonGoogle as={Link} to="/pages/test">
                             <GooglePlusIcon />
                         </AccountSocialButtonGoogle>
-                    </AccountSocial>
+                    </AccountSocial> */}
                 </AccountCard>
             </AccountContent>
         </AccountWrap>

@@ -27,6 +27,7 @@
         "id": "Mã",
 
         "tableName": "Tên",
+        "productName": "Tên sản phẩm",
         "name": "Tên (VIE)",
         "enName": "Tên (ENG)",
 
@@ -58,8 +59,8 @@
     },
 
     "voucher": {
-        "title": "Khuyến mãi",
-        "titles": "Khuyến mãi",
+        "title": "Phiếu giảm giá",
+        "titles": "Phiếu giảm giá",
         "tableName": "Tên",
         "name": "Tên (VIE)",
         "enName": "Tên (ENG)",
@@ -70,7 +71,9 @@
         "products": "Sản phẩm áp dụng",
         "all": "Tất cả",
         "invalidProducts": "Chọn [Tất cả] hoặc [Từng sản phẩm]",
-        "invalidCategoryProduct": "Chọn [Danh mục] đại diện hoặc [Từng sản phẩm]"
+        "invalidCategoryProduct": "Chọn [Danh mục] đại diện hoặc [Từng sản phẩm]",
+        "applyProduct": "Sản phẩm áp dụng",
+        "discount": "Giảm giá"
     },
 
     "user": {
@@ -84,7 +87,9 @@
         "phone": "Điện thoại",
         "address": "Địa chỉ",
         "staff": "Nhân viên",
-        "admin": "Quản lý"
+        "admin": "Quản lý",
+        "user": "Khách hàng",
+        "information": "Thông tin"
     },
 
     "order": {
@@ -117,7 +122,8 @@
         "totalAmount": "Tổng số tiền",
         "discountAmount": "Số tiền giảm giá",
         "paymentMethod": "Phương thức thanh toán",
-        "totalDue": "Thanh toán"
+        "totalDue": "Thanh toán",
+        "shippingFee": "Tiền vận chuyển"
     },
 
     "dashboard": {
@@ -140,5 +146,15 @@
             "totalRevenue": "Tổng doanh thu",
             "totalQuantity": "Tổng sản phẩm"
         }
+    },
+    "cart": {
+        "title": "Giỏ hàng",
+        "subTotal": "Tạm tính",
+        "delivery": {
+            "title": "Phương thức giao hàng",
+            "description": "3-5 ngày làm việc"
+        },
+        "total": "Tổng cộng",
+        "selected": "Đã chọn {{quantity}} mục"
     }
 }

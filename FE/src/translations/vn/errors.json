@@ -20,8 +20,11 @@
         "invalidDate": "Ngày không hợp lệ.",
         "negativeNumber": "Không được phép nhập số âm.",
         "positive": "Chỉ điền số dương (> 0)",
+        "greaterThan": "SL tối thiểu: {{quantity}}",
 
         "incorrectPassword": "Mật khẩu không chính xác",
-        "required": "Bắt buộc"
+        "required": "Thông tin bắt buộc",
+        "exceeded": "Không đủ tồn kho",
+        "outOfStock": "Tất cả các kích cỡ của sản phẩm này đều đã hết hàng"
     }
 }

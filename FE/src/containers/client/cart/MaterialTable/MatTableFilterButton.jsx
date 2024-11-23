@@ -6,8 +6,11 @@ import {
     MenuItem,
     TableButton,
 } from "@/shared/components/MaterialTableElements";
+import { useTranslation } from "react-i18next";
 
 const MatTableFilterButton = ({ onRequestSort }) => {
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClick = (event) => {
@@ -38,10 +41,18 @@ const MatTableFilterButton = ({ onRequestSort }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem onClick={handleSort("name")}>Name</MenuItem>
-                <MenuItem onClick={handleSort("quantity")}>Quantity</MenuItem>
-                <MenuItem onClick={handleSort("price")}>Price</MenuItem>
-                <MenuItem onClick={handleSort("total")}>Total</MenuItem>
+                <MenuItem onClick={handleSort("name")}>
+                    {t("store:product.tableName")}
+                </MenuItem>
+                <MenuItem onClick={handleSort("quantity")}>
+                    {t("store:product.quantity")}
+                </MenuItem>
+                <MenuItem onClick={handleSort("price")}>
+                    {t("store:product.price")}
+                </MenuItem>
+                <MenuItem onClick={handleSort("total")}>
+                    {t("store:product.totalPrice")}
+                </MenuItem>
             </Menu>
         </div>
     );

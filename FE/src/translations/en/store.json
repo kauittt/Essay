@@ -27,6 +27,7 @@
         "id": "ID",
 
         "tableName": "Name",
+        "productName": "Product Name",
         "name": "Name (VIE)",
         "enName": "Name (ENG)",
 
@@ -58,8 +59,8 @@
     },
 
     "voucher": {
-        "title": "Promotion",
-        "titles": "Promotions",
+        "title": "Voucher",
+        "titles": "Vouchers",
         "tableName": "Name",
         "name": "Name (VIE)",
         "enName": "Name (ENG)",
@@ -70,7 +71,9 @@
         "products": "Applicable Product",
         "all": "All",
         "invalidProducts": "Select [All] or [Individual Products]",
-        "invalidCategoryProduct": "Select either [Category] or [Individual Products]"
+        "invalidCategoryProduct": "Select either [Category] or [Individual Products]",
+        "applyProduct": "Applicable Products",
+        "discount": "Discount"
     },
 
     "user": {
@@ -84,7 +87,9 @@
         "phone": "Phone",
         "address": "Address",
         "staff": "STAFF",
-        "admin": "ADMIN"
+        "admin": "ADMIN",
+        "user": "CUSTOMER",
+        "information": "Information"
     },
 
     "order": {
@@ -117,7 +122,8 @@
         "totalAmount": "Total Price",
         "discountAmount": "Discount Amount",
         "paymentMethod": "Payment Method",
-        "totalDue": "Total Due"
+        "totalDue": "Total Due",
+        "shippingFee": "Shipping Fee"
     },
 
     "dashboard": {
@@ -140,5 +146,15 @@
             "totalRevenue": "Total Revenue",
             "totalQuantity": "Total Quantity"
         }
+    },
+    "cart": {
+        "title": "Cart",
+        "subTotal": "Sub-total",
+        "delivery": {
+            "title": "Delivery method",
+            "description": "3-5 working days"
+        },
+        "total": "Total",
+        "selected": "{{quantity}} selected"
     }
 }

@@ -21,6 +21,12 @@ export const FileInputImageField = React.forwardRef(({ name }, ref) => {
     const [image, setImage] = useState(value || null);
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        if (value) {
+            setImage(value);
+        }
+    }, [value]);
+
     const handleChange = async (e) => {
         e.preventDefault();
         const file = e.target.files[0];
@@ -54,8 +60,12 @@ export const FileInputImageField = React.forwardRef(({ name }, ref) => {
                     <div className="spinner-border" role="status"></div>
                 ) : (
                     <img
+                        style={{
+                            boxShadow:
+                                "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px",
+                        }}
                         id="preview-img"
-                        className="tw-h-20 tw-w-20 tw-object-cover tw-rounded-[5px]"
+                        className="tw-h-20 tw-w-20 tw-object-cover tw-rounded-[5px] "
                         src={
                             image ||
                             `https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg`

@@ -31,6 +31,7 @@ import { fetchOrders } from "../../../redux/actions/orderAction";
 import { fetchProducts } from "./../../../redux/actions/productAction";
 import { selectVouchers } from "../../../redux/reducers/voucherSlice";
 import CustomModal from "./../../../shared/components/custom/modal/CustomModal";
+import { updateVoucher } from "../../../redux/actions/voucherAction";
 
 const formatDate = (date) => {
     const year = date.getFullYear(); // Gets the full year (e.g., 2024)
@@ -52,7 +53,8 @@ const formatDate = (date) => {
 };
 
 const InvoicePage = () => {
-    const { t } = useTranslation(["common", "errors", "store"]);
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const enter = t("action.enter");
     const update = t("action.update");
     const dispatch = useDispatch();
@@ -62,12 +64,14 @@ const InvoicePage = () => {
     const location = useLocation();
     const history = useHistory();
     let vouchers = useSelector(selectVouchers);
-    const [selectedVoucher, setSelectedVoucher] = useState("");
+    const [selectedVoucher, setSelectedVoucher] = useState(null);
 
     useEffect(() => {}, [totalUsers]);
 
     const { selectedProducts, subTotal, shippingFee } = location.state || {};
-    const discount = subTotal * selectedVoucher.discountPercentage || 0;
+    const discount = selectedVoucher
+        ? subTotal * selectedVoucher.discountPercentage
+        : 0;
     const currentUser = totalUsers?.find((u) => u.username === user.username);
 
     //* Navigate Cart
@@ -82,10 +86,11 @@ const InvoicePage = () => {
     //! Form
     const leftFields = [
         {
-            label: "Create Date",
+            label: t("store:invoice.createDate"),
             name: "createDate",
             type: "text",
-            placeholder: `Enter create date...`,
+            placeholder: `${enter} ${t("store:invoice.createDate")}...`,
+
             disabled: true,
         },
         {
@@ -98,10 +103,10 @@ const InvoicePage = () => {
 
     const rightFields = [
         {
-            label: "Name",
+            label: t("store:user.name"),
             name: "name",
             type: "text",
-            placeholder: "Enter name",
+            placeholder: `${enter} ${t("store:user.name")}...`,
         },
         {
             label: t("store:user.phone"),
@@ -147,6 +152,16 @@ const InvoicePage = () => {
             response = await InvoiceService.postInvoice(invoiceRequest);
 
             if (response) {
+                //* Update Voucher's quantity
+                if (selectedVoucher) {
+                    const requestVoucher = {
+                        quantity: selectedVoucher.quantity - 1,
+                    };
+
+                    dispatch(updateVoucher(selectedVoucher.id, requestVoucher));
+                }
+
+                //* Fetch
                 dispatch(fetchOrders());
                 dispatch(fetchProducts());
                 history.push("/pages/client/product");
@@ -254,6 +269,7 @@ const InvoicePage = () => {
                                 <Row>
                                     <Card style={{ marginBottom: "0px" }}>
                                         <InvoiceCardBody>
+                                            {/*//* Back  */}
                                             <Button
                                                 variant="secondary"
                                                 onClick={() =>
@@ -266,14 +282,16 @@ const InvoicePage = () => {
                                                     marginBottom: "20px",
                                                 }}
                                             >
-                                                Back
+                                                {t("action.back")}
                                             </Button>
 
                                             {/*//* Information  */}
                                             <div className="tw-flex tw-justify-between tw-items-center">
                                                 <CardTitleWrap>
                                                     <CardTitle>
-                                                        Information
+                                                        {t(
+                                                            "store:user.information"
+                                                        )}
                                                     </CardTitle>
                                                 </CardTitleWrap>
                                             </div>
@@ -288,19 +306,41 @@ const InvoicePage = () => {
 
                                             {/*//* Product list  */}
                                             <CardTitleWrap>
-                                                <CardTitle>Products</CardTitle>
+                                                <CardTitle>
+                                                    {t("store:product.titles")}
+                                                </CardTitle>
                                             </CardTitleWrap>
 
                                             <Table bordered responsive>
                                                 {/*//* Header  */}
                                                 <thead>
                                                     <tr>
-                                                        <th>No</th>
-                                                        <th>Item Name</th>
-                                                        <th>Size</th>
-                                                        <th>Quantity</th>
-                                                        <th>Price</th>
-                                                        <th>Total</th>
+                                                        <th>{t("store:no")}</th>
+                                                        <th>
+                                                            {t(
+                                                                "store:product.productName"
+                                                            )}
+                                                        </th>
+                                                        <th>
+                                                            {t(
+                                                                "store:size.title"
+                                                            )}
+                                                        </th>
+                                                        <th>
+                                                            {t(
+                                                                "store:product.quantity"
+                                                            )}
+                                                        </th>
+                                                        <th>
+                                                            {t(
+                                                                "store:product.price"
+                                                            )}
+                                                        </th>
+                                                        <th>
+                                                            {t(
+                                                                "store:cart.total"
+                                                            )}
+                                                        </th>
                                                     </tr>
                                                 </thead>
 
@@ -366,7 +406,7 @@ const InvoicePage = () => {
                                             <InvoiceTotal>
                                                 {/*//* Sub-total  */}
                                                 <Subtotal>
-                                                    Sub-total:
+                                                    {t("store:cart.subTotal")}:{" "}
                                                     <span className="tw-font-semibold">
                                                         {subTotal.toLocaleString()}{" "}
                                                         VNĐ
@@ -375,7 +415,10 @@ const InvoicePage = () => {
 
                                                 {/*//* Discount  */}
                                                 <Subtotal>
-                                                    Discount:
+                                                    {t(
+                                                        "store:invoice.discountAmount"
+                                                    )}
+                                                    :{" "}
                                                     <span className="tw-font-semibold">
                                                         {discount.toLocaleString()}{" "}
                                                         VNĐ
@@ -384,14 +427,22 @@ const InvoicePage = () => {
 
                                                 {/*//* Shipping  */}
                                                 <p>
-                                                    Shipping fee:{" "}
+                                                    {t(
+                                                        "store:invoice.shippingFee"
+                                                    )}
+                                                    :{" "}
                                                     <span className="tw-font-semibold">
                                                         {shippingFee.toLocaleString()}{" "}
                                                         VNĐ
                                                     </span>
                                                 </p>
+
+                                                {/*//* Total  */}
                                                 <InvoiceGrandTotal>
-                                                    Total Price:{" "}
+                                                    {t(
+                                                        "store:invoice.totalDue"
+                                                    )}
+                                                    :{" "}
                                                     <span className="tw-font-semibold">
                                                         {(
                                                             subTotal +
@@ -417,8 +468,12 @@ const InvoicePage = () => {
                                                     >
                                                         <CustomModal
                                                             color="success"
-                                                            title={"Voucher"}
-                                                            btn={t("Voucher")}
+                                                            title={t(
+                                                                "store:voucher.title"
+                                                            )}
+                                                            btn={t(
+                                                                "store:voucher.title"
+                                                            )}
                                                             action="new"
                                                             data={vouchers}
                                                             component="selectVoucher"
@@ -440,7 +495,9 @@ const InvoicePage = () => {
                                                                 margin: "0px",
                                                             }}
                                                         >
-                                                            Confirm
+                                                            {t(
+                                                                "action.purchase"
+                                                            )}
                                                         </Button>
                                                     </FormButtonToolbar>
                                                 </InvoiceToolbar>

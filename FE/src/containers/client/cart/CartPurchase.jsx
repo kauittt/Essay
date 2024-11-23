@@ -13,30 +13,18 @@ import {
 import { colorAdditional, colorText, colorBlue } from "@/utils/palette";
 import { marginRight, paddingLeft } from "@/utils/directions";
 import { Button } from "@/shared/components/Button";
-
-{
-    /* <CartDelivery>
-                                <Field
-                                    name="delivery"
-                                    render={renderRadioButtonField}
-                                    label="Ninja Van"
-                                    radioValue="russian_post"
-                                />
-                                <CartDeliveryTime>
-                                    5-7 working days
-                                </CartDeliveryTime>
-                                <CartDeliveryPrice>
-                                    {(25000).toLocaleString()} VNĐ
-                                </CartDeliveryPrice>
-                            </CartDelivery> */
-}
+import { useTranslation } from "react-i18next";
 
 const CartPurchase = ({ subTotal = 0, shippingFee = 0 }) => {
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     // console.log("Selected Products Length:", selectedProducts.length);
     return (
         <div>
             <FormGroup>
-                <FormGroupLabel>Delivery method:</FormGroupLabel>
+                <FormGroupLabel>
+                    {t("store:cart.delivery.title")}
+                </FormGroupLabel>
                 <CartDeliveryField>
                     {/*//* Option 1  */}
                     <CartDelivery>
@@ -46,7 +34,9 @@ const CartPurchase = ({ subTotal = 0, shippingFee = 0 }) => {
                             label="GHN"
                             radioValue="ghn"
                         />
-                        <CartDeliveryTime>3-5 working days</CartDeliveryTime>
+                        <CartDeliveryTime>
+                            {t("store:cart.delivery.description")}:{" "}
+                        </CartDeliveryTime>
                         <CartDeliveryPrice>
                             {shippingFee.toLocaleString()} VNĐ
                         </CartDeliveryPrice>
@@ -54,11 +44,8 @@ const CartPurchase = ({ subTotal = 0, shippingFee = 0 }) => {
                 </CartDeliveryField>
             </FormGroup>
             <CartTotal>
-                Total Price
-                <p
-                    className="tw-font-bold"
-                    // style={{ color: colorBlue }}
-                >
+                {t("store:cart.total")}:{" "}
+                <p className="tw-font-bold">
                     {(subTotal + shippingFee).toLocaleString()} VNĐ
                 </p>
             </CartTotal>

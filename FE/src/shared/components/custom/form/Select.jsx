@@ -12,6 +12,8 @@ import {
     colorText,
     colorAdditional,
     colorBlackBackground,
+    colorDustyWhite,
+    colorBackgroundBody,
 } from "@/utils/palette";
 import { borderRight } from "@/utils/directions";
 
@@ -60,6 +62,7 @@ export const SelectField = React.forwardRef(
                 placeholder={placeholder}
                 classNamePrefix="react-select"
                 ref={ref}
+                isDisabled={other.disabled}
                 {...other}
             />
         );
@@ -243,6 +246,14 @@ const StyledSelect = styled(Select)`
     .react-select__option--is-selected {
         background-color: ${colorAccent};
         color: ${colorBackground};
+    }
+
+    .react-select__control--is-disabled {
+        background-color: ${colorBackgroundBody};
+        color: ${colorDustyWhite};
+        border-color: ${colorBackgroundBody};
+
+        cursor: not-allowed !important;
     }
 `;
 

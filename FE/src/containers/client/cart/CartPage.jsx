@@ -40,7 +40,8 @@ import { TableContainer, Paper } from "@mui/material";
 import { colorBackground, colorBorder } from "@/utils/palette";
 
 const CartPage = () => {
-    const { t } = useTranslation(["common", "errors", "store"]);
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const dispatch = useDispatch();
     const history = useHistory();
     const shippingFee = 30000;
@@ -451,7 +452,7 @@ const CartPage = () => {
             const quantity = `${item.product.id}-quantity-${item.size}`;
             //* Empty
             if (!values[quantity]) {
-                errors[quantity] = "Required";
+                errors[quantity] = t("errors:validation.required");
             }
 
             //* Lớn hơn stock
@@ -461,12 +462,14 @@ const CartPage = () => {
                     (sizeProduct) => sizeProduct.size.name == item.size
                 ).stock
             ) {
-                errors[quantity] = "Exceeded";
+                errors[quantity] = t("errors:validation.exceeded");
             }
 
             //* Nhỏ hơn 1
             if (values[quantity] < 1) {
-                errors[quantity] = "Không nhỏ hơn 1";
+                errors[quantity] = t("errors:validation.greaterThan", {
+                    quantity: 1,
+                });
             }
         });
 
@@ -616,7 +619,9 @@ const CartPage = () => {
                                     >
                                         <CardBody>
                                             <CardTitleWrap>
-                                                <CardTitle>Cart</CardTitle>
+                                                <CardTitle>
+                                                    {t("store:cart.title")}
+                                                </CardTitle>
                                             </CardTitleWrap>
 
                                             <MatTableToolbar
@@ -763,11 +768,14 @@ const CartPage = () => {
                                                                                     />
                                                                                 </CartPreviewImageWrap>
                                                                                 <span className="name">
-                                                                                    {
-                                                                                        item
-                                                                                            .product
-                                                                                            .name
-                                                                                    }
+                                                                                    {language ==
+                                                                                    "en"
+                                                                                        ? item
+                                                                                              .product
+                                                                                              .enName
+                                                                                        : item
+                                                                                              .product
+                                                                                              .name}
                                                                                 </span>
                                                                             </div>
                                                                         </StyledTableCell>
@@ -891,7 +899,7 @@ const CartPage = () => {
                                                                                         //6px
                                                                                         marginBottom:
                                                                                             "6px",
-                                                                                        width: "60px",
+                                                                                        width: "90px",
                                                                                     }}
                                                                                 ></FormInput>
 
@@ -978,7 +986,9 @@ const CartPage = () => {
                                                                                     );
                                                                                 }}
                                                                             >
-                                                                                Remove
+                                                                                {t(
+                                                                                    "action.delete"
+                                                                                )}
                                                                             </Button>
                                                                         </StyledTableCell>
                                                                     </StyledTableRow>
@@ -1001,7 +1011,7 @@ const CartPage = () => {
                                     >
                                         <CardBody>
                                             <CartSubTotal>
-                                                Sub-total:{" "}
+                                                {t("store:cart.subTotal")}:{" "}
                                                 {subTotal
                                                     ? `${subTotal.toLocaleString()} VNĐ`
                                                     : `0 VNĐ`}
@@ -1047,7 +1057,7 @@ const CartPage = () => {
                                                         if (isExceeded) {
                                                             toast.warn(
                                                                 t(
-                                                                    "Có item vượt quá"
+                                                                    "errors:validation.exceeded"
                                                                 ),
                                                                 {
                                                                     position:
@@ -1063,23 +1073,8 @@ const CartPage = () => {
                                                             );
                                                         }
                                                     }}
-                                                    // to={{
-                                                    //     pathname:
-                                                    //         "/pages/client/invoice",
-                                                    //     state: {
-                                                    //         selectedProducts:
-                                                    //             selectedProducts,
-                                                    //         subTotal: subTotal,
-                                                    //         shippingFee:
-                                                    //             shippingFee,
-                                                    //     },
-                                                    // }}
-                                                    // {...(selectedProducts.length >
-                                                    //     0 && {
-                                                    //     as: Link,
-                                                    // })}
                                                 >
-                                                    Purchase
+                                                    {t("action.purchase")}
                                                 </Button>
                                             </FormButtonToolbar>
                                         </CardBody>
@@ -1153,6 +1148,10 @@ const StyledTableRow = styled(TableRow)`
 
         &:last-child {
             border-bottom: none; /* Xóa đường kẻ của dòng cuối nếu không cần */
+        }
+
+        .MuiTableCell-root {
+            padding: 12px;
         }
     }
 `;

@@ -134,7 +134,7 @@ const ProductCard = ({ product = {} }) => {
                             marginBottom: "20px",
                         }}
                     >
-                        Back
+                        {t("action.back")}
                     </Button>
 
                     <ProductCardContent>

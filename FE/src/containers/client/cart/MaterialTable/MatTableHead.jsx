@@ -11,16 +11,7 @@ import {
 } from "@/shared/components/MaterialTableElements";
 import styled from "styled-components";
 import { colorBackground, colorText } from "@/utils/palette";
-
-const rows = [
-    { id: "no", disablePadding: false, label: "No" },
-    { id: "name", disablePadding: false, label: "Name" },
-    { id: "size", disablePadding: false, label: "Size" },
-    { id: "price", disablePadding: false, label: "Price" },
-    { id: "quantity", disablePadding: false, label: "Quantity" },
-    { id: "total", disablePadding: false, label: "Total" },
-    { id: "remove", disablePadding: false, label: "Remove", sortable: false }, // Set sortable to false
-];
+import { useTranslation } from "react-i18next";
 
 const createSortHandler = (property, onRequestSort) => (event) => {
     onRequestSort(event, property);
@@ -35,6 +26,44 @@ const MatTableHead = ({
     onRequestSort,
 }) => {
     const rtl = useSelector((state) => state.rtl);
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
+
+    const rows = [
+        {
+            id: "no",
+            disablePadding: false,
+            label: t("store:no"),
+            sortable: false,
+        },
+        {
+            id: "name",
+            disablePadding: false,
+            label: t("store:product.tableName"),
+        },
+        {
+            id: "size",
+            disablePadding: false,
+            label: t("store:size.title") || "Size",
+        },
+        { id: "price", disablePadding: false, label: t("store:product.price") },
+        {
+            id: "quantity",
+            disablePadding: false,
+            label: t("store:product.quantity"),
+        },
+        {
+            id: "total",
+            disablePadding: false,
+            label: t("store:product.totalPrice"),
+        },
+        {
+            id: "remove",
+            disablePadding: false,
+            label: t("action.delete"),
+            sortable: false,
+        },
+    ];
 
     return (
         <TableHead>

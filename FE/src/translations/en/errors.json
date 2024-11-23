@@ -20,8 +20,11 @@
         "invalidDate": "Invalid date",
         "negativeNumber": "Negative number is not allowed",
         "positive": "Only positive number (> 0)",
+        "greaterThan": "Min quantity: {{quantity}}",
 
         "incorrectPassword": "The password is incorrect",
-        "required": "Required"
+        "required": "Required",
+        "exceeded": "Exceeded",
+        "outOfStock": "This product is out of stock for All Size"
     }
 }

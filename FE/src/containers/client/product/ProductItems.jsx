@@ -32,9 +32,27 @@ const ProductItems = ({ items = [] }) => {
     const addToCart = async (product) => {
         console.log("Add to cart", product);
 
+        const size = product.sizeProducts.filter(
+            (sizeProduct) => sizeProduct.stock > 0
+        );
+
+        console.log("size", size);
+        if (size.length === 0) {
+            toast.warn(t("errors:validation.outOfStock"), {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return; // Kết thúc hàm nếu không có size khả dụng
+        }
+
         const cartRequest = {
             products: [product.id],
-            sizes: ["L"],
+            sizes: [size[0].size.name],
             quantities: [1],
         };
 
@@ -48,15 +66,20 @@ const ProductItems = ({ items = [] }) => {
 
             if (response) {
                 // dispatch(fetchUsers());
-                toast.info(t("common:action.success", { type: "Add" }), {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                toast.info(
+                    t("common:action.success", {
+                        type: t("common:action.add"),
+                    }),
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
             }
         } catch (e) {
             console.log(e);

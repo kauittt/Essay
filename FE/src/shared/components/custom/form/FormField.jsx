@@ -32,7 +32,7 @@ const FormField = ({
                 }}
             />
         </StyledSpan>
-        {error && (
+        {(myOnBlur || touched) && error && (
             <Error error={error} top={isAboveError} style={{ color: "red" }} />
         )}
     </FormInputWrap>

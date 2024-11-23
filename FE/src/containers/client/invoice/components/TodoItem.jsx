@@ -60,7 +60,7 @@ const TodoItem = ({
     };
 
     return (
-        <Card style={{ marginBottom: "0px" }}>
+        <StyledCard>
             <TodoItemContent>
                 {/* <CheckBoxField
                     disabled={todoItemData?.data.isArchived}
@@ -75,11 +75,13 @@ const TodoItem = ({
                 <TodoInfo>
                     <TodoContent isCompleted={isCompleted}>
                         <h3>
-                            {language == "en" ? voucher.enName : voucher.name}
+                            {language == "en"
+                                ? voucher.enName
+                                : voucher.name || voucher.name}
                         </h3>
                         <TodoDescription>
                             <span className="tw-font-semibold">
-                                Applicable Products:{" "}
+                                {t("store:voucher.applyProduct")}:{" "}
                             </span>
                             {description}
                         </TodoDescription>
@@ -89,13 +91,13 @@ const TodoItem = ({
                         <TodoAdditional>
                             <TodoDueDate>
                                 {/* Due date: {todoItemData.data.date} */}
-                                Due date:{" "}
+                                {t("store:voucher.endDate")}:{" "}
                                 <span className="tw-font-semibold">
                                     {voucher.endDate}
                                 </span>
                             </TodoDueDate>
                             <TodoPriority>
-                                <span>Discount:</span>
+                                <span>{t("store:voucher.discount")}: </span>
                                 <span className="tw-font-semibold">
                                     {voucher.discountPercentage * 100}%
                                 </span>
@@ -104,7 +106,7 @@ const TodoItem = ({
                     </TodoAdditionalWrapper>
                 </TodoInfo>
             </TodoItemContent>
-        </Card>
+        </StyledCard>
     );
 };
 
@@ -119,6 +121,10 @@ TodoItem.propTypes = {
 export default TodoItem;
 
 // region STYLES
+
+const StyledCard = styled(Card)`
+    padding-bottom: 0px !important;
+`;
 
 const TodoItemContent = styled(CardBody)`
     display: flex;

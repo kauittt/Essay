@@ -20,16 +20,16 @@ import {
 } from "@/shared/components/account/AccountElements";
 import { useTranslation } from "react-i18next";
 
-const LogInForm = ({ onSubmit }) => {
+const LogInForm = ({ onSubmit, setPurpose }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
 
     const validate = (values, t) => {
         const errors = {};
         if (!values.username) {
-            errors.username = t("errors:validation.emptyUsername");
+            errors.username = t("errors:validation.required");
         }
         if (!values.password) {
-            errors.password = t("errors:validation.emptyPassword");
+            errors.password = t("errors:validation.required");
         }
         return errors;
     };
@@ -87,9 +87,12 @@ const LogInForm = ({ onSubmit }) => {
 
                     {/*//* Register */}
                     <AccountButton
-                        as={NavLink}
+                        as="button"
                         variant="outline-primary"
-                        to="/pages/test"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setPurpose("register");
+                        }}
                     >
                         {t("login.create_account")}
                     </AccountButton>

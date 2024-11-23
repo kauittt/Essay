@@ -102,6 +102,7 @@ const FormInput = ({ data, style = {} }) => {
                         value={data.value}
                         onChange={data.onChange}
                         myOnChange={data.myOnChange}
+                        disabled={data.disabled}
                     />
                 )}
                 {data.type === "multiSelect" && (

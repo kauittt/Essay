@@ -29,7 +29,9 @@
         "showLess": "Hiển thị ít hơn",
         "enter": "Nhập",
         "close": "Đóng",
-        "addToCart": "Thêm giỏ hàng"
+        "addToCart": "Thêm giỏ hàng",
+        "back": "Trở về",
+        "purchase": "Mua hàng"
     },
     "online_marketing_dashboard": {
         "page_title": "Bảng điều khiển tiếp thị trực tuyến",
