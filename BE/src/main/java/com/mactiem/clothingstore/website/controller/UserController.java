@@ -7,6 +7,7 @@ import com.mactiem.clothingstore.website.entity.Response;
 import com.mactiem.clothingstore.website.entity.User;
 import com.mactiem.clothingstore.website.mapstruct.UserMapper;
 import com.mactiem.clothingstore.website.security.JWTGenerator;
+import com.mactiem.clothingstore.website.security.SecurityUtils;
 import com.mactiem.clothingstore.website.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -97,6 +98,28 @@ public class UserController {
         } catch (Exception ex) {
             Response response = Response.of(HttpStatus.NOT_FOUND, ex.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    //* Current USer
+
+    @GetMapping("/current")
+    public ResponseEntity<?> getCurrentUser() {
+        try {
+            return ResponseEntity.ok(userService.getCurrentUser());
+        } catch (Exception ex) {
+            Response response = Response.of(HttpStatus.NOT_FOUND, ex.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    @PutMapping("/current")
+    public ResponseEntity<?> updateCurrentUser(@RequestBody UserRegistryDTO userRequestDTO) {
+        try {
+            return ResponseEntity.ok(userService.updateCurrentUser(userRequestDTO));
+        } catch (Exception e) {
+            Response response = Response.of(HttpStatus.BAD_REQUEST, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 }

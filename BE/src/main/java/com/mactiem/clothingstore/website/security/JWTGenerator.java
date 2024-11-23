@@ -36,12 +36,12 @@ public class JWTGenerator {
         User user = optionalUser.orElseThrow(() -> new UsernameNotFoundException(username));
 
         Map<String, Object> userClaims = new HashMap<>();
-        userClaims.put("username", username);
-        userClaims.put("name", user.getName());
+//        userClaims.put("username", username);
+//        userClaims.put("name", user.getName());
         userClaims.put("id", user.getId());
-        userClaims.put("roles", authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()));
+//        userClaims.put("roles", authentication.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toList()));
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("user", userClaims);
@@ -84,6 +84,26 @@ public class JWTGenerator {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
+    }
+
+
+    public String getUserIdFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        Map<String, Object> userClaims = (Map<String, Object>) claims.get("user");
+        if (userClaims != null) {
+            Object userId = userClaims.get("id");
+            if (userId instanceof Number) {
+                return String.valueOf(userId);
+            } else {
+                return (String) userId;
+            }
+        }
+        return null;
     }
 
     public List<GrantedAuthority> getAuthoritiesFromJWT(String token) {

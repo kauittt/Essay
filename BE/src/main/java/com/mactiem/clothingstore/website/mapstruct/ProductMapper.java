@@ -64,7 +64,7 @@ public interface ProductMapper {
         }
     }
 
-    default List<String> mapCategoryEntitiesToStrings(List<Category> categories) {
+    default List<String>    mapCategoryEntitiesToStrings(List<Category> categories) {
         if (categories == null || categories.isEmpty()) {
             return List.of(); // Return an empty list if categories are null or empty
         }

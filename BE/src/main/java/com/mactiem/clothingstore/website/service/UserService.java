@@ -9,6 +9,7 @@ import com.mactiem.clothingstore.website.mapstruct.ProductMapper;
 import com.mactiem.clothingstore.website.mapstruct.UserMapper;
 import com.mactiem.clothingstore.website.repository.CartRepository;
 import com.mactiem.clothingstore.website.repository.UserRepository;
+import com.mactiem.clothingstore.website.security.SecurityUtils;
 import com.mactiem.clothingstore.website.validator.ProductValidator;
 import com.mactiem.clothingstore.website.validator.UserValidator;
 import org.mapstruct.Named;
@@ -69,6 +70,11 @@ public class UserService {
         return mapUserDTO(user);
     }
 
+    public UserResponseDTO getCurrentUser() {
+        User user = findUserById(SecurityUtils.getCurrentUserId());
+        return mapUserDTO(user);
+    }
+
     public List<UserResponseDTO> getAllUsers() {
         Sort sort = Sort.by("name");
         List<User> users = userRepository.findAll(sort);
@@ -104,7 +110,9 @@ public class UserService {
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
-                if (!field.getName().equals("username") && !field.getName().equals("authorities") && !field.getName().equals("password")) {
+                if (!field.getName().equals("username")
+                        && !field.getName().equals("authorities")
+                        && !field.getName().equals("password")) {
                     Object value = field.get(userRequestDTO);
                     if (value != null) {
                         Field dbField = User.class.getDeclaredField(field.getName());
@@ -129,6 +137,45 @@ public class UserService {
 
         return mapUserDTO(userRepository.save(dbUser));
     }
+
+    @Transactional
+    public UserResponseDTO updateCurrentUser(UserRegistryDTO userRequestDTO) {
+        User dbUser = findUserById(SecurityUtils.getCurrentUserId());
+
+        userValidator.validateUpdate(userRequestDTO);
+
+        Field[] fields = userRequestDTO.getClass().getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (!field.getName().equals("username")
+                        && !field.getName().equals("authorities")
+                        && !field.getName().equals("password")) {
+                    Object value = field.get(userRequestDTO);
+                    if (value != null) {
+                        Field dbField = User.class.getDeclaredField(field.getName());
+                        dbField.setAccessible(true);
+                        dbField.set(dbUser, value);
+                    }
+                }
+            }
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException("Error updating fields", e);
+        }
+
+        if (userRequestDTO.getAuthorities() != null) {
+            List<Authority> authorities = authorityService.getAuthoritiesByNames(userRequestDTO.getAuthorities());
+            dbUser.setAuthorities(authorities);
+        }
+
+        if (userRequestDTO.getPassword() != null) {
+            dbUser.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+        }
+        dbUser.setUpdateDate(LocalDate.now());
+
+        return mapUserDTO(userRepository.save(dbUser));
+    }
+
 
     @Transactional
     public void delete(String id) {

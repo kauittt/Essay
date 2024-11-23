@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -67,7 +68,16 @@ public class ClothingStoreConfig {
                 .and()
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/users/login", "/users/register").permitAll();
-//                    authorize.anyRequest().permitAll();
+
+                    //* User
+                    authorize.requestMatchers("/users/current", "/users/current/**").authenticated(); //*  Update, Get theo token
+
+                    authorize.requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN"); //* Delete
+                    authorize.requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN"); //* Update
+
+                    authorize.requestMatchers(HttpMethod.GET, "/users").hasAnyRole("ADMIN", "STAFF"); //* getAll
+                    authorize.requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("ADMIN", "STAFF");//* getById
+
                     authorize.anyRequest().authenticated();
                 });
 
