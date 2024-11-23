@@ -10,7 +10,7 @@ import {
 } from "@/utils/palette";
 import { left } from "@/utils/directions";
 import { useSelector } from "react-redux";
-import { selectTotalUsers } from "../../../../redux/reducers/userSlice";
+import { selectUser } from "../../../../redux/reducers/userSlice";
 import { use } from "i18next";
 import UserInfo from "./UserInfo";
 import { FaStar } from "react-icons/fa";
@@ -27,9 +27,7 @@ import StarRating from "../../StarRating";
 
 const FeedbackList = ({ data = {} }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
-    const users = useSelector(selectTotalUsers);
-
-    const user = users?.filter((user) => user.id == data.user)[0];
+    const user = useSelector(selectUser);
 
     if (!user) {
         console.log("User data not loaded or user not found");

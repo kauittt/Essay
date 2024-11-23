@@ -33,7 +33,10 @@ import CartService from "../../../services/CartService";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/reducers/userSlice";
 import { useDispatch } from "react-redux";
-import { fetchUsers } from "../../../redux/actions/userAction";
+import {
+    fetchCurrentUser,
+    fetchUsers,
+} from "../../../redux/actions/userAction";
 
 const ProductCard = ({ product = {} }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
@@ -117,6 +120,7 @@ const ProductCard = ({ product = {} }) => {
     useEffect(() => {
         return () => {
             dispatch(fetchUsers());
+            dispatch(fetchCurrentUser());
         };
     }, []);
 

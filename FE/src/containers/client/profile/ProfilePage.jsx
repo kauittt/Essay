@@ -23,33 +23,11 @@ import { fetchVouchers } from "@/redux/actions/voucherAction";
 import { addUser, updateUser } from "@/redux/actions/userAction";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/redux/reducers/userSlice";
-import { selectTotalUsers } from "./../../../redux/reducers/userSlice";
-import { fetchUsers } from "../../../redux/actions/userAction";
-
-const bigDecimalFields = [""];
-const integerFields = [""];
-
-const bigDecimalRegex = /^\d+(\.\d{1,20})?$/;
-
-const validateBigDecimal = (value, t) => {
-    if (!bigDecimalRegex.test(value)) {
-        return t("errors:validation.invalidNumber");
-    }
-    if (parseFloat(value) < 0) {
-        return t("errors:validation.negativeNumber");
-    }
-    return undefined;
-};
-
-const validateInteger = (value, t) => {
-    if (!Number.isInteger(Number(value))) {
-        return t("errors:validation.invalidNumber");
-    }
-    if (parseInt(value) < 0) {
-        return t("errors:validation.negativeNumber");
-    }
-    return undefined;
-};
+import {
+    fetchCurrentUser,
+    fetchUsers,
+    updateCurrentUser,
+} from "../../../redux/actions/userAction";
 
 const ProfilePage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
@@ -59,19 +37,14 @@ const ProfilePage = () => {
     const dispatch = useDispatch();
 
     let user = useSelector(selectUser);
-    const totalUsers = useSelector(selectTotalUsers);
     const [formData, setFormData] = useState(null);
 
     useEffect(() => {
-        if (user && totalUsers) {
-            const found = totalUsers.find((u) => u.id === user.id) || {};
+        const authorities = user?.authorities[0]?.authority;
+        setFormData({ ...user, authorities });
+    }, [user]);
 
-            const authorities = found?.authorities[0]?.authority;
-            setFormData({ ...found, authorities });
-        }
-    }, [user, totalUsers]);
-
-    if (!user || !totalUsers) {
+    if (!user) {
         return <div>Loading...</div>;
     }
 
@@ -122,12 +95,11 @@ const ProfilePage = () => {
         try {
             let response;
 
-            response = await dispatch(
-                updateUser(processedValues.id, processedValues)
-            );
+            response = await dispatch(updateCurrentUser(processedValues));
 
             if (response) {
-                dispatch(fetchUsers());
+                // dispatch(fetchUsers());
+                // dispatch(fetchCurrentUser());
                 toast.info(t("common:action.success", { type: actionText }), {
                     position: "top-right",
                     autoClose: 5000,

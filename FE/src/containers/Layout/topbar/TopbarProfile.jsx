@@ -36,9 +36,6 @@ const TopbarProfile = () => {
     };
 
     let user = useSelector(selectUser);
-    const totalUsers = useSelector(selectTotalUsers);
-
-    user = totalUsers?.find((u) => u.id == user.id);
 
     return (
         <TopbarProfileWrap>

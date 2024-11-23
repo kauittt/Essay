@@ -26,7 +26,11 @@ import { getUserSuccess } from "@/redux/reducers/userSlice";
 import { fetchProducts } from "@/redux/actions/productAction";
 import { fetchCategories } from "@/redux/actions/categoryAction";
 import { fetchVouchers } from "@/redux/actions/voucherAction";
-import { addUser, fetchUsers } from "../../redux/actions/userAction";
+import {
+    addUser,
+    fetchCurrentUser,
+    fetchUsers,
+} from "../../redux/actions/userAction";
 import { fetchOrders } from "../../redux/actions/orderAction";
 import RegisterForm from "./components/RegisterForm";
 import UserService from "../../services/UserService";
@@ -43,16 +47,18 @@ const LogIn = () => {
             const response = await AuthService.postLogin(values);
             const accessToken = response.data.accessToken || null;
             if (accessToken) {
-                const decoded = jwtDecode(accessToken);
                 localStorage.setItem(
                     "accessToken",
                     JSON.stringify(accessToken)
                 );
-                localStorage.setItem("user", JSON.stringify(decoded.user));
 
-                console.log("Fetch login");
+                // const decoded = jwtDecode(accessToken);
+                // localStorage.setItem("user", JSON.stringify(decoded.user));
+
+                // console.log("decoded", decoded);
+                // console.log("Fetch login");
                 //! Redux
-                dispatch(getUserSuccess(decoded.user));
+                dispatch(fetchCurrentUser(accessToken));
                 dispatch(fetchProducts(accessToken));
                 dispatch(fetchCategories(accessToken));
                 dispatch(fetchVouchers(accessToken));

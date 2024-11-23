@@ -11,7 +11,10 @@ import { Card } from "@/shared/components/Card";
 import { CardBody } from "@/shared/components/Card";
 import moment from "moment";
 import MonthlyInfo from "./components/info/MonthlyInfo";
-import { selectTotalUsers } from "./../../../redux/reducers/userSlice";
+import {
+    selectTotalUsers,
+    selectUser,
+} from "./../../../redux/reducers/userSlice";
 
 const currentMonth = moment().month() + 1;
 const currentYear = moment().year();

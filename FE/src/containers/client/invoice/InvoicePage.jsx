@@ -8,10 +8,7 @@ import { colorAdditional, colorBackground, logoImg } from "@/utils/palette";
 import { marginRight, marginLeft, left, right } from "@/utils/directions";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {
-    selectTotalUsers,
-    selectUser,
-} from "../../../redux/reducers/userSlice";
+import { selectUser } from "../../../redux/reducers/userSlice";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { CardTitleWrap, CardTitle } from "@/shared/components/Card";
 import {
@@ -60,19 +57,16 @@ const InvoicePage = () => {
     const dispatch = useDispatch();
 
     const user = useSelector(selectUser);
-    const totalUsers = useSelector(selectTotalUsers);
     const location = useLocation();
     const history = useHistory();
     let vouchers = useSelector(selectVouchers);
     const [selectedVoucher, setSelectedVoucher] = useState(null);
 
-    useEffect(() => {}, [totalUsers]);
-
     const { selectedProducts, subTotal, shippingFee } = location.state || {};
     const discount = selectedVoucher
         ? subTotal * selectedVoucher.discountPercentage
         : 0;
-    const currentUser = totalUsers?.find((u) => u.username === user.username);
+    const currentUser = useSelector(selectUser);
 
     //* Navigate Cart
     if (!selectedProducts) {

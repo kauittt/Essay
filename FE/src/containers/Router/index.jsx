@@ -16,7 +16,7 @@ import { fetchVouchers } from "@/redux/actions/voucherAction";
 import ProductPage from "./../Admin/Product/ProductPage";
 import CategoryPage from "./../Admin/Category/CategoryPage";
 import VoucherPage from "./../Admin/Voucher/VoucherPage";
-import { fetchUsers } from "./../../redux/actions/userAction";
+import { fetchUsers, fetchCurrentUser } from "./../../redux/actions/userAction";
 import UserPage from "../Admin/User/UserPage";
 import OrderPage from "../Admin/Order/OrderPage";
 import { fetchOrders } from "./../../redux/actions/orderAction";
@@ -66,18 +66,19 @@ const Router = () => {
         }
     }, []);
 
-    const user = useSelector(selectUser);
+    let accessToken = JSON.parse(localStorage.getItem("accessToken"));
 
     useEffect(() => {
         console.log("Fetch again");
-        if (user) {
+        if (accessToken) {
+            dispatch(fetchCurrentUser());
             dispatch(fetchProducts());
             dispatch(fetchCategories());
             dispatch(fetchVouchers());
             dispatch(fetchUsers());
             dispatch(fetchOrders());
         } else {
-            console.log("No user found in localStorage");
+            console.log("No accessToken found in localStorage");
         }
     }, []);
 

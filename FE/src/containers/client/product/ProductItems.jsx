@@ -15,7 +15,10 @@ import { FaStar } from "react-icons/fa";
 import StarRating from "../StarRating";
 import { useTranslation } from "react-i18next";
 import CartService from "../../../services/CartService";
-import { fetchUsers } from "../../../redux/actions/userAction";
+import {
+    fetchCurrentUser,
+    fetchUsers,
+} from "../../../redux/actions/userAction";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/reducers/userSlice";
@@ -99,6 +102,7 @@ const ProductItems = ({ items = [] }) => {
     useEffect(() => {
         return () => {
             dispatch(fetchUsers());
+            dispatch(fetchCurrentUser());
         };
     }, []);
 

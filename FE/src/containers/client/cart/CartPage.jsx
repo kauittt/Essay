@@ -10,7 +10,7 @@ import {
 import { left } from "@/utils/directions";
 import CartPurchase from "./CartPurchase";
 import { useSelector } from "react-redux";
-import { selectUser, selectTotalUsers } from "@/redux/reducers/userSlice";
+import { selectUser } from "@/redux/reducers/userSlice";
 import {
     Table,
     TableRow,
@@ -27,7 +27,10 @@ import { toast } from "react-toastify";
 import CartService from "../../../services/CartService";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { fetchUsers } from "../../../redux/actions/userAction";
+import {
+    fetchCurrentUser,
+    fetchUsers,
+} from "../../../redux/actions/userAction";
 import { Link } from "react-router-dom";
 import {
     FormButtonToolbar,
@@ -47,7 +50,6 @@ const CartPage = () => {
     const shippingFee = 30000;
 
     const user = useSelector(selectUser);
-    const totalUsers = useSelector(selectTotalUsers);
     const products = useSelector(selectProducts);
 
     const [currentUser, setCurrentUser] = useState({});
@@ -59,14 +61,9 @@ const CartPage = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     useEffect(() => {
-        if (user && totalUsers?.length > 0) {
-            const foundUser = totalUsers.find(
-                (u) => u.username === user.username
-            );
-            setCurrentUser(foundUser || {});
-            setCartItems(foundUser?.cart || []);
-        }
-    }, [user, totalUsers]);
+        setCurrentUser(user || {});
+        setCartItems(user?.cart || []);
+    }, [user]);
 
     const handleRemoveItem = async (id, size) => {
         // setCartItems(cartItems.filter((item) => item.product.id !== id));
@@ -89,6 +86,7 @@ const CartPage = () => {
 
             if (response) {
                 dispatch(fetchUsers());
+                dispatch(fetchCurrentUser());
                 toast.info(t("common:action.success", { type: "Delete" }), {
                     position: "top-right",
                     autoClose: 5000,
@@ -158,6 +156,7 @@ const CartPage = () => {
 
             if (response) {
                 dispatch(fetchUsers());
+                dispatch(fetchCurrentUser());
                 toast.info(t("common:action.success", { type: "Delete" }), {
                     position: "top-right",
                     autoClose: 5000,
@@ -413,6 +412,7 @@ const CartPage = () => {
     useEffect(() => {
         return () => {
             dispatch(fetchUsers());
+            dispatch(fetchCurrentUser());
         };
     }, []);
 
@@ -579,6 +579,7 @@ const CartPage = () => {
 
             if (response) {
                 dispatch(fetchUsers());
+                dispatch(fetchCurrentUser());
             }
         } catch (e) {
             console.log(e);
