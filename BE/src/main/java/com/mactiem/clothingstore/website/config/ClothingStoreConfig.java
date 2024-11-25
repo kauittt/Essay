@@ -78,6 +78,32 @@ public class ClothingStoreConfig {
                     authorize.requestMatchers(HttpMethod.GET, "/users").hasAnyRole("ADMIN", "STAFF"); //* getAll
                     authorize.requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("ADMIN", "STAFF");//* getById
 
+                    //* Voucher
+                    authorize.requestMatchers(HttpMethod.GET, "/vouchers").authenticated(); //* Get all
+                    authorize.requestMatchers(HttpMethod.GET, "/vouchers/**").authenticated(); //* Get by ID
+                    authorize.requestMatchers(HttpMethod.POST, "/vouchers").hasAnyRole("ADMIN", "STAFF"); //* Add
+                    authorize.requestMatchers(HttpMethod.PUT, "/vouchers/**").hasAnyRole("ADMIN", "STAFF"); //* Update
+                    authorize.requestMatchers(HttpMethod.DELETE, "/vouchers/**").hasAnyRole("ADMIN", "STAFF"); //* Delete
+
+                    //* Product
+                    authorize.requestMatchers(HttpMethod.GET, "/products").authenticated(); // Get all products
+                    authorize.requestMatchers(HttpMethod.GET, "/products/**").authenticated(); // Get product by ID
+                    authorize.requestMatchers(HttpMethod.POST, "/products").hasAnyRole("ADMIN", "STAFF"); // Add product
+                    authorize.requestMatchers(HttpMethod.PUT, "/products/**").hasAnyRole("ADMIN", "STAFF"); // Update product
+                    authorize.requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN"); // Delete product
+
+
+                    //* Order
+                    authorize.requestMatchers(HttpMethod.POST, "/orders").authenticated(); // Add order
+                    authorize.requestMatchers(HttpMethod.PUT, "/orders/current/**").authenticated(); // Update current order
+                    authorize.requestMatchers(HttpMethod.DELETE, "/orders/current/**").authenticated(); // Delete current order
+
+                    authorize.requestMatchers(HttpMethod.GET, "/orders").hasAnyRole("ADMIN", "STAFF"); // Get all orders
+                    authorize.requestMatchers(HttpMethod.GET, "/orders/**").hasAnyRole("ADMIN", "STAFF"); // Get order by ID
+                    authorize.requestMatchers(HttpMethod.PUT, "/orders/**").hasAnyRole("ADMIN", "STAFF"); // Update order
+                    authorize.requestMatchers(HttpMethod.DELETE, "/orders/**").hasRole("ADMIN"); // Delete order
+
+
                     authorize.anyRequest().authenticated();
                 });
 

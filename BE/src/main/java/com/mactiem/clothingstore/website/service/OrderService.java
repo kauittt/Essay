@@ -5,6 +5,7 @@ import com.mactiem.clothingstore.website.entity.*;
 import com.mactiem.clothingstore.website.mapstruct.OrderMapper;
 import com.mactiem.clothingstore.website.mapstruct.ProductMapper;
 import com.mactiem.clothingstore.website.repository.OrderRepository;
+import com.mactiem.clothingstore.website.security.SecurityUtils;
 import com.mactiem.clothingstore.website.validator.OrderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,6 +41,11 @@ public class OrderService {
     //* Helper
     public Order findOrderById(String id) {
         return orderRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new RuntimeException(Response.notFound("Order", id)));
+    }
+
+    public Order findOrderByIdAndUserId(String id, String userId) {
+        return orderRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new RuntimeException(Response.notFound("Order", id)));
     }
 
@@ -96,8 +102,41 @@ public class OrderService {
     }
 
     @Transactional
+    public OrderResponseDTO updateCurrent(String id, OrderRequestDTO orderRequestDTO) {
+        String userId = SecurityUtils.getCurrentUserId();
+
+        Order order = findOrderByIdAndUserId(id, userId);
+
+        if (order.getStatus().equals("DONE")) return null;
+
+        orderValidator.validateUpdate(orderRequestDTO);
+
+        if (orderRequestDTO.getName() != null && !orderRequestDTO.getName().isEmpty()) {
+            order.setName(orderRequestDTO.getName());
+        }
+
+        if (orderRequestDTO.getPhone() != null && !orderRequestDTO.getPhone().isEmpty()) {
+            order.setPhone(orderRequestDTO.getPhone());
+        }
+
+//        if (orderRequestDTO.getStatus() != null && !orderRequestDTO.getStatus().isEmpty()) {
+//            order.setStatus(orderRequestDTO.getStatus());
+//        }
+
+        order.setUpdateDate(LocalDateTime.now());
+        return orderMapper.toDTO(orderRepository.save(order));
+    }
+
+    @Transactional
     public void delete(String id) {
         Order order = findOrderById(id);
+        orderRepository.delete(order);
+    }
+
+    @Transactional
+    public void deleteCurrnet(String id) {
+        String userId = SecurityUtils.getCurrentUserId();
+        Order order = findOrderByIdAndUserId(id, userId);
         orderRepository.delete(order);
     }
 }

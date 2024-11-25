@@ -67,11 +67,40 @@ public class OrderController {
         }
     }
 
+    @PutMapping("/current/{id}")
+    public ResponseEntity<?> updateCurrent(@PathVariable String id, @RequestBody OrderRequestDTO orderRequestDTO) {
+        try {
+            OrderResponseDTO orderResponseDTO = orderService.updateCurrent(id, orderRequestDTO);
+            if (orderResponseDTO != null) {
+                return ResponseEntity.ok(orderResponseDTO);
+            } else {
+                Response response = Response.of(HttpStatus.OK
+                        , "This Order is completed, Can't update this order");
+                return ResponseEntity.ok(response);
+            }
+        } catch (Exception ex) {
+            Response response = Response.of(HttpStatus.BAD_REQUEST, ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
     //- admin xóa, user update cancel
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         try {
             orderService.delete(id);
+            Response response = Response.of(HttpStatus.OK, "Deleted Order Successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            Response response = Response.of(HttpStatus.NOT_FOUND, ex.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    @DeleteMapping("/current/{id}")
+    public ResponseEntity<?> deleteCurrent(@PathVariable String id) {
+        try {
+            orderService.deleteCurrnet(id);
             Response response = Response.of(HttpStatus.OK, "Deleted Order Successfully");
             return ResponseEntity.ok(response);
         } catch (Exception ex) {

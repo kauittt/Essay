@@ -39,9 +39,9 @@ public class JWTGenerator {
 //        userClaims.put("username", username);
 //        userClaims.put("name", user.getName());
         userClaims.put("id", user.getId());
-//        userClaims.put("roles", authentication.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.toList()));
+        userClaims.put("roles", authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("user", userClaims);
