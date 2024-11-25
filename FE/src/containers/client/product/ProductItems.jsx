@@ -101,7 +101,7 @@ const ProductItems = ({ items = [] }) => {
     //* Fetch lại users
     useEffect(() => {
         return () => {
-            dispatch(fetchUsers());
+            // dispatch(fetchUsers());
             dispatch(fetchCurrentUser());
         };
     }, []);

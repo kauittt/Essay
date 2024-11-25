@@ -52,18 +52,25 @@ const LogIn = () => {
                     JSON.stringify(accessToken)
                 );
 
-                // const decoded = jwtDecode(accessToken);
-                // localStorage.setItem("user", JSON.stringify(decoded.user));
+                const decoded = jwtDecode(accessToken);
+                const roles = decoded.user.roles;
+                localStorage.setItem("user", JSON.stringify(decoded.user));
 
-                // console.log("decoded", decoded);
+                console.log("decoded", decoded);
+                console.log("ROLE", roles[0]);
                 // console.log("Fetch login");
                 //! Redux
                 dispatch(fetchCurrentUser(accessToken));
                 dispatch(fetchProducts(accessToken));
-                dispatch(fetchCategories(accessToken));
                 dispatch(fetchVouchers(accessToken));
-                dispatch(fetchUsers(accessToken));
-                dispatch(fetchOrders(accessToken));
+                dispatch(fetchCategories(accessToken));
+                if (roles[0] == "ROLE_USER") {
+                    history.push("/pages/client/home");
+                } else {
+                    dispatch(fetchUsers(accessToken));
+                    dispatch(fetchOrders(accessToken));
+                    history.push("/pages/admin/dashboard");
+                }
 
                 const action = t("common:action.login");
                 toast.info(t("common:action.success", { type: action }), {
@@ -75,7 +82,6 @@ const LogIn = () => {
                     draggable: true,
                     progress: undefined,
                 });
-                history.push("/pages/admin/dashboard");
             }
         } catch (error) {
             console.log(error);

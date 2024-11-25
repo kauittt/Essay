@@ -7,6 +7,8 @@ import { left } from "@/utils/directions";
 import SidebarLink, { SidebarLinkTitle, SidebarNavLink } from "./SidebarLink";
 import SidebarCategory from "./SidebarCategory";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../../redux/reducers/userSlice";
 
 const SidebarContent = ({
     // onClick,
@@ -15,13 +17,12 @@ const SidebarContent = ({
     changeToDark,
 }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
-    const dispatch = useDispatch();
 
-    const logout = () => {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
-        // dispatch(userLogout());
-    };
+    const user = JSON.parse(localStorage.getItem("user"));
+    // console.log("USER", user.roles[0]);
+    const isStaff = user.roles[0] != "ROLE_USER";
+    // console.log("isStaff", isStaff);
+
     return (
         <SidebarContentWrap collapse={collapse}>
             {/*//* Layout */}
@@ -48,97 +49,115 @@ const SidebarContent = ({
                 </SidebarCategory>
             </SidebarBlock>
 
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:product.titles")}
-                    icon="store"
-                    route="/pages/client/product"
-                />
-            </SidebarBlock>
+            {!isStaff && (
+                <>
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title="Homepage"
+                            icon="store"
+                            route="/pages/client/home"
+                        />
+                    </SidebarBlock>
 
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:cart.title")}
-                    icon="store"
-                    route="/pages/client/cart"
-                />
-            </SidebarBlock>
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:product.titles")}
+                            icon="store"
+                            route="/pages/client/products"
+                        />
+                    </SidebarBlock>
 
-            {/*//* Dashboard  */}
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:dashboard.title")}
-                    icon="store"
-                    route="/pages/admin/dashboard"
-                />
-            </SidebarBlock>
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:cart.title")}
+                            icon="store"
+                            route="/pages/client/cart"
+                        />
+                    </SidebarBlock>
+                </>
+            )}
 
-            {/*//* Orders  */}
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:manage", {
-                        title: t("store:order.titles").toLowerCase(),
-                    })}
-                    icon="store"
-                    route="/pages/admin/orders"
-                />
-            </SidebarBlock>
+            {isStaff && (
+                <>
+                    {/*//* Dashboard */}
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:dashboard.title")}
+                            icon="store"
+                            route="/pages/admin/dashboard"
+                        />
+                    </SidebarBlock>
 
-            {/*//* Product  */}
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:manage", {
-                        title: t("store:product.titles").toLowerCase(),
-                    })}
-                    icon="store"
-                    route="/pages/admin/products"
-                />
-            </SidebarBlock>
+                    {/*//* Orders */}
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:manage", {
+                                title: t("store:order.titles").toLowerCase(),
+                            })}
+                            icon="store"
+                            route="/pages/admin/orders"
+                        />
+                    </SidebarBlock>
 
-            {/*//* Categories  */}
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:manage", {
-                        title: t("store:category.titles").toLowerCase(),
-                    })}
-                    icon="store"
-                    route="/pages/admin/categories"
-                />
-            </SidebarBlock>
+                    {/*//* Product */}
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:manage", {
+                                title: t("store:product.titles").toLowerCase(),
+                            })}
+                            icon="store"
+                            route="/pages/admin/products"
+                        />
+                    </SidebarBlock>
 
-            {/*//* Vouchers  */}
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:manage", {
-                        title: t("store:voucher.titles").toLowerCase(),
-                    })}
-                    icon="store"
-                    route="/pages/admin/vouchers"
-                />
-            </SidebarBlock>
+                    {/*//* Categories */}
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:manage", {
+                                title: t("store:category.titles").toLowerCase(),
+                            })}
+                            icon="store"
+                            route="/pages/admin/categories"
+                        />
+                    </SidebarBlock>
 
-            {/*//* Users  */}
-            <SidebarBlock collapse={collapse}>
-                <SidebarLink
-                    title={t("store:manage", {
-                        title: t("store:user.titles").toLowerCase(),
-                    })}
-                    icon="store"
-                    route="/pages/admin/users"
-                />
-            </SidebarBlock>
+                    {/*//* Vouchers */}
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:manage", {
+                                title: t("store:voucher.titles").toLowerCase(),
+                            })}
+                            icon="store"
+                            route="/pages/admin/vouchers"
+                        />
+                    </SidebarBlock>
 
-            {/* <SidebarBlock collapse={collapse}>
+                    {/*//* Users */}
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:manage", {
+                                title: t("store:user.titles").toLowerCase(),
+                            })}
+                            icon="store"
+                            route="/pages/admin/users"
+                        />
+                    </SidebarBlock>
+                </>
+            )}
+        </SidebarContentWrap>
+    );
+};
+
+{
+    /* <SidebarBlock collapse={collapse}>
                 <SidebarLink
                     title="Log out"
                     icon="exit"
                     route="/log_in"
                     onClick={logout}
                 />
-            </SidebarBlock> */}
-        </SidebarContentWrap>
-    );
-};
+            </SidebarBlock> */
+}
 
 SidebarContent.propTypes = {
     // onClick: PropTypes.func.isRequired,

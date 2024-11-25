@@ -85,7 +85,7 @@ const CartPage = () => {
             );
 
             if (response) {
-                dispatch(fetchUsers());
+                // dispatch(fetchUsers());
                 dispatch(fetchCurrentUser());
                 toast.info(t("common:action.success", { type: "Delete" }), {
                     position: "top-right",
@@ -155,7 +155,7 @@ const CartPage = () => {
             }
 
             if (response) {
-                dispatch(fetchUsers());
+                // dispatch(fetchUsers());
                 dispatch(fetchCurrentUser());
                 toast.info(t("common:action.success", { type: "Delete" }), {
                     position: "top-right",
@@ -411,7 +411,7 @@ const CartPage = () => {
     //* vì đang render dựa theo useState, db đã thay đổi nhưng redux thì chưa đc update
     useEffect(() => {
         return () => {
-            dispatch(fetchUsers());
+            // dispatch(fetchUsers());
             dispatch(fetchCurrentUser());
         };
     }, []);
@@ -578,7 +578,7 @@ const CartPage = () => {
             }
 
             if (response) {
-                dispatch(fetchUsers());
+                // dispatch(fetchUsers());
                 dispatch(fetchCurrentUser());
             }
         } catch (e) {
@@ -787,7 +787,7 @@ const CartPage = () => {
                                                                                 style={{
                                                                                     marginBottom:
                                                                                         "13px",
-                                                                                    width: "37px",
+                                                                                    width: "45px",
                                                                                 }}
                                                                                 data={{
                                                                                     name: `${item.product.id}-size-${item.size}`,

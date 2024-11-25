@@ -26,24 +26,95 @@ import CartPage from "../client/cart/CartPage";
 import ClientProductPage from "../client/product/ClientProductPage";
 import InvoicePage from "../client/invoice/InvoicePage";
 import ProfilePage from "../client/profile/ProfilePage";
+import HomePage from "../client/home/HomePage";
+import ProtectedRoute from "./ProtectedRoute";
+import NotFoundPage from "../NotFoundPage";
 
-const Pages = () => (
-    <Switch>
-        <Route path="/pages/admin/test" component={() => <h1>Test</h1>} />
-        <Route path="/pages/admin/products" component={ProductPage} />
-        <Route path="/pages/admin/categories" component={CategoryPage} />
-        <Route path="/pages/admin/vouchers" component={VoucherPage} />
-        <Route path="/pages/admin/users" component={UserPage} />
-        <Route path="/pages/admin/orders" component={OrderPage} />
-        <Route path="/pages/admin/dashboard" component={DashboardPage} />
+const Pages = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const isStaff = user.roles[0] !== "ROLE_USER"; // Xác định vai trò
 
-        <Route path="/pages/client/product" component={ClientProductPage} />
-        <Route path="/pages/client/product-detail/:id" component={DetailPage} />
-        <Route path="/pages/client/cart" component={CartPage} />
-        <Route path="/pages/client/invoice" component={InvoicePage} />
-        <Route path="/pages/profile" component={ProfilePage} />
-    </Switch>
-);
+    return (
+        <Switch>
+            {/*//* Admin Routes */}
+            <ProtectedRoute
+                path="/pages/admin/dashboard"
+                component={DashboardPage}
+                isAllowed={isStaff}
+                redirectTo="/pages/client/home"
+            />
+            <ProtectedRoute
+                path="/pages/admin/products"
+                component={ProductPage}
+                isAllowed={isStaff}
+                redirectTo="/pages/client/home"
+            />
+            <ProtectedRoute
+                path="/pages/admin/categories"
+                component={CategoryPage}
+                isAllowed={isStaff}
+                redirectTo="/pages/client/home"
+            />
+            <ProtectedRoute
+                path="/pages/admin/vouchers"
+                component={VoucherPage}
+                isAllowed={isStaff}
+                redirectTo="/pages/client/home"
+            />
+            <ProtectedRoute
+                path="/pages/admin/users"
+                component={UserPage}
+                isAllowed={isStaff}
+                redirectTo="/pages/client/home"
+            />
+            <ProtectedRoute
+                path="/pages/admin/orders"
+                component={OrderPage}
+                isAllowed={isStaff}
+                redirectTo="/pages/client/home"
+            />
+
+            {/*//! ------------------------------------------------------ */}
+
+            {/*//* Client Routes */}
+            <ProtectedRoute
+                path="/pages/client/home"
+                component={HomePage}
+                isAllowed={!isStaff}
+                redirectTo="/pages/admin/dashboard"
+            />
+            <ProtectedRoute
+                path="/pages/client/products"
+                component={ClientProductPage}
+                isAllowed={!isStaff}
+                redirectTo="/pages/admin/dashboard"
+            />
+            <ProtectedRoute
+                path="/pages/client/product-detail/:id"
+                component={DetailPage}
+                isAllowed={!isStaff}
+                redirectTo="/pages/admin/dashboard"
+            />
+            <ProtectedRoute
+                path="/pages/client/cart"
+                component={CartPage}
+                isAllowed={!isStaff}
+                redirectTo="/pages/admin/dashboard"
+            />
+            <ProtectedRoute
+                path="/pages/client/invoice"
+                component={InvoicePage}
+                isAllowed={!isStaff}
+                redirectTo="/pages/admin/dashboard"
+            />
+
+            {/* Shared Route */}
+            <Route path="/pages/profile" component={ProfilePage} />
+
+            <Route path="*" component={NotFoundPage} />
+        </Switch>
+    );
+};
 
 const wrappedRoutes = () => (
     <div>
@@ -71,12 +142,18 @@ const Router = () => {
     useEffect(() => {
         console.log("Fetch again");
         if (accessToken) {
-            dispatch(fetchCurrentUser());
-            dispatch(fetchProducts());
-            dispatch(fetchCategories());
-            dispatch(fetchVouchers());
-            dispatch(fetchUsers());
-            dispatch(fetchOrders());
+            const user = JSON.parse(localStorage.getItem("user"));
+            const isStaff = user.roles[0] != "ROLE_USER";
+
+            dispatch(fetchCurrentUser(accessToken));
+            dispatch(fetchProducts(accessToken));
+            dispatch(fetchVouchers(accessToken));
+            dispatch(fetchCategories(accessToken));
+            if (isStaff) {
+                dispatch(fetchUsers(accessToken));
+                dispatch(fetchOrders(accessToken));
+            } else {
+            }
         } else {
             console.log("No accessToken found in localStorage");
         }
