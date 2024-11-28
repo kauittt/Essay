@@ -87,7 +87,7 @@ public class VoucherValidator {
     public void validateQuantity(Integer quantity) {
         if (quantity == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity is required");
-        } else if (quantity <= 0) {
+        } else if (quantity < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity must be positive");
         }
     }

@@ -81,7 +81,7 @@ public class OrderService {
     public OrderResponseDTO update(String id, OrderRequestDTO orderRequestDTO) {
         Order order = findOrderById(id);
 
-        if (order.getStatus().equals("DONE")) return null;
+        if (order.getStatus().equals("DONE") || order.getStatus().equals("CANCEL")) return null;
 
         orderValidator.validateUpdate(orderRequestDTO);
 
@@ -95,6 +95,10 @@ public class OrderService {
 
         if (orderRequestDTO.getStatus() != null && !orderRequestDTO.getStatus().isEmpty()) {
             order.setStatus(orderRequestDTO.getStatus());
+
+            if (orderRequestDTO.getStatus().equals("CANCEL")) {
+                handleCancel(order);
+            }
         }
 
         order.setUpdateDate(LocalDateTime.now());
@@ -107,7 +111,8 @@ public class OrderService {
 
         Order order = findOrderByIdAndUserId(id, userId);
 
-        if (order.getStatus().equals("DONE")) return null;
+        if (order.getStatus().equals("DONE") || order.getStatus().equals("CANCEL")) return null;
+
 
         orderValidator.validateUpdate(orderRequestDTO);
 
@@ -119,12 +124,37 @@ public class OrderService {
             order.setPhone(orderRequestDTO.getPhone());
         }
 
-//        if (orderRequestDTO.getStatus() != null && !orderRequestDTO.getStatus().isEmpty()) {
-//            order.setStatus(orderRequestDTO.getStatus());
-//        }
+        if (orderRequestDTO.getStatus() != null && !orderRequestDTO.getStatus().isEmpty()) {
+            order.setStatus(orderRequestDTO.getStatus());
+
+            if (orderRequestDTO.getStatus().equals("CANCEL")) {
+                handleCancel(order);
+            }
+        }
 
         order.setUpdateDate(LocalDateTime.now());
         return orderMapper.toDTO(orderRepository.save(order));
+    }
+
+
+    private void handleCancel(Order order) {
+        List<OrderProduct> orderProducts = order.getOrderProducts();
+        for (OrderProduct orderProduct : orderProducts) {
+            String size = orderProduct.getSize();
+            int quantity = orderProduct.getQuantity();
+            Product product = orderProduct.getProduct();
+
+            Optional<SizeProduct> sizeProductOpt = product.getSizeProducts()
+                    .stream()
+                    .filter(sp -> sp.getSize().getName().equals(size))
+                    .findFirst();
+
+            if (sizeProductOpt.isPresent()) {
+                SizeProduct sizeProduct = sizeProductOpt.get();
+                sizeProduct.setStock(sizeProduct.getStock() + quantity);
+                sizeProduct.setUpdateDate(LocalDate.now());
+            }
+        }
     }
 
     @Transactional

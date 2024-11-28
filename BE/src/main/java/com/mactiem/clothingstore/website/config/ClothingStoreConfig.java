@@ -81,8 +81,9 @@ public class ClothingStoreConfig {
                     //* Voucher
                     authorize.requestMatchers(HttpMethod.GET, "/vouchers").authenticated(); //* Get all
                     authorize.requestMatchers(HttpMethod.GET, "/vouchers/**").authenticated(); //* Get by ID
+//                    authorize.requestMatchers(HttpMethod.PUT, "/vouchers/**").hasAnyRole("ADMIN", "STAFF"); //* Update
+                    authorize.requestMatchers(HttpMethod.PUT, "/vouchers/**").authenticated(); //* Update
                     authorize.requestMatchers(HttpMethod.POST, "/vouchers").hasAnyRole("ADMIN", "STAFF"); //* Add
-                    authorize.requestMatchers(HttpMethod.PUT, "/vouchers/**").hasAnyRole("ADMIN", "STAFF"); //* Update
                     authorize.requestMatchers(HttpMethod.DELETE, "/vouchers/**").hasAnyRole("ADMIN", "STAFF"); //* Delete
 
                     //* Product
