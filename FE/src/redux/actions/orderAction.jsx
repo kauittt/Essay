@@ -1,5 +1,6 @@
 import OrderService from "../../services/OrderService";
 import { getOrdersSuccess } from "../reducers/orderSlice";
+import { fetchCurrentUser } from "./userAction";
 
 export const fetchOrders = (paraToken) => {
     let accessToken = JSON.parse(localStorage.getItem("accessToken"));
@@ -39,11 +40,35 @@ export const updateOrder = (id, body) => {
     };
 };
 
+export const updateCurrentUserOrder = (id, body) => {
+    return async (dispatch) => {
+        try {
+            const response = await OrderService.putCurrentUserOrder(id, body);
+            await dispatch(fetchCurrentUser());
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    };
+};
+
 export const removeOrder = (id) => {
     return async (dispatch) => {
         try {
             await OrderService.deleteOrder(id);
             await dispatch(fetchOrders());
+            return "OK";
+        } catch (error) {
+            throw error;
+        }
+    };
+};
+
+export const removeCurrentUserOrder = (id) => {
+    return async (dispatch) => {
+        try {
+            await OrderService.deleteCurrentUserOrder(id);
+            await dispatch(fetchCurrentUser());
             return "OK";
         } catch (error) {
             throw error;

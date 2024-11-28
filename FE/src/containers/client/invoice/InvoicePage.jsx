@@ -156,9 +156,9 @@ const InvoicePage = () => {
                 }
 
                 //* Fetch
-                dispatch(fetchOrders());
+                // dispatch(fetchOrders());
                 dispatch(fetchProducts());
-                history.push("/pages/client/product");
+                history.push("/pages/client/products");
                 toast.info(t("common:action.success", { type: "Add" }), {
                     position: "top-right",
                     autoClose: 5000,
@@ -225,7 +225,10 @@ const InvoicePage = () => {
     //* Valid voucher
     const today = new Date();
     vouchers = vouchers
-        ?.filter((voucher) => new Date(voucher.endDate) >= today)
+        ?.filter(
+            (voucher) =>
+                new Date(voucher.endDate) >= today && voucher.quantity > 0
+        )
         .filter((voucher) =>
             selectedProducts.every((item) =>
                 voucher.products.some(

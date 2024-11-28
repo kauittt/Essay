@@ -5,10 +5,12 @@ const CreateOrderHeader = (t) => {
     const getStatusBadge = (status) => {
         const cancel = t("store:order.status.cancel");
         const done = t("store:order.status.done");
+        const created = t("store:order.status.created");
         // console.log("Status", status);
         if (status === cancel) return <Badge bg="danger">{status}</Badge>;
         if (status === done) return <Badge bg="success">{status}</Badge>;
-        return <Badge bg="">{status}</Badge>;
+        if (status === created) return <Badge bg="secondary">{status}</Badge>;
+        return <Badge bg="primary">{status}</Badge>;
     };
 
     const columns = useMemo(

@@ -31,7 +31,7 @@ const TopbarProfile = () => {
 
     const logout = () => {
         localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
+        // localStorage.removeItem("user");
         dispatch(userLogout());
     };
 

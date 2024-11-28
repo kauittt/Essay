@@ -19,9 +19,14 @@ import { fetchVouchers } from "@/redux/actions/voucherAction";
 import OrderDetail from "./OrderDetail";
 import InvoiceDetail from "./InvoiceDetail";
 import ListProduct from "./ListProduct";
-import { updateOrder } from "../../../../redux/actions/orderAction";
+import {
+    updateCurrentUserOrder,
+    updateOrder,
+} from "../../../../redux/actions/orderAction";
 import { fetchProducts } from "./../../../../redux/actions/productAction";
 import { fetchCategories } from "./../../../../redux/actions/categoryAction";
+import { CANCEL, CREATED, DONE } from "../../../ConstKey";
+import { fetchCurrentUser } from "../../../../redux/actions/userAction";
 
 const bigDecimalFields = ["price"];
 const integerFields = ["stock"];
@@ -86,9 +91,18 @@ const OrderModal = ({ toggle, data, action }) => {
         try {
             let response;
             if (action === "edit") {
-                response = await dispatch(
-                    updateOrder(processedValues.id, processedValues)
-                );
+                if (isStaff) {
+                    response = await dispatch(
+                        updateOrder(processedValues.id, processedValues)
+                    );
+                } else {
+                    response = await dispatch(
+                        updateCurrentUserOrder(
+                            processedValues.id,
+                            processedValues
+                        )
+                    );
+                }
             } else {
                 throw new Error("Error: No matching action");
             }
@@ -133,6 +147,55 @@ const OrderModal = ({ toggle, data, action }) => {
         .flat();
 
     console.log("flattenedData", flattenedData);
+
+    const handleCancelOrder = async () => {
+        const actionText = t("common:action.cancel");
+
+        try {
+            let response = await dispatch(
+                updateCurrentUserOrder(formData.id, {
+                    status: CANCEL,
+                })
+            );
+
+            //! Hoàn lại stock (Bên OrderDetail nữa)
+
+            if (response) {
+                dispatch(fetchVouchers());
+                dispatch(fetchProducts());
+                dispatch(fetchCategories());
+                dispatch(fetchCurrentUser());
+                toast.info(t("common:action.success", { type: actionText }), {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                toggle();
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error(t("common:action.fail", { type: actionText }), {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+    };
+
+    const userLocal = JSON.parse(localStorage.getItem("user")); //* Local
+    const isStaff = userLocal.roles[0] !== "ROLE_USER";
+    const isAdmin = userLocal.roles[0] == "ROLE_ADMIN";
+    const isEditAble = formData.status == CREATED;
+    const isCompleted = formData.status == DONE || formData.status == CANCEL;
+
     return (
         <Container>
             <Form onSubmit={submitForm} initialValues={formData}>
@@ -142,7 +205,9 @@ const OrderModal = ({ toggle, data, action }) => {
                             <Col md={12} lg={12}>
                                 <Card style={{ marginBottom: "0px" }}>
                                     <CardBody>
-                                        <OrderDetail></OrderDetail>
+                                        <OrderDetail
+                                            order={formData}
+                                        ></OrderDetail>
                                         <ListProduct
                                             data={flattenedData}
                                         ></ListProduct>
@@ -168,6 +233,19 @@ const OrderModal = ({ toggle, data, action }) => {
                                             {t("action.cancel")}
                                         </Button>
 
+                                        {/*//* Hủy đơn khi là user  */}
+                                        {!isStaff && isEditAble && (
+                                            <Button
+                                                variant="danger"
+                                                onClick={handleCancelOrder}
+                                                style={{ margin: "0px" }}
+                                            >
+                                                {`${t("action.cancel")} ${t(
+                                                    "store:order.title"
+                                                )}`}
+                                            </Button>
+                                        )}
+
                                         {/*//* Submit */}
                                         <Button
                                             variant="success"
@@ -176,6 +254,10 @@ const OrderModal = ({ toggle, data, action }) => {
                                                 console.log("submit")
                                             }
                                             style={{ margin: "0px" }}
+                                            disabled={
+                                                (!isEditAble && !isStaff) ||
+                                                isCompleted
+                                            }
                                         >
                                             {t("action.save")}
                                         </Button>

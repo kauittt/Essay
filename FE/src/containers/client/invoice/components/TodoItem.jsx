@@ -35,29 +35,29 @@ const TodoItem = ({
         .map((product) => (language == "en" ? product.enName : product.name))
         .join(" | ");
 
-    const editItem = (items) => {
-        changeShowEditModal(items);
-    };
+    // const editItem = (items) => {
+    //     changeShowEditModal(items);
+    // };
 
-    const editTodoElementData = (items) => {
-        if (!todoItemData.isArchived) {
-            const todoItemDataCopy = { ...items };
-            todoItemDataCopy.isCompleted = !todoItemData.data.isCompleted;
-            editTodoElement(todoItemDataCopy);
-        }
-    };
+    // const editTodoElementData = (items) => {
+    //     if (!todoItemData.isArchived) {
+    //         const todoItemDataCopy = { ...items };
+    //         todoItemDataCopy.isCompleted = !todoItemData.data.isCompleted;
+    //         editTodoElement(todoItemDataCopy);
+    //     }
+    // };
 
-    const archivedItem = (items) => {
-        const todoItemDataCopy = { ...items };
-        todoItemDataCopy.isArchived = !todoItemDataCopy.isArchived;
-        editTodoElement(todoItemDataCopy);
-    };
+    // const archivedItem = (items) => {
+    //     const todoItemDataCopy = { ...items };
+    //     todoItemDataCopy.isArchived = !todoItemDataCopy.isArchived;
+    //     editTodoElement(todoItemDataCopy);
+    // };
 
-    const deleteItem = () => {
-        if (todoItemData.data.isArchived) {
-            deleteTodoElement(todoItemData.data.id);
-        }
-    };
+    // const deleteItem = () => {
+    //     if (todoItemData.data.isArchived) {
+    //         deleteTodoElement(todoItemData.data.id);
+    //     }
+    // };
 
     return (
         <StyledCard>
@@ -90,10 +90,15 @@ const TodoItem = ({
                     <TodoAdditionalWrapper>
                         <TodoAdditional>
                             <TodoDueDate>
-                                {/* Due date: {todoItemData.data.date} */}
                                 {t("store:voucher.endDate")}:{" "}
                                 <span className="tw-font-semibold">
                                     {voucher.endDate}
+                                </span>
+                            </TodoDueDate>
+                            <TodoDueDate>
+                                {t("store:voucher.quantity")}:{" "}
+                                <span className="tw-font-semibold">
+                                    {voucher.quantity}
                                 </span>
                             </TodoDueDate>
                             <TodoPriority>
@@ -111,7 +116,8 @@ const TodoItem = ({
 };
 
 TodoItem.propTypes = {
-    todoItemData: todoCard,
+    // todoItemData: todoCard,
+    todoItemData: PropTypes.object,
     changeShowEditModal: PropTypes.func,
     editTodoElement: PropTypes.func,
     deleteTodoElement: PropTypes.func,

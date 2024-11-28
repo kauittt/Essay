@@ -4,10 +4,17 @@ import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import CustomForm from "@/shared/components/custom/form/CustomForm";
 import { values } from "regenerator-runtime";
+import { CANCEL, CREATED, DONE } from "../../../ConstKey";
 
-const OrderDetail = () => {
+const OrderDetail = ({ order = {} }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
     const enter = t("action.enter");
+    const userLocal = JSON.parse(localStorage.getItem("user")); //* Local
+
+    const isStaff = userLocal.roles[0] !== "ROLE_USER";
+    const isAdmin = userLocal.roles[0] == "ROLE_ADMIN";
+    const isEditAble = order.status == CREATED;
+    const isCompleted = order.status == DONE || order.status == CANCEL;
 
     const leftFields = [
         {
@@ -20,13 +27,13 @@ const OrderDetail = () => {
             label: t("store:order.name"),
             name: "name",
             type: "text",
-            disabled: true,
+            disabled: isStaff || !isEditAble,
         },
         {
             label: t("store:order.phone"),
             name: "phone",
             type: "text",
-            disabled: true,
+            disabled: isStaff || !isEditAble,
         },
         {
             label: t("store:order.address"),
@@ -66,6 +73,8 @@ const OrderDetail = () => {
                 { value: "DONE", label: t("store:order.status.done") },
                 { value: "CANCEL", label: t("store:order.status.cancel") },
             ],
+            disabled: !isStaff || isCompleted,
+            //* Disable khi: không phải staff, CANCEL/DONE && !Admin
         },
     ];
 

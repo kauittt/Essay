@@ -24,6 +24,8 @@ import { fetchVouchers } from "@/redux/actions/voucherAction";
 import { removeOrder } from "../../../redux/actions/orderAction";
 import CreateOrderHeader from "./CreateOrderHeader";
 import { selectOrders } from "@/redux/reducers/orderSlice";
+import { selectUser } from "../../../redux/reducers/userSlice";
+import { current } from "@reduxjs/toolkit";
 
 const formatDate = (date) => {
     const year = date.getFullYear(); // Gets the full year (e.g., 2024)
@@ -89,7 +91,13 @@ const OrderPage = () => {
         placeholder: mapPlaceholder,
     };
 
-    let orders = useSelector(selectOrders);
+    const userLocal = JSON.parse(localStorage.getItem("user")); //* Local
+    const isStaff = userLocal.roles[0] !== "ROLE_USER";
+    const currentUser = useSelector(selectUser);
+
+    let orders = isStaff
+        ? useSelector(selectOrders)
+        : currentUser?.orders || [];
     console.log("Order before", orders);
 
     orders = orders?.map((order) => ({
@@ -130,6 +138,9 @@ const OrderPage = () => {
                         action="edit"
                         component="order"
                         data={item}
+                        isDisabled={
+                            item.status == "DONE" || item.status == "CANCEL"
+                        }
                     />
 
                     {/* <Button

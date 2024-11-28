@@ -33,9 +33,29 @@ const OrderService = {
             },
         });
     },
+    putCurrentUserOrder: (id, body) => {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"));
+        return axios.put(`orders/current/${id}`, body, {
+            timeout: 5000,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+    },
     deleteOrder: (id) => {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"));
         return axios.delete(`orders/${id}`, {
+            timeout: 5000,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+    },
+    deleteCurrentUserOrder: (id) => {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"));
+        return axios.delete(`orders/current/${id}`, {
             timeout: 5000,
             headers: {
                 "Content-Type": "application/json",

@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
 const initialState = {
     user: null,
-    totalUsers: null,
+    totalUsers: [],
     error: null,
 };
 

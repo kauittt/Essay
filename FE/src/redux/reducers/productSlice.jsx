@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
 const initialState = {
-    products: null,
+    products: [],
 };
 
 const productSlice = createSlice({

@@ -137,7 +137,7 @@ const SelectVoucherModal = ({ toggle, data, action, myOnChange }) => {
 SelectVoucherModal.propTypes = {
     toggle: PropTypes.func,
     action: PropTypes.string,
-    data: PropTypes.array,
+    data: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 export default SelectVoucherModal;

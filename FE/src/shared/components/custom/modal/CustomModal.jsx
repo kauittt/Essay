@@ -37,6 +37,7 @@ const CustomModal = ({
     data = {},
     component,
     myOnChange,
+    isDisabled = false,
 }) => {
     const [modal, setModal] = useState(false);
 
@@ -66,7 +67,12 @@ const CustomModal = ({
 
     return (
         <div>
-            <Button variant={color} onClick={toggle} style={{ margin: "0" }}>
+            <Button
+                variant={color}
+                onClick={toggle}
+                // disabled={isDisabled}
+                style={{ margin: "0" }}
+            >
                 {btn}
             </Button>
             <StyledModal
@@ -149,7 +155,7 @@ CustomModal.propTypes = {
     colored: PropTypes.bool,
     header: PropTypes.bool,
     btn: PropTypes.string.isRequired,
-    data: PropTypes.object,
+    data: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     component: PropTypes.string,
 };
 

@@ -107,8 +107,14 @@ const Pages = () => {
                 isAllowed={!isStaff}
                 redirectTo="/pages/admin/dashboard"
             />
+            <ProtectedRoute
+                path="/pages/client/orders"
+                component={OrderPage}
+                isAllowed={!isStaff}
+                redirectTo="/pages/admin/dashboard"
+            />
 
-            {/* Shared Route */}
+            {/*//* Shared Route */}
             <Route path="/pages/profile" component={ProfilePage} />
 
             <Route path="*" component={NotFoundPage} />

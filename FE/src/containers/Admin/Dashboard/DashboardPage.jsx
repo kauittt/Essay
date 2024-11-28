@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useMemo } from "react";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Col, Container, Row } from "react-bootstrap";
 import TopSellingProducts from "./components/TopSellingProducts";
