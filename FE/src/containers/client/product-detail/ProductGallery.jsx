@@ -15,7 +15,7 @@ const ProductGallery = ({ image }) => {
         <ProductGalleryWrap>
             <ProductGalleryImageButton
                 type="button"
-                onClick={() => console.log("Click image detail")}
+                // onClick={() => console.log("Click image detail")}
             >
                 <img
                     src={image}

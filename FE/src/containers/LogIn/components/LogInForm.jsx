@@ -67,11 +67,11 @@ const LogInForm = ({ onSubmit, setPurpose }) => {
                             />
 
                             {/*//* Forgot password  */}
-                            <AccountForgotPassword>
+                            {/* <AccountForgotPassword>
                                 <NavLink to="/">
                                     {t("login.forgot_password")}
                                 </NavLink>
-                            </AccountForgotPassword>
+                            </AccountForgotPassword> */}
                         </FormGroupField>
                     </FormGroup>
 

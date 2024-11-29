@@ -17,11 +17,13 @@ import {
     userLogout,
 } from "../../../redux/reducers/userSlice";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const Ava = `/img/topbar/ava.png`;
 
 const TopbarProfile = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const { t } = useTranslation(["common", "errors", "store"]);
 
     const toggleCollapse = () => {
         setIsCollapsed(!isCollapsed);
@@ -62,22 +64,22 @@ const TopbarProfile = () => {
                     <TopbarMenu>
                         {/*//* Menu Link  */}
                         <TopbarMenuLink
-                            title="Profile"
+                            title={t("store:profile.title")}
                             icon="list"
                             path="/pages/profile"
                             onClick={toggleCollapse}
                         />
-                        <TopbarMenuLink
+                        {/* <TopbarMenuLink
                             title="Page two"
                             icon="inbox"
                             path="/pages/test"
                             onClick={toggleCollapse}
-                        />
+                        /> */}
                         <TopbarMenuDivider />
 
                         {/*//* Log out  */}
                         <TopbarMenuLink
-                            title="Log Out"
+                            title={t("action.logout")}
                             icon="exit"
                             path="/"
                             onClick={logout}
@@ -140,6 +142,7 @@ const TopbarAvatarImage = styled.img`
     border-radius: 50%;
     height: 36px;
     width: 36px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 `;
 
 export const TopbarAvatarName = styled.p`

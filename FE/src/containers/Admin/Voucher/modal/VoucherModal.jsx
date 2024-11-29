@@ -184,6 +184,7 @@ const VoucherModal = ({ toggle, data, action }) => {
     };
 
     const validate = (values, t) => {
+        console.log("Validate", values);
         const errors = {};
 
         //* Required Fields
@@ -196,7 +197,7 @@ const VoucherModal = ({ toggle, data, action }) => {
             "endDate",
         ];
         requiredFields.forEach((field) => {
-            if (!values[field]) {
+            if (values[field] == null) {
                 errors[field] = t("errors:validation.required");
             }
         });
@@ -303,8 +304,8 @@ const VoucherModal = ({ toggle, data, action }) => {
     const products = useSelector(selectProducts);
     const categories = useSelector(selectCategories);
 
-    console.log("Products List", products);
-    console.log("Categories to load for voucher", categories);
+    // console.log("Products List", products);
+    // console.log("Categories to load for voucher", categories);
 
     const categoryTitle = t("store:category.title");
     const leftFields = [

@@ -2,7 +2,7 @@ import React from "react";
 import { Nav, Tab } from "react-bootstrap";
 import { NavItem, NavLink, TabsWrap } from "@/shared/components/Tabs";
 import { BorderedBottomTabs } from "@/shared/components/Tabs";
-import { PanelTabs } from "../product/styled";
+import { PanelTabs } from "../Home/styled";
 import { useTranslation } from "react-i18next";
 import { colorText } from "@/utils/palette";
 

@@ -60,7 +60,7 @@ const MatTableHead = ({
         {
             id: "remove",
             disablePadding: false,
-            label: t("action.delete"),
+            label: t("action.action"),
             sortable: false,
         },
     ];

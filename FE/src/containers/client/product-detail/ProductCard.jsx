@@ -92,19 +92,22 @@ const ProductCard = ({ product = {} }) => {
 
             if (response) {
                 dispatch(fetchUsers());
-                toast.info(t("common:action.success", { type: "Add" }), {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                toast.info(
+                    t("common:action.success", { type: t("action.add") }),
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
             }
         } catch (e) {
             console.log(e);
-            toast.error(t("common:action.fail", { type: "Add" }), {
+            toast.error(t("common:action.fail", { type: t("action.add") }), {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -132,7 +135,7 @@ const ProductCard = ({ product = {} }) => {
                 <CardBody>
                     <Button
                         variant="secondary"
-                        onClick={() => history.push("/pages/client/product")}
+                        onClick={() => history.push("/pages/client/home")}
                         style={{
                             margin: "0px",
                             marginBottom: "20px",

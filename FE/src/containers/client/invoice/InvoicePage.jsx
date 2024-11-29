@@ -158,8 +158,29 @@ const InvoicePage = () => {
                 //* Fetch
                 // dispatch(fetchOrders());
                 dispatch(fetchProducts());
-                history.push("/pages/client/products");
-                toast.info(t("common:action.success", { type: "Add" }), {
+                history.push("/pages/client/home");
+                toast.info(
+                    t("common:action.success", {
+                        type: t("action.add") + " " + t("store:order.title"),
+                    }),
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error(
+                t("common:action.fail", {
+                    type: t("action.add") + " " + t("store:order.title"),
+                }),
+                {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -167,19 +188,8 @@ const InvoicePage = () => {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-                });
-            }
-        } catch (e) {
-            console.log(e);
-            toast.error(t("common:action.fail", { type: "Add" }), {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+                }
+            );
         }
     };
 
@@ -366,11 +376,14 @@ const InvoicePage = () => {
                                                                             />
                                                                         </CartPreviewImageWrap>
                                                                         <span className="name">
-                                                                            {
-                                                                                item
-                                                                                    .product
-                                                                                    .name
-                                                                            }
+                                                                            {language ==
+                                                                            "en"
+                                                                                ? item
+                                                                                      .product
+                                                                                      .enName
+                                                                                : item
+                                                                                      .product
+                                                                                      .name}
                                                                         </span>
                                                                     </div>
                                                                 </td>

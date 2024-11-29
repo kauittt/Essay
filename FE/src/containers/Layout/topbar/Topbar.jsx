@@ -15,34 +15,44 @@ import TopbarNotification from "./TopbarNotification";
 import TopbarMail from "./TopbarMail";
 import TopbarLanguage from "./TopbarLanguage";
 
-const Topbar = ({ changeMobileSidebarVisibility, changeSidebarVisibility }) => (
-    <TopbarContainer>
-        {/*//* Left  */}
-        <TopbarLeft>
-            <TopbarSidebarButton
-                onClickMobile={changeMobileSidebarVisibility}
-                onClickDesktop={changeSidebarVisibility}
-            />
-            <TopbarLogo to="/" />
-        </TopbarLeft>
+const Topbar = ({ changeMobileSidebarVisibility, changeSidebarVisibility }) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const isStaff = user?.roles[0] != "ROLE_USER";
+    return (
+        <TopbarContainer>
+            {/*//* Left  */}
+            <TopbarLeft>
+                <TopbarSidebarButton
+                    onClickMobile={changeMobileSidebarVisibility}
+                    onClickDesktop={changeSidebarVisibility}
+                />
+                <TopbarLogo
+                    to={
+                        isStaff
+                            ? "/pages/admin/dashboard"
+                            : "/pages/client/home"
+                    }
+                />
+            </TopbarLeft>
 
-        {/*//* Right  */}
-        <TopbarRight>
-            {/*//* Search  */}
-            <TopbarSearchWrap>
-                <TopbarSearch />
-            </TopbarSearchWrap>
+            {/*//* Right  */}
+            <TopbarRight>
+                {/*//* Search  */}
+                {/* <TopbarSearchWrap>
+                    <TopbarSearch />
+                </TopbarSearchWrap> */}
 
-            {/*//* Others  */}
-            <TopbarRightOver>
-                <TopbarNotification />
-                <TopbarMail new />
-                <TopbarProfile />
-                <TopbarLanguage />
-            </TopbarRightOver>
-        </TopbarRight>
-    </TopbarContainer>
-);
+                {/*//* Others  */}
+                <TopbarRightOver>
+                    {/* <TopbarNotification />
+                    <TopbarMail new /> */}
+                    <TopbarProfile />
+                    <TopbarLanguage />
+                </TopbarRightOver>
+            </TopbarRight>
+        </TopbarContainer>
+    );
+};
 
 Topbar.propTypes = {
     changeMobileSidebarVisibility: PropTypes.func.isRequired,

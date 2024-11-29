@@ -87,19 +87,22 @@ const CartPage = () => {
             if (response) {
                 // dispatch(fetchUsers());
                 dispatch(fetchCurrentUser());
-                toast.info(t("common:action.success", { type: "Delete" }), {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                toast.info(
+                    t("common:action.success", { type: t("action.delete") }),
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
             }
         } catch (e) {
             console.log(e);
-            toast.error(t("common:action.fail", { type: "Delete" }), {
+            toast.error(t("common:action.fail", { type: t("action.delete") }), {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -157,19 +160,22 @@ const CartPage = () => {
             if (response) {
                 // dispatch(fetchUsers());
                 dispatch(fetchCurrentUser());
-                toast.info(t("common:action.success", { type: "Delete" }), {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                toast.info(
+                    t("common:action.success", { type: t("action.delete") }),
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
             }
         } catch (e) {
             console.log(e);
-            toast.error(t("common:action.fail", { type: "Delete" }), {
+            toast.error(t("common:action.fail", { type: t("action.delete") }), {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -331,7 +337,7 @@ const CartPage = () => {
             }
         } catch (e) {
             console.log(e);
-            toast.error(t("common:action.fail", { type: "Update" }), {
+            toast.error(t("common:action.fail", { type: t("action.update") }), {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -383,7 +389,7 @@ const CartPage = () => {
             }
         } catch (e) {
             console.log(e);
-            toast.error(t("common:action.fail", { type: "Update" }), {
+            toast.error(t("common:action.fail", { type: t("action.update") }), {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -524,15 +530,18 @@ const CartPage = () => {
                 }
             } catch (e) {
                 console.log(e);
-                toast.error(t("common:action.fail", { type: "Update" }), {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                toast.error(
+                    t("common:action.fail", { type: t("action.update") }),
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
             }
         }
     };
@@ -583,7 +592,7 @@ const CartPage = () => {
             }
         } catch (e) {
             console.log(e);
-            toast.error(t("common:action.fail", { type: "Update" }), {
+            toast.error(t("common:action.fail", { type: t("action.update") }), {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,

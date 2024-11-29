@@ -28,6 +28,7 @@ import {
     fetchUsers,
     updateCurrentUser,
 } from "../../../redux/actions/userAction";
+import Loading from "./../../../shared/components/Loading";
 
 const ProfilePage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
@@ -45,7 +46,7 @@ const ProfilePage = () => {
     }, [user]);
 
     if (!user) {
-        return <div>Loading...</div>;
+        return <Loading></Loading>;
     }
 
     // console.log("Form data", formData);
@@ -171,13 +172,13 @@ const ProfilePage = () => {
             placeholder: `${update} ${t("store:user.password")}...`,
         },
         {
-            label: t("store:user.authorities"),
+            label: t("store:user.role"),
             name: "authorities",
             type: "select",
             options: [
                 { value: "ROLE_STAFF", label: t("store:user.staff") },
                 { value: "ROLE_ADMIN", label: t("store:user.admin") },
-                { value: "ROLE_USER", label: "[USER]" },
+                { value: "ROLE_USER", label: t("store:user.user") },
             ],
             disabled: true,
         },

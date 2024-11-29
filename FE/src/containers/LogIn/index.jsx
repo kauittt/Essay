@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, Link } from "react-router-dom";
 import FacebookIcon from "mdi-react/FacebookIcon";
 import GooglePlusIcon from "mdi-react/GooglePlusIcon";
@@ -34,12 +34,26 @@ import {
 import { fetchOrders } from "../../redux/actions/orderAction";
 import RegisterForm from "./components/RegisterForm";
 import UserService from "../../services/UserService";
+import { fetchBanners } from "../../redux/actions/bannerAction";
 
 const LogIn = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const { t } = useTranslation(["common", "errors", "store"]);
     const [purpose, setPurpose] = useState("login");
+
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            const decoded = jwtDecode(token);
+            const isStaff = decoded.user.roles[0] !== "ROLE_USER";
+            if (isStaff) {
+                history.push("/pages/admin/dashboard");
+            } else {
+                history.push("/pages/client/home");
+            }
+        }
+    }, [history]);
 
     const handleLoginFormSubmit = async (values) => {
         console.log("Submitted Values:", values);
@@ -64,6 +78,8 @@ const LogIn = () => {
                 dispatch(fetchProducts(accessToken));
                 dispatch(fetchVouchers(accessToken));
                 dispatch(fetchCategories(accessToken));
+                dispatch(fetchBanners(accessToken));
+
                 if (roles[0] == "ROLE_USER") {
                     history.push("/pages/client/home");
                 } else {
@@ -106,7 +122,27 @@ const LogIn = () => {
             let response = await UserService.postUser(request);
 
             if (response) {
-                toast.info(t("common:action.success", { type: "Add" }), {
+                toast.info(
+                    t("common:action.success", {
+                        type: t("common:action.register"),
+                    }),
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+                setPurpose("login");
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(
+                t("common:action.fail", { type: t("common:action.register") }),
+                {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -114,21 +150,8 @@ const LogIn = () => {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-                });
-                setPurpose("login");
-            }
-        } catch (error) {
-            console.log(error);
-            const action = t("common:action.login");
-            toast.error(t("common:action.fail", { type: action }), {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+                }
+            );
         }
     };
 

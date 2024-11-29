@@ -11,6 +11,7 @@ import {
     orderReducer,
     feedbackReducer,
     sizeReducer,
+    bannerReducer,
 } from "@/redux/reducers/index";
 
 // Combine all reducers, including the new one
@@ -25,6 +26,7 @@ const reducer = combineReducers({
     order: orderReducer,
     feedback: feedbackReducer,
     size: sizeReducer,
+    banner: bannerReducer,
 });
 
 // Create the store with the combined reducers

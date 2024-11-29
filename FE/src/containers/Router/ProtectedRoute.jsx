@@ -7,14 +7,27 @@ const ProtectedRoute = ({
     isAllowed,
     redirectTo,
     ...rest
-}) => (
-    <Route
-        {...rest}
-        render={(props) =>
-            isAllowed ? <Component {...props} /> : <Redirect to={redirectTo} />
-        }
-    />
-);
+}) => {
+    const token = JSON.parse(localStorage.getItem("accessToken"));
+
+    // Nếu không có token hoặc không có quyền truy cập, chuyển hướng đến trang đăng nhập
+    if (!token) {
+        return <Redirect to="/log_in" />;
+    }
+
+    return (
+        <Route
+            {...rest}
+            render={(props) =>
+                isAllowed ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect to={redirectTo} />
+                )
+            }
+        />
+    );
+};
 
 ProtectedRoute.propTypes = {
     component: PropTypes.elementType.isRequired,

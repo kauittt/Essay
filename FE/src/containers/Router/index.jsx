@@ -23,16 +23,18 @@ import { fetchOrders } from "./../../redux/actions/orderAction";
 import DashboardPage from "../Admin/Dashboard/DashboardPage";
 import DetailPage from "../client/product-detail/DetailPage";
 import CartPage from "../client/cart/CartPage";
-import ClientProductPage from "../client/product/ClientProductPage";
+// import ClientProductPage from "../client/product/ClientProductPage";
 import InvoicePage from "../client/invoice/InvoicePage";
 import ProfilePage from "../client/profile/ProfilePage";
 import HomePage from "../client/home/HomePage";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFoundPage from "../NotFoundPage";
+import BannerPage from "../Admin/Banner/BannerPage";
+import { fetchBanners } from "../../redux/actions/bannerAction";
 
 const Pages = () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    const isStaff = user.roles[0] !== "ROLE_USER"; // Xác định vai trò
+    const isStaff = user?.roles[0] !== "ROLE_USER"; // Xác định vai trò
 
     return (
         <Switch>
@@ -73,6 +75,12 @@ const Pages = () => {
                 isAllowed={isStaff}
                 redirectTo="/pages/client/home"
             />
+            <ProtectedRoute
+                path="/pages/admin/banners"
+                component={BannerPage}
+                isAllowed={isStaff}
+                redirectTo="/pages/client/home"
+            />
 
             {/*//! ------------------------------------------------------ */}
 
@@ -80,12 +88,6 @@ const Pages = () => {
             <ProtectedRoute
                 path="/pages/client/home"
                 component={HomePage}
-                isAllowed={!isStaff}
-                redirectTo="/pages/admin/dashboard"
-            />
-            <ProtectedRoute
-                path="/pages/client/products"
-                component={ClientProductPage}
                 isAllowed={!isStaff}
                 redirectTo="/pages/admin/dashboard"
             />
@@ -115,7 +117,15 @@ const Pages = () => {
             />
 
             {/*//* Shared Route */}
-            <Route path="/pages/profile" component={ProfilePage} />
+            {/* <Route path="/pages/profile" component={ProfilePage} /> */}
+            <ProtectedRoute
+                path="/pages/profile"
+                component={ProfilePage}
+                isAllowed={true}
+                redirectTo={
+                    isStaff ? "/pages/admin/dashboard" : "/pages/client/home"
+                }
+            />
 
             <Route path="*" component={NotFoundPage} />
         </Switch>
@@ -139,31 +149,56 @@ const Router = () => {
     useEffect(() => {
         const tokenUpdate = JSON.parse(localStorage.getItem("accessToken"));
         if (!tokenUpdate) {
+            // Nếu không có accessToken, chuyển hướng về trang đăng nhập
             history.push("/log_in");
-        }
-    }, []);
-
-    let accessToken = JSON.parse(localStorage.getItem("accessToken"));
-
-    useEffect(() => {
-        console.log("Fetch again");
-        if (accessToken) {
-            const user = JSON.parse(localStorage.getItem("user"));
-            const isStaff = user.roles[0] != "ROLE_USER";
-
-            dispatch(fetchCurrentUser(accessToken));
-            dispatch(fetchProducts(accessToken));
-            dispatch(fetchVouchers(accessToken));
-            dispatch(fetchCategories(accessToken));
-            if (isStaff) {
-                dispatch(fetchUsers(accessToken));
-                dispatch(fetchOrders(accessToken));
-            } else {
-            }
         } else {
-            console.log("No accessToken found in localStorage");
+            // Nếu có accessToken, tiếp tục fetch dữ liệu cần thiết
+            const user = JSON.parse(localStorage.getItem("user"));
+            const isStaff = user?.roles[0] !== "ROLE_USER";
+
+            dispatch(fetchCurrentUser(tokenUpdate));
+            dispatch(fetchProducts(tokenUpdate));
+            dispatch(fetchVouchers(tokenUpdate));
+            dispatch(fetchCategories(tokenUpdate));
+            dispatch(fetchBanners(tokenUpdate));
+
+            if (isStaff) {
+                dispatch(fetchUsers(tokenUpdate));
+                dispatch(fetchOrders(tokenUpdate));
+            }
         }
     }, []);
+
+    // useEffect(() => {
+    //     const tokenUpdate = JSON.parse(localStorage.getItem("accessToken"));
+    //     if (!tokenUpdate) {
+    //         history.push("/log_in");
+    //     }
+    // }, []);
+
+    // let accessToken = JSON.parse(localStorage.getItem("accessToken"));
+
+    // useEffect(() => {
+    //     console.log("Fetch again");
+    //     if (accessToken) {
+    //         const user = JSON.parse(localStorage.getItem("user"));
+    //         const isStaff = user.roles[0] != "ROLE_USER";
+
+    //         dispatch(fetchCurrentUser(accessToken));
+    //         dispatch(fetchProducts(accessToken));
+    //         dispatch(fetchVouchers(accessToken));
+    //         dispatch(fetchCategories(accessToken));
+    //         dispatch(fetchBanners(accessToken));
+
+    //         if (isStaff) {
+    //             dispatch(fetchUsers(accessToken));
+    //             dispatch(fetchOrders(accessToken));
+    //         } else {
+    //         }
+    //     } else {
+    //         console.log("No accessToken found in localStorage");
+    //     }
+    // }, []);
 
     return (
         <MainWrapper>

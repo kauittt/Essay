@@ -19,8 +19,8 @@ const SidebarContent = ({
     const { t } = useTranslation(["common", "errors", "store"]);
 
     const user = JSON.parse(localStorage.getItem("user"));
+    const isStaff = user?.roles[0] != "ROLE_USER";
     // console.log("USER", user.roles[0]);
-    const isStaff = user.roles[0] != "ROLE_USER";
     // console.log("isStaff", isStaff);
 
     return (
@@ -28,7 +28,7 @@ const SidebarContent = ({
             {/*//* Layout */}
             <SidebarBlock collapse={collapse}>
                 <SidebarCategory
-                    title="Layout"
+                    title={t("store:layout.title")}
                     icon="layers"
                     collapse={collapse}
                 >
@@ -37,14 +37,18 @@ const SidebarContent = ({
                         type="button"
                         onClick={changeToLight}
                     >
-                        <SidebarLinkTitle>Light Theme</SidebarLinkTitle>
+                        <SidebarLinkTitle>
+                            {t("store:layout.light")}
+                        </SidebarLinkTitle>
                     </SidebarNavLink>
                     <SidebarNavLink
                         as="button"
                         type="button"
                         onClick={changeToDark}
                     >
-                        <SidebarLinkTitle>Dark Theme</SidebarLinkTitle>
+                        <SidebarLinkTitle>
+                            {t("store:layout.dark")}
+                        </SidebarLinkTitle>
                     </SidebarNavLink>
                 </SidebarCategory>
             </SidebarBlock>
@@ -54,21 +58,19 @@ const SidebarContent = ({
                     {/*//* Home  */}
                     <SidebarBlock collapse={collapse}>
                         <SidebarLink
-                            title="Homepage"
+                            title={t("store:home.title")}
                             icon="store"
                             route="/pages/client/home"
                         />
                     </SidebarBlock>
-
-                    {/*//* Products  */}
-                    <SidebarBlock collapse={collapse}>
+                    {/* //* Products */}
+                    {/* <SidebarBlock collapse={collapse}>
                         <SidebarLink
                             title={t("store:product.titles")}
                             icon="store"
                             route="/pages/client/products"
                         />
-                    </SidebarBlock>
-
+                    </SidebarBlock> */}
                     {/*//* Cart  */}
                     <SidebarBlock collapse={collapse}>
                         <SidebarLink
@@ -77,7 +79,6 @@ const SidebarContent = ({
                             route="/pages/client/cart"
                         />
                     </SidebarBlock>
-
                     {/*//* Orders */}
                     <SidebarBlock collapse={collapse}>
                         <SidebarLink
@@ -122,17 +123,6 @@ const SidebarContent = ({
                         />
                     </SidebarBlock>
 
-                    {/*//* Categories */}
-                    <SidebarBlock collapse={collapse}>
-                        <SidebarLink
-                            title={t("store:manage", {
-                                title: t("store:category.titles").toLowerCase(),
-                            })}
-                            icon="store"
-                            route="/pages/admin/categories"
-                        />
-                    </SidebarBlock>
-
                     {/*//* Vouchers */}
                     <SidebarBlock collapse={collapse}>
                         <SidebarLink
@@ -152,6 +142,28 @@ const SidebarContent = ({
                             })}
                             icon="store"
                             route="/pages/admin/users"
+                        />
+                    </SidebarBlock>
+
+                    {/*//* Categories */}
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:manage", {
+                                title: t("store:category.titles").toLowerCase(),
+                            })}
+                            icon="store"
+                            route="/pages/admin/categories"
+                        />
+                    </SidebarBlock>
+
+                    {/*//* Banners */}
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:manage", {
+                                title: t("store:banner.titles").toLowerCase(),
+                            })}
+                            icon="store"
+                            route="/pages/admin/banners"
                         />
                     </SidebarBlock>
                 </>

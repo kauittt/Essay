@@ -26,6 +26,7 @@ import ProductModal from "@/containers/Admin/Product/modal/ProductModal";
 import UserModal from "../../../../containers/Admin/User/modal/UserModal";
 import OrderModal from "../../../../containers/Admin/Order/modal/OrderModal";
 import SelectVoucherModal from "../../../../containers/client/invoice/SelectVoucherModal";
+import BannerModal from "../../../../containers/Admin/Banner/modal/BannerModal";
 
 const CustomModal = ({
     color,
@@ -101,6 +102,15 @@ const CustomModal = ({
                             data={data}
                             myOnChange={myOnChange}
                         ></SelectVoucherModal>
+                    )}
+
+                    {component == "banner" && (
+                        <BannerModal
+                            action={action}
+                            toggle={toggle}
+                            data={data}
+                            myOnChange={myOnChange}
+                        ></BannerModal>
                     )}
 
                     {component == "product" && (

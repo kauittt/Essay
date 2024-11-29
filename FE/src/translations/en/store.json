@@ -83,6 +83,7 @@
         "password": "Password",
         "name": "Name",
         "authorities": "Authorities",
+        "role": "Role",
         "email": "Email",
         "phone": "Phone",
         "address": "Address",
@@ -147,6 +148,7 @@
             "totalQuantity": "Total Quantity"
         }
     },
+
     "cart": {
         "title": "Cart",
         "subTotal": "Sub-total",
@@ -156,5 +158,26 @@
         },
         "total": "Total",
         "selected": "{{quantity}} selected"
+    },
+
+    "banner": {
+        "title": "Banner",
+        "titles": "Banners",
+        "image": "Image",
+        "upload": "Uploader's Username"
+    },
+
+    "home": {
+        "title": "Homepage"
+    },
+
+    "layout": {
+        "title": "Layout",
+        "light": "Light Theme",
+        "dark": "Dark Theme"
+    },
+
+    "profile": {
+        "title": "Profile"
     }
 }

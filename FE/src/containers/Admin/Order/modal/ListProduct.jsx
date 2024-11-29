@@ -7,7 +7,8 @@ import { useDispatch } from "react-redux";
 import CustomReactTableBase from "@/shared/components/custom/table/CustomReactTableBase";
 
 const ListProduct = ({ data }) => {
-    const { t } = useTranslation(["common", "errors", "store"]);
+    const { t, i18n } = useTranslation(["common", "errors", "store"]);
+    let language = i18n.language;
     const enter = t("action.enter");
 
     const reactTableData = CreateOrderProductHeader(t);
@@ -42,7 +43,12 @@ const ListProduct = ({ data }) => {
     };
 
     let processedData = data.map((row, index) => {
-        return { ...row, no: index + 1, totalPrice: row.price * row.quantity };
+        return {
+            ...row,
+            no: index + 1,
+            totalPrice: row.price * row.quantity,
+            tableName: language == "en" ? row.enName : row.name,
+        };
     });
 
     console.log(processedData);

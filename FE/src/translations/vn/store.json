@@ -83,6 +83,7 @@
         "username": "Tên đăng nhập",
         "name": "Tên",
         "authorities": "Quyền hạn",
+        "role": "Vai trò",
         "email": "Email",
         "phone": "Điện thoại",
         "address": "Địa chỉ",
@@ -147,6 +148,7 @@
             "totalQuantity": "Tổng sản phẩm"
         }
     },
+
     "cart": {
         "title": "Giỏ hàng",
         "subTotal": "Tạm tính",
@@ -156,5 +158,26 @@
         },
         "total": "Tổng cộng",
         "selected": "Đã chọn {{quantity}} mục"
+    },
+
+    "banner": {
+        "title": "Tin tức",
+        "titles": "Tin tức",
+        "image": "Hình ảnh",
+        "upload": "Người Tải Lên"
+    },
+
+    "home": {
+        "title": "Trang chủ"
+    },
+
+    "layout": {
+        "title": "Giao diện",
+        "light": "Chế độ sáng",
+        "dark": "Chế độ tối"
+    },
+
+    "profile": {
+        "title": "Thông tin"
     }
 }

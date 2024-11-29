@@ -24,7 +24,6 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/reducers/userSlice";
 import { useDispatch } from "react-redux";
 
-//! Hết hàng -> thêm style
 const ProductItems = ({ items = [] }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;

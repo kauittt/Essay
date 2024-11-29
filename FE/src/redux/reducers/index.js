@@ -8,6 +8,7 @@ import voucherReducer from "./voucherSlice";
 import orderReducer from "./orderSlice";
 import feedbackReducer from "./feedbackSlice";
 import sizeReducer from "./sizeSlice";
+import bannerReducer from "./bannerSlice";
 
 export {
     themeReducer,
@@ -20,4 +21,5 @@ export {
     orderReducer,
     feedbackReducer,
     sizeReducer,
+    bannerReducer,
 };

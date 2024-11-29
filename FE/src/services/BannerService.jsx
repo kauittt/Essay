@@ -1,12 +1,11 @@
 // Import the configured axios instance
 import axios from "@/utils/axiosConfig";
 
-
-const ProductService = {
-    getProducts: (paraToken) => {
-let accessToken = JSON.parse(localStorage.getItem("accessToken"));
-const token = paraToken ? paraToken : accessToken;
-        return axios.get(`products`, {
+const BannerService = {
+    getBanners: (paraToken) => {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"));
+        const token = paraToken ? paraToken : accessToken;
+        return axios.get(`banners`, {
             timeout: 5000,
             headers: {
                 "Content-Type": "application/json",
@@ -14,9 +13,9 @@ const token = paraToken ? paraToken : accessToken;
             },
         });
     },
-    postProduct: (body) => {
-let accessToken = JSON.parse(localStorage.getItem("accessToken"));
-return axios.post(`products`, body, {
+    postBanner: (body) => {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"));
+        return axios.post(`banners`, body, {
             timeout: 5000,
             headers: {
                 "Content-Type": "application/json",
@@ -24,9 +23,9 @@ return axios.post(`products`, body, {
             },
         });
     },
-    putProduct: (id, body) => {
-        return axios.plet accessToken = JSON.parse(localStorage.getItem("accessToken"));
-        t(`products/${id}`, body, {
+    putBanner: (id, body) => {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"));
+        return axios.put(`banners/${id}`, body, {
             timeout: 5000,
             headers: {
                 "Content-Type": "application/json",
@@ -34,9 +33,9 @@ return axios.post(`products`, body, {
             },
         });
     },
-    deleteProduct: (id) => {
-let accessToken = JSON.parse(localStorage.getItem("accessToken"));
-return axios.delete(`products/${id}`, {
+    deleteBanner: (id) => {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"));
+        return axios.delete(`banners/${id}`, {
             timeout: 5000,
             headers: {
                 "Content-Type": "application/json",
@@ -46,4 +45,4 @@ return axios.delete(`products/${id}`, {
     },
 };
 
-export default ProductService;
+export default BannerService;

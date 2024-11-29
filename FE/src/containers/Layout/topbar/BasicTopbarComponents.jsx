@@ -77,7 +77,7 @@ export const TopbarLogo = styled(Link)`
     background-position-x: left;
     background-size: contain;
     display: none;
-    background-image: ${logoImg};
+    background-image: url(/img/logo/Logo.jpg);
 
     @media screen and (min-width: 835px) {
         display: block;

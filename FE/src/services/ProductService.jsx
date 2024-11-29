@@ -13,6 +13,17 @@ const ProductService = {
             },
         });
     },
+    getTopSellingProducts: (paraToken) => {
+        let accessToken = JSON.parse(localStorage.getItem("accessToken"));
+        const token = paraToken ? paraToken : accessToken;
+        return axios.get(`products/topSelling`, {
+            timeout: 5000,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+    },
     postProduct: (body) => {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"));
         return axios.post(`products`, body, {

@@ -105,7 +105,7 @@ const OrderPage = () => {
         createDate: formatDate(new Date(order.createDate)),
         updateDate: formatDate(new Date(order.updateDate)),
         invoiceId: order.invoice.id,
-        invoiceCreateDate: order.invoice.createDate,
+        invoiceCreateDate: formatDate(new Date(order.invoice.createDate)),
         invoiceTotalAmount: `${order?.invoice?.totalAmount?.toLocaleString()} VNĐ`,
         invoiceDiscountAmount: `${order?.invoice?.discountAmount?.toLocaleString()} VNĐ`,
         invoiceTotalDue: `${(
@@ -190,7 +190,6 @@ const OrderPage = () => {
     return (
         <Container>
             <Row>
-                {" "}
                 <Col md={12} lg={12}>
                     <Card>
                         <CardBody>
