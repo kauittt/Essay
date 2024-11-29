@@ -17,17 +17,9 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import CustomForm from "@/shared/components/custom/form/CustomForm";
-import { addProduct, updateProduct } from "@/redux/actions/productAction";
-import { createGlobalStyle } from "styled-components";
-import { fetchVouchers } from "@/redux/actions/voucherAction";
-import { addUser, updateUser } from "@/redux/actions/userAction";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/redux/reducers/userSlice";
-import {
-    fetchCurrentUser,
-    fetchUsers,
-    updateCurrentUser,
-} from "../../../redux/actions/userAction";
+import { updateCurrentUser } from "../../../redux/actions/userAction";
 import Loading from "./../../../shared/components/Loading";
 
 const ProfilePage = () => {
@@ -52,8 +44,8 @@ const ProfilePage = () => {
     // console.log("Form data", formData);
 
     const submitForm = async (values) => {
-        console.log("Root -----------");
-        console.log(values);
+        // console.log("Root -----------");
+        // console.log(values);
 
         //* Process values before dispatching
         let processedValues = Object.keys(values).reduce((acc, key) => {
@@ -87,8 +79,8 @@ const ProfilePage = () => {
             image: processedValues.image,
         };
 
-        console.log("process -----------");
-        console.log(processedValues);
+        // console.log("process -----------");
+        // console.log(processedValues);
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
@@ -113,7 +105,7 @@ const ProfilePage = () => {
                 // toggle();
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: actionText }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -217,7 +209,7 @@ const ProfilePage = () => {
         },
     ];
 
-    console.log("-----");
+    // console.log("-----");
     return (
         <Container>
             <Form
@@ -258,9 +250,9 @@ const ProfilePage = () => {
                                             <Button
                                                 variant="success"
                                                 type="submit"
-                                                onClick={() =>
-                                                    console.log("submit")
-                                                }
+                                                // onClick={() =>
+                                                //     console.log("submit")
+                                                // }
                                                 style={{ margin: "0px" }}
                                             >
                                                 {t("action.save")}

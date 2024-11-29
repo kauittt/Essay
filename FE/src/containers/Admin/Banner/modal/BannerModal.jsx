@@ -23,7 +23,7 @@ const BannerModal = ({ toggle, data, action }) => {
     const [formData, setFormData] = useState(data);
 
     const submitForm = async (values) => {
-        console.log("Default values", values);
+        // console.log("Default values", values);
 
         //* Process values before dispatching
         let processedValues = Object.keys(values).reduce((acc, key) => {
@@ -43,7 +43,7 @@ const BannerModal = ({ toggle, data, action }) => {
             return acc;
         }, {});
 
-        console.log("Processed values", processedValues);
+        // console.log("Processed values", processedValues);
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
@@ -74,7 +74,7 @@ const BannerModal = ({ toggle, data, action }) => {
                 toggle();
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: actionText }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -88,14 +88,14 @@ const BannerModal = ({ toggle, data, action }) => {
     };
 
     const validate = (values, t) => {
-        console.log("Validate", values);
+        // console.log("Validate", values);
         const errors = {};
 
         if (!values.path) {
             errors.path = t("errors:validation.required");
         }
 
-        console.log("errors", errors);
+        // console.log("errors", errors);
 
         return errors;
     };
@@ -159,7 +159,7 @@ const BannerModal = ({ toggle, data, action }) => {
                                     <Button
                                         variant="success"
                                         type="submit"
-                                        onClick={() => console.log("submit")}
+                                        // onClick={() => console.log("submit")}
                                         style={{ margin: "0px" }}
                                     >
                                         {t("action.save")}

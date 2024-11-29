@@ -71,7 +71,7 @@ const CartPage = () => {
         const item = cartItems.find(
             (item) => item.product.id == id && item.size == size
         );
-        console.log("item", item);
+        // console.log("item", item);
         const cartRequest = {
             products: [item.product.id],
             sizes: [item.size],
@@ -101,7 +101,7 @@ const CartPage = () => {
                 );
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: t("action.delete") }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -116,12 +116,12 @@ const CartPage = () => {
 
     // console.log("Selected", selected);
     const handleDeleteSelected = async () => {
-        console.log("click delete selected");
+        // console.log("click delete selected");
         const selectedIds = [...selected]
             .filter(([, value]) => value)
             .map(([key]) => key);
 
-        console.log("selectedIds", selectedIds);
+        // console.log("selectedIds", selectedIds);
 
         //* Của tôi
         const selectedCartItems = sortedCartItems.filter((cartItem) =>
@@ -131,8 +131,8 @@ const CartPage = () => {
             })
         );
 
-        console.log("selectedIds", selectedIds);
-        console.log("selectedCartItems", selectedCartItems);
+        // console.log("selectedIds", selectedIds);
+        // console.log("selectedCartItems", selectedCartItems);
 
         try {
             let response;
@@ -143,14 +143,14 @@ const CartPage = () => {
             }
             //* Remove selected
             else {
-                console.log("Remove selected");
+                // console.log("Remove selected");
                 const promises = selectedCartItems.map((cartItem) => {
                     const cartRequest = {
                         products: [cartItem.product.id],
                         sizes: [cartItem.size],
                         quantities: [-999999],
                     };
-                    console.log("cartRequest", cartRequest);
+                    // console.log("cartRequest", cartRequest);
                     return CartService.putCart(currentUser.id, cartRequest);
                 });
 
@@ -174,7 +174,7 @@ const CartPage = () => {
                 );
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: t("action.delete") }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -312,7 +312,7 @@ const CartPage = () => {
             quantities: [1],
         };
 
-        console.log("cartRequest", cartRequest);
+        // console.log("cartRequest", cartRequest);
 
         // console.log("cartRequest", cartRequest);
         try {
@@ -336,7 +336,7 @@ const CartPage = () => {
                 // });
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: t("action.update") }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -367,7 +367,7 @@ const CartPage = () => {
             sizes: [item.size],
             quantities: [-1],
         };
-        console.log("cartRequest", cartRequest);
+        // console.log("cartRequest", cartRequest);
 
         try {
             let response = await CartService.putCart(
@@ -388,7 +388,7 @@ const CartPage = () => {
                 // });
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: t("action.update") }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -425,7 +425,7 @@ const CartPage = () => {
     //! Form ----------------------------------------------------------------
     //* Submit
     const submitForm = (values) => {
-        console.log("Submit form");
+        // console.log("Submit form");
 
         history.push({
             pathname: "/pages/client/invoice",
@@ -507,7 +507,7 @@ const CartPage = () => {
                 quantities: [value - item.quantity],
             };
 
-            console.log("cartRequest", cartRequest);
+            // console.log("cartRequest", cartRequest);
 
             // console.log("cartRequest", cartRequest);
             try {
@@ -529,7 +529,7 @@ const CartPage = () => {
                     // });
                 }
             } catch (e) {
-                console.log(e);
+                // console.log(e);
                 toast.error(
                     t("common:action.fail", { type: t("action.update") }),
                     {
@@ -549,7 +549,7 @@ const CartPage = () => {
     const handleBlurSize = async (name, newSize) => {
         const [id, type, size] = name.split("-");
 
-        console.log("Blur size", name);
+        // console.log("Blur size", name);
         // console.log("Old size", size);
         // console.log("New size", newSize);
 
@@ -558,7 +558,7 @@ const CartPage = () => {
         const isContain = sortedCartItems.some(
             (item) => item.size == newSize && item.product.id == id
         );
-        console.log("isContain", isContain);
+        // console.log("isContain", isContain);
 
         try {
             const item = sortedCartItems.find(
@@ -574,7 +574,7 @@ const CartPage = () => {
             };
 
             response = await CartService.putCart(currentUser.id, cartRequest);
-            console.log("Response", response);
+            // console.log("Response", response);
 
             if (!isContain) {
                 const cartRequest = {
@@ -591,7 +591,7 @@ const CartPage = () => {
                 dispatch(fetchCurrentUser());
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: t("action.update") }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -606,7 +606,7 @@ const CartPage = () => {
 
     // console.log("sortedCartItems");
     // console.log(sortedCartItems);
-    console.log("---------------");
+    // console.log("---------------");
 
     return (
         <Container>
@@ -876,10 +876,10 @@ const CartPage = () => {
                                                                                         )
                                                                                             return;
 
-                                                                                        console.log(
-                                                                                            "Add quantity Item",
-                                                                                            item
-                                                                                        );
+                                                                                        // console.log(
+                                                                                        //     "Add quantity Item",
+                                                                                        //     item
+                                                                                        // );
                                                                                         decrementQuantity(
                                                                                             item
                                                                                                 .product
@@ -953,10 +953,10 @@ const CartPage = () => {
                                                                                                 .stock
                                                                                         )
                                                                                             return;
-                                                                                        console.log(
-                                                                                            "Add quantity Item",
-                                                                                            item
-                                                                                        );
+                                                                                        // console.log(
+                                                                                        //     "Add quantity Item",
+                                                                                        //     item
+                                                                                        // );
                                                                                         incrementQuantity(
                                                                                             item
                                                                                                 .product
@@ -1039,17 +1039,17 @@ const CartPage = () => {
                                                         0
                                                     }
                                                     onClick={() => {
-                                                        console.log(
-                                                            "Form is being submitted"
-                                                        );
+                                                        // console.log(
+                                                        //     "Form is being submitted"
+                                                        // );
                                                         // Lấy state của form để xem errors
                                                         const errors =
                                                             form.getState()
                                                                 .errors;
-                                                        console.log(
-                                                            "Current form errors:",
-                                                            errors
-                                                        );
+                                                        // console.log(
+                                                        //     "Current form errors:",
+                                                        //     errors
+                                                        // );
 
                                                         const isExceeded =
                                                             Object.values(
@@ -1060,10 +1060,10 @@ const CartPage = () => {
                                                                     "Exceeded"
                                                             );
 
-                                                        console.log(
-                                                            "isExceeded",
-                                                            isExceeded
-                                                        );
+                                                        // console.log(
+                                                        //     "isExceeded",
+                                                        //     isExceeded
+                                                        // );
                                                         if (isExceeded) {
                                                             toast.warn(
                                                                 t(

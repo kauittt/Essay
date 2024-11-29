@@ -52,8 +52,8 @@ const UserModal = ({ toggle, data, action }) => {
     const [formData, setFormData] = useState(data);
 
     const submitForm = async (values) => {
-        console.log("Root -----------");
-        console.log(values);
+        // console.log("Root -----------");
+        // console.log(values);
 
         //* Process values before dispatching
         let processedValues = Object.keys(values).reduce((acc, key) => {
@@ -77,8 +77,8 @@ const UserModal = ({ toggle, data, action }) => {
             processedValues.authorities = [processedValues.authorities];
         }
 
-        console.log("process -----------");
-        console.log(processedValues);
+        // console.log("process -----------");
+        // console.log(processedValues);
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
@@ -109,7 +109,7 @@ const UserModal = ({ toggle, data, action }) => {
                 toggle();
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: actionText }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -123,7 +123,7 @@ const UserModal = ({ toggle, data, action }) => {
     };
 
     const validate = (values, t) => {
-        console.log("Validate values", values);
+        // console.log("Validate values", values);
         const errors = {};
 
         const requiredFields = [
@@ -158,7 +158,7 @@ const UserModal = ({ toggle, data, action }) => {
             errors.email = t("errors:validation.invalidEmail");
         }
 
-        console.log("Erros", errors);
+        // console.log("Erros", errors);
         return errors;
     };
 
@@ -258,9 +258,9 @@ const UserModal = ({ toggle, data, action }) => {
                                         <Button
                                             variant="success"
                                             type="submit"
-                                            onClick={() =>
-                                                console.log("submit")
-                                            }
+                                            // onClick={() =>
+                                            //     console.log("submit")
+                                            // }
                                             style={{ margin: "0px" }}
                                         >
                                             {t("action.save")}

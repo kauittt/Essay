@@ -65,11 +65,11 @@ const VoucherPage = () => {
 
     //* Process
     let vouchers = useSelector(selectVouchers);
-    console.log("Voucher before", vouchers);
+    // console.log("Voucher before", vouchers);
 
     // console.log("Proces voucher lại sau khi fetch");
     vouchers = vouchers?.map((voucher, index) => {
-        console.log("Đang process");
+        // console.log("Đang process");
         let voucherProductIds =
             voucher.products?.map((product) => product?.id) || [];
         let newProducts = [];
@@ -142,7 +142,7 @@ const VoucherPage = () => {
         };
     });
 
-    console.log("Voucher after", vouchers);
+    // console.log("Voucher after", vouchers);
 
     //* Add edit/delete Button
     const data = useMemo(() => {
@@ -210,7 +210,7 @@ const VoucherPage = () => {
         }
     };
 
-    console.log("----------");
+    // console.log("----------");
 
     return (
         <Container>

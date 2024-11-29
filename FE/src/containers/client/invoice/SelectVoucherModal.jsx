@@ -10,14 +10,7 @@ import { Card, CardBody } from "@/shared/components/Card";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { toast, ToastContainer } from "react-toastify";
-import FormInput from "@/shared/components/custom/form/FormInput";
-import { fetchProducts } from "@/redux/actions/productAction";
-import CustomForm from "@/shared/components/custom/form/CustomForm";
 import { useSelector } from "react-redux";
-import { selectProducts } from "@/redux/reducers/productSlice";
-import { addVoucher, updateVoucher } from "@/redux/actions/voucherAction";
-import { selectCategories } from "@/redux/reducers/categorySlice";
 import CustomFormOneCol from "../../../shared/components/custom/form/CustomFormOneCol";
 import { selectVouchers } from "../../../redux/reducers/voucherSlice";
 
@@ -48,7 +41,7 @@ const SelectVoucherModal = ({ toggle, data, action, myOnChange }) => {
     const [formData, setFormData] = useState(data);
     const enter = t("action.enter");
 
-    console.log("Voucher in modal", data);
+    // console.log("Voucher in modal", data);
     const vouchers = useSelector(selectVouchers);
 
     const submitForm = async (values) => {
@@ -58,9 +51,9 @@ const SelectVoucherModal = ({ toggle, data, action, myOnChange }) => {
 
     const validate = (values, t) => {
         const errors = {};
-        console.log("Values validate", values);
+        // console.log("Values validate", values);
 
-        console.log("Errors:", errors);
+        // console.log("Errors:", errors);
         return errors;
     };
 
@@ -119,7 +112,7 @@ const SelectVoucherModal = ({ toggle, data, action, myOnChange }) => {
                                     <Button
                                         variant="success"
                                         type="submit"
-                                        onClick={() => console.log("submit")}
+                                        // onClick={() => console.log("submit")}
                                         style={{ margin: "0px" }}
                                     >
                                         {t("action.save")}

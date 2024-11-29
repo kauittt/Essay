@@ -20,17 +20,22 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import CustomModal from "@/shared/components/custom/modal/CustomModal";
 import CustomReactTableBase from "@/shared/components/custom/table/CustomReactTableBase";
-import CreateCategoryHeader from "./CreateCategoryHeader";
+import CreateCategoryHeader from "./CreateFeedbackHeader";
 import { selectCategories } from "@/redux/reducers/categorySlice";
 import { removeCategory } from "@/redux/actions/categoryAction";
 import { fetchProducts } from "@/redux/actions/productAction";
-import { fetchOrders } from "./../../../redux/actions/orderAction";
-import { fetchVouchers } from "../../../redux/actions/voucherAction";
+import { fetchOrders } from "@/redux/actions/orderAction";
+import { fetchVouchers } from "@/redux/actions/voucherAction";
+import CreateFeedbackHeader from "./CreateFeedbackHeader";
+import { selectOrders } from "@/redux/reducers/orderSlice";
+import { selectUser } from "../../../redux/reducers/userSlice";
 
-const CategoryPage = () => {
+const FeedbackPage = () => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
-    const reactTableData = CreateCategoryHeader(t);
+    const reactTableData = CreateFeedbackHeader(t);
+    const userLocal = JSON.parse(localStorage.getItem("user")); //* Local
+    const isStaff = userLocal.roles[0] !== "ROLE_USER";
 
     const [withPagination, setWithPaginationTable] = useState(true);
     const [isSortable, setIsSortable] = useState(false);
@@ -53,7 +58,7 @@ const CategoryPage = () => {
     };
 
     const mapPlaceholder =
-        t("tables.customizer.search.search") + " " + t("store:category.titles");
+        t("tables.customizer.search.search") + " " + t("store:feedback.titles");
 
     const tableConfig = {
         isSortable,
@@ -64,17 +69,24 @@ const CategoryPage = () => {
         placeholder: mapPlaceholder,
     };
 
-    let categories = useSelector(selectCategories);
-    categories = categories?.map((category, index) => ({
-        ...category,
+    let currentUser = useSelector(selectUser);
+    let orders = currentUser?.orders;
+    orders = orders
+        ?.filter((order) => order.status === "DONE") // Lọc các đơn hàng đã hoàn thành
+        .map((order) => order.orderProducts) // Lấy orderProducts từ mỗi đơn hàng
+        .flat();
+    orders = orders?.map((order, index) => ({
+        ...order,
+        ...order.product,
         no: index + 1,
-        tableName: language == "en" ? category.enName : category.name,
+        tableName: language == "en" ? order.product.enName : order.product.name,
+        totalPrice: order.product.price * order.quantity,
     }));
-    // console.log("Categories", categories);
+    // console.log("orders", orders);
 
     //* Add edit/delete Button
     const data = useMemo(() => {
-        return categories?.map((item, index) => ({
+        return orders?.map((item, index) => ({
             ...item,
             action: (
                 <Col
@@ -85,62 +97,17 @@ const CategoryPage = () => {
                     }}
                 >
                     <CustomModal
-                        color="warning"
-                        title={
-                            t("action.edit") + " " + t("store:category.title")
-                        }
-                        btn={t("action.edit")}
-                        action="edit"
-                        component="category"
+                        color="success"
+                        title={t("store:feedback.title")}
+                        btn={t("store:feedback.title")}
+                        action="new"
+                        component="feedback"
                         data={item}
                     />
-
-                    <Button
-                        variant="danger"
-                        onClick={() => handleDelete(item.id)}
-                        style={{ margin: "0" }}
-                    >
-                        <span>{t("action.delete")}</span>
-                    </Button>
                 </Col>
             ),
         }));
-    }, [categories, t]);
-
-    const handleDelete = async (id) => {
-        try {
-            const response = await dispatch(removeCategory(id));
-            const action = t("common:action.delete");
-
-            if (response) {
-                //* Update Product Page
-                dispatch(fetchProducts());
-                dispatch(fetchOrders());
-                dispatch(fetchVouchers());
-                toast.info(t("common:action.success", { type: action }), {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            }
-        } catch (error) {
-            // console.log(error);
-            const action = t("common:action.delete");
-            toast.error(t("common:action.fail", { type: action }), {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        }
-    };
+    }, [orders, t]);
 
     return (
         <Container>
@@ -151,7 +118,7 @@ const CategoryPage = () => {
                             {/*//* Title  */}
                             <CardTitleWrap>
                                 <CardTitle>
-                                    {t("store:category.titles")}
+                                    {t("store:feedback.titles")}
                                 </CardTitle>
                             </CardTitleWrap>
 
@@ -177,19 +144,6 @@ const CategoryPage = () => {
                                     withPagination={withPagination}
                                     withSearchEngine={withSearchEngine}
                                 />
-
-                                {/*//* Button: New  */}
-                                <CustomModal
-                                    color="primary"
-                                    title={
-                                        t("action.add") +
-                                        " " +
-                                        t("store:category.title")
-                                    }
-                                    btn={t("action.add")}
-                                    action="new"
-                                    component="category"
-                                />
                             </div>
 
                             {/*//* Table  */}
@@ -198,7 +152,7 @@ const CategoryPage = () => {
                                 columns={reactTableData.tableHeaderData}
                                 data={data}
                                 tableConfig={tableConfig}
-                                component="category"
+                                component="feedback"
                             />
                         </CardBody>
                     </Card>
@@ -208,6 +162,6 @@ const CategoryPage = () => {
     );
 };
 
-CategoryPage.propTypes = {};
+FeedbackPage.propTypes = {};
 
-export default CategoryPage;
+export default FeedbackPage;

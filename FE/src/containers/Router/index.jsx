@@ -31,6 +31,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import NotFoundPage from "../NotFoundPage";
 import BannerPage from "../Admin/Banner/BannerPage";
 import { fetchBanners } from "../../redux/actions/bannerAction";
+import FeedbackPage from "../client/Feeback/FeedbackPage";
 
 const Pages = () => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -112,6 +113,12 @@ const Pages = () => {
             <ProtectedRoute
                 path="/pages/client/orders"
                 component={OrderPage}
+                isAllowed={!isStaff}
+                redirectTo="/pages/admin/dashboard"
+            />
+            <ProtectedRoute
+                path="/pages/client/feedbacks"
+                component={FeedbackPage}
                 isAllowed={!isStaff}
                 redirectTo="/pages/admin/dashboard"
             />

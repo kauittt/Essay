@@ -63,7 +63,7 @@ const UserPage = () => {
     };
 
     let users = useSelector(selectTotalUsers);
-    console.log("user before", users);
+    // console.log("user before", users);
 
     users = users?.filter(
         (user) =>
@@ -82,7 +82,7 @@ const UserPage = () => {
             .join(", "),
     }));
 
-    console.log("users", users);
+    // console.log("users", users);
 
     //* Add edit/delete Button
     const data = useMemo(() => {
@@ -135,7 +135,7 @@ const UserPage = () => {
                 });
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             const action = t("common:action.delete");
             toast.error(t("common:action.fail", { type: action }), {
                 position: "top-right",

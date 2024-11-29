@@ -60,7 +60,7 @@ const ProductModal = ({ toggle, data, action }) => {
     const reactTableData = CreateTableSizeHeader(t);
     const enter = t("action.enter");
 
-    console.log("product in modal", data);
+    // console.log("product in modal", data);
 
     let categories = useSelector(selectCategories);
     let sizes = useSelector(selectSizes);
@@ -68,8 +68,8 @@ const ProductModal = ({ toggle, data, action }) => {
     //* Từ form
     const [formData, setFormData] = useState(data);
     const submitForm = async (values) => {
-        console.log("Root -----------");
-        console.log(values);
+        // console.log("Root -----------");
+        // console.log(values);
 
         //* Process values before dispatching
         let processedValues = Object.keys(values).reduce((acc, key) => {
@@ -89,13 +89,13 @@ const ProductModal = ({ toggle, data, action }) => {
             return acc;
         }, {});
 
-        console.log("process -----------");
+        // console.log("process -----------");
         processedValues = {
             ...processedValues,
             sizes: sizes,
             quantities: tableData.map((row) => row.stock),
         };
-        console.log(processedValues);
+        // console.log(processedValues);
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
@@ -132,7 +132,7 @@ const ProductModal = ({ toggle, data, action }) => {
                 toggle();
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: actionText }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -146,8 +146,8 @@ const ProductModal = ({ toggle, data, action }) => {
     };
 
     const validate = (values, t) => {
-        console.log("Validate values", values);
-        console.log("Table", tableData);
+        // console.log("Validate values", values);
+        // console.log("Table", tableData);
         const errors = {};
 
         const requiredFields = [
@@ -198,7 +198,7 @@ const ProductModal = ({ toggle, data, action }) => {
             //* Empty
             requiredTableFields.forEach((field) => {
                 if (row[field] == null) {
-                    console.log("row[field]", row[field]);
+                    // console.log("row[field]", row[field]);
                     errors[`${index}-${field}`] = t(
                         "errors:validation.required"
                     );
@@ -215,7 +215,7 @@ const ProductModal = ({ toggle, data, action }) => {
             });
         });
 
-        console.log("Erros", errors);
+        // console.log("Erros", errors);
         return errors;
     };
 
@@ -280,7 +280,7 @@ const ProductModal = ({ toggle, data, action }) => {
     const [tableData, setTableData] = useState([]);
 
     const handleTableData = (dataFromTable) => {
-        console.log("invoke update data table");
+        // console.log("invoke update data table");
         setTableData(dataFromTable);
     };
 
@@ -347,9 +347,9 @@ const ProductModal = ({ toggle, data, action }) => {
                                         <Button
                                             variant="success"
                                             type="submit"
-                                            onClick={() =>
-                                                console.log("submit")
-                                            }
+                                            // onClick={() =>
+                                            //     console.log("submit")
+                                            // }
                                             style={{ margin: "0px" }}
                                         >
                                             {t("action.save")}

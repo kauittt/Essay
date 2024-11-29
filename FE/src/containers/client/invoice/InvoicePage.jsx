@@ -124,7 +124,7 @@ const InvoicePage = () => {
         values.products = selectedProducts.map((product) => product.product.id);
 
         // console.log("Submit values");
-        console.log("Order request", values);
+        // console.log("Order request", values);
         // console.log("Product list", selectedProducts);
         console.log("-----------");
 
@@ -132,7 +132,7 @@ const InvoicePage = () => {
             let response;
 
             const orderId = await OrderService.postOrder(values);
-            console.log("orderId", orderId);
+            // console.log("orderId", orderId);
 
             const invoiceRequest = {
                 order: orderId.data.id,
@@ -142,7 +142,7 @@ const InvoicePage = () => {
                 paymentMethod: paymentMethod,
             };
 
-            console.log("invoiceRequest", invoiceRequest);
+            // console.log("invoiceRequest", invoiceRequest);
             response = await InvoiceService.postInvoice(invoiceRequest);
 
             if (response) {
@@ -161,7 +161,7 @@ const InvoicePage = () => {
                 history.push("/pages/client/home");
                 toast.info(
                     t("common:action.success", {
-                        type: t("action.add") + " " + t("store:order.title"),
+                        type: t("action.purchase"),
                     }),
                     {
                         position: "top-right",
@@ -175,10 +175,10 @@ const InvoicePage = () => {
                 );
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(
                 t("common:action.fail", {
-                    type: t("action.add") + " " + t("store:order.title"),
+                    type: t("action.purchase"),
                 }),
                 {
                     position: "top-right",
@@ -246,10 +246,10 @@ const InvoicePage = () => {
                 )
             )
         );
-    console.log("Vouchers", vouchers);
+    // console.log("Vouchers", vouchers);
 
-    console.log("Selected Voucher", selectedVoucher);
-    console.log("----");
+    // console.log("Selected Voucher", selectedVoucher);
+    // console.log("----");
 
     // <InvoiceLogo />
 
@@ -496,11 +496,11 @@ const InvoicePage = () => {
                                                         <Button
                                                             variant="primary"
                                                             type="submit"
-                                                            onClick={() =>
-                                                                console.log(
-                                                                    "submit"
-                                                                )
-                                                            }
+                                                            // onClick={() =>
+                                                            //     console.log(
+                                                            //         "submit"
+                                                            //     )
+                                                            // }
                                                             style={{
                                                                 margin: "0px",
                                                             }}

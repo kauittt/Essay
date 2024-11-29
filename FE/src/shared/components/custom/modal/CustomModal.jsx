@@ -71,7 +71,7 @@ const CustomModal = ({
             <Button
                 variant={color}
                 onClick={toggle}
-                // disabled={isDisabled}
+                disabled={isDisabled}
                 style={{ margin: "0" }}
             >
                 {btn}
@@ -111,6 +111,15 @@ const CustomModal = ({
                             data={data}
                             myOnChange={myOnChange}
                         ></BannerModal>
+                    )}
+
+                    {component == "feedback" && (
+                        <FeedbackModal
+                            action={action}
+                            toggle={toggle}
+                            data={data}
+                            myOnChange={myOnChange}
+                        ></FeedbackModal>
                     )}
 
                     {component == "product" && (
@@ -188,6 +197,7 @@ const ModalFooter = styled(ButtonToolbar)`
 
     flex-flow: ${flexFlow} !important;
 `;
+import FeedbackModal from "../../../../containers/client/Feeback/modal/FeedbackModal";
 
 const ModalTitle = styled.h4`
     margin-top: 10px;

@@ -13,7 +13,10 @@
 
     "feedback": {
         "title": "Đánh giá",
-        "titles": "Đánh giá"
+        "titles": "Đánh giá",
+        "description": "Mô tả",
+        "image": "Hình ảnh",
+        "point": "Đánh giá"
     },
 
     "size": {

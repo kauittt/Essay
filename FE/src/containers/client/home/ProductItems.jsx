@@ -29,16 +29,16 @@ const ProductItems = ({ items = [] }) => {
     let language = i18n.language;
     const user = useSelector(selectUser);
     const dispatch = useDispatch();
-    console.log("User", user);
+    // console.log("User", user);
 
     const addToCart = async (product) => {
-        console.log("Add to cart", product);
+        // console.log("Add to cart", product);
 
         const size = product.sizeProducts.filter(
             (sizeProduct) => sizeProduct.stock > 0
         );
 
-        console.log("size", size);
+        // console.log("size", size);
         if (size.length === 0) {
             toast.warn(t("errors:validation.outOfStock"), {
                 position: "top-right",
@@ -58,7 +58,7 @@ const ProductItems = ({ items = [] }) => {
             quantities: [1],
         };
 
-        console.log("cartRequest", cartRequest);
+        // console.log("cartRequest", cartRequest);
 
         // console.log("cartRequest", cartRequest);
         try {
@@ -84,16 +84,19 @@ const ProductItems = ({ items = [] }) => {
                 );
             }
         } catch (e) {
-            console.log(e);
-            toast.error(t("common:action.fail", { type: "Add" }), {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            // console.log(e);
+            toast.error(
+                t("common:action.fail", { type: t("common:action.add") }),
+                {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            );
         }
     };
 

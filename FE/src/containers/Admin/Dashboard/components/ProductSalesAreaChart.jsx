@@ -125,7 +125,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
 
     //* Form set up
     const submitForm = (values) => {
-        console.log("Submit values", values);
+        // console.log("Submit values", values);
     };
 
     let initValue = {
@@ -387,7 +387,7 @@ const processSalesData = (
         return entry;
     });
 
-    console.log("chartData", chartData);
+    // console.log("chartData", chartData);
     return chartData; // Return array suitable for recharts
 };
 

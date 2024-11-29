@@ -107,7 +107,7 @@ const EditableReactTable = ({ reactTableData, onTableDataUpdate, data }) => {
 
     //* gửi update về Modal
     useEffect(() => {
-        console.log("Effect row", rows);
+        // console.log("Effect row", rows);
         onTableDataUpdate(rows);
     }, [rows, onTableDataUpdate]);
 

@@ -67,7 +67,7 @@ const BannerPage = () => {
         no: index + 1,
         username: banner.user.username,
     }));
-    console.log("banners", banners);
+    // console.log("banners", banners);
 
     //* Add edit/delete Button
     const data = useMemo(() => {
@@ -120,7 +120,7 @@ const BannerPage = () => {
                 });
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             toast.error(t("common:action.fail", { type: action }), {
                 position: "top-right",
                 autoClose: 5000,

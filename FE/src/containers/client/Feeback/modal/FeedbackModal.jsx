@@ -14,15 +14,34 @@ import { toast } from "react-toastify";
 import { addCategory, updateCategory } from "@/redux/actions/categoryAction";
 import FormInput from "@/shared/components/custom/form/FormInput";
 import { fetchProducts } from "@/redux/actions/productAction";
-import { fetchOrders } from "../../../../redux/actions/orderAction";
-import { fetchVouchers } from "./../../../../redux/actions/voucherAction";
+import { fetchOrders } from "@/redux/actions/orderAction";
+import { fetchVouchers } from "@/redux/actions/voucherAction";
+import CustomForm from "../../../../shared/components/custom/form/CustomForm";
+import StarRating from "../../StarRating";
+import { fetchCurrentUser } from "../../../../redux/actions/userAction";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../../../redux/reducers/userSlice";
+import {
+    addFeedback,
+    updateFeedback,
+} from "../../../../redux/actions/feedbackAction";
 
-const CategoryModal = ({ toggle, data, action }) => {
+const FeedbackModal = ({ toggle, data, action }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
     const dispatch = useDispatch();
 
+    const user = useSelector(selectUser);
+
     const enter = t("action.enter");
-    const [formData, setFormData] = useState(data);
+    // console.log("Data", data);
+    //! Handle load feedback
+    const currentFeedback = data.feedBacks.find(
+        (feedback) => feedback.user == user.id
+    );
+    const apiAction = currentFeedback ? "edit" : "new";
+
+    // console.log("currentFeedback", currentFeedback);
+    const [formData, setFormData] = useState(currentFeedback);
 
     const submitForm = async (values) => {
         // console.log("Default values", values);
@@ -45,29 +64,49 @@ const CategoryModal = ({ toggle, data, action }) => {
             return acc;
         }, {});
 
+        processedValues = {
+            ...processedValues,
+            size: data.size,
+            product: data.id,
+            user: user.id,
+        };
         // console.log("Processed values", processedValues);
 
-        const actionText =
-            action === "new" ? t("common:action.add") : t("common:action.edit");
-
         try {
-            let response;
+            let response = null;
 
-            if (action === "new") {
-                response = await dispatch(addCategory(processedValues));
-            } else if (action === "edit") {
-                response = await dispatch(
-                    updateCategory(processedValues.id, processedValues)
-                );
+            if (apiAction == "new") {
+                response = await dispatch(addFeedback(processedValues));
             } else {
-                throw new Error("Error: No matching action");
+                response = await dispatch(
+                    updateFeedback(currentFeedback.id, processedValues)
+                );
             }
 
             if (response) {
-                dispatch(fetchProducts());
-                dispatch(fetchOrders());
-                dispatch(fetchVouchers());
-                toast.info(t("common:action.success", { type: actionText }), {
+                // dispatch(fetchProducts());
+                dispatch(fetchCurrentUser());
+                toast.info(
+                    t("common:action.success", {
+                        type: t("store:feedback.title"),
+                    }),
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+                toggle();
+            }
+        } catch (e) {
+            // console.log(e);
+            toast.error(
+                t("common:action.fail", { type: t("store:feedback.title") }),
+                {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -75,49 +114,56 @@ const CategoryModal = ({ toggle, data, action }) => {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-                });
-                toggle();
-            }
-        } catch (e) {
-            // console.log(e);
-            toast.error(t("common:action.fail", { type: actionText }), {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+                }
+            );
         }
     };
 
     const validate = (values, t) => {
+        // console.log("validate", values);
         const errors = {};
 
-        if (!values.name) {
-            errors.name = t("errors:validation.required");
-        }
+        const requiredFields = ["image", "description", "point"];
 
-        if (!values.enName) {
-            errors.enName = t("errors:validation.required");
-        }
+        requiredFields.forEach((field) => {
+            if (!values[field]) {
+                errors[field] = t("errors:validation.required");
+            }
+        });
 
         return errors;
     };
 
-    const fields = [
+    const leftFields = [
         {
-            label: t("store:category.name"),
-            name: "name",
+            label: t("store:feedback.description"),
+            name: "description",
             type: "text",
-            placeholder: `${enter} ${t("store:category.name")}...`,
+            placeholder: `${enter} ${t("store:feedback.description")}...`,
         },
         {
-            label: t("store:category.enName"),
-            name: "enName",
-            type: "text",
-            placeholder: `${enter} ${t("store:category.enName")}...`,
+            label: t("store:feedback.image"),
+            name: "image",
+            type: "importFile",
+            placeholder: `${enter} ${t("store:feedback.image")}...`,
+        },
+    ];
+
+    const [selectedStar, setSelectedStar] = useState(0);
+    const handleStarSelect = (value) => {
+        // console.log("Star selected:", value);
+        setSelectedStar(value);
+    };
+    const rightFields = [
+        {
+            label: t("store:feedback.point"),
+            name: "point",
+            type: "select",
+            options: Array.from({ length: 6 }, (_, i) => ({
+                value: i,
+                label: <StarRating rating={i} />,
+            })),
+            myOnChange: handleStarSelect,
         },
     ];
 
@@ -133,14 +179,13 @@ const CategoryModal = ({ toggle, data, action }) => {
                         <Col md={12} lg={12}>
                             <Card style={{ marginBottom: "0px" }}>
                                 <CardBody>
-                                    {fields.map((field, index) => {
-                                        return (
-                                            <FormInput
-                                                key={index}
-                                                data={field}
-                                            ></FormInput>
-                                        );
-                                    })}
+                                    <CustomForm
+                                        leftFields={leftFields}
+                                        rightFields={rightFields}
+                                        min={5}
+                                        max={5}
+                                        isButton={false}
+                                    ></CustomForm>
                                 </CardBody>
 
                                 {/*//* Button  */}
@@ -181,10 +226,10 @@ const CategoryModal = ({ toggle, data, action }) => {
     );
 };
 
-CategoryModal.propTypes = {
+FeedbackModal.propTypes = {
     toggle: PropTypes.func,
     action: PropTypes.string,
     data: PropTypes.object,
 };
 
-export default CategoryModal;
+export default FeedbackModal;

@@ -32,8 +32,8 @@ const DashboardPage = () => {
     const products = useSelector(selectProducts);
     const orders = useSelector(selectOrders);
     const users = useSelector(selectTotalUsers);
-    console.log("order", orders);
-    console.log("Products", products);
+    // console.log("order", orders);
+    // console.log("Products", products);
     // console.log("Users", users);
     let currentRevenue = 0;
     let revenuePercent = 0;

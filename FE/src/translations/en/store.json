@@ -13,7 +13,10 @@
 
     "feedback": {
         "title": "Feedback",
-        "titles": "Feedbacks"
+        "titles": "Feedbacks",
+        "description": "Description",
+        "image": "Image",
+        "point": "Rating"
     },
 
     "size": {

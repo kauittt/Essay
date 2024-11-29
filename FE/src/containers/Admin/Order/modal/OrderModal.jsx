@@ -61,8 +61,8 @@ const OrderModal = ({ toggle, data, action }) => {
     const [formData, setFormData] = useState(data);
 
     const submitForm = async (values) => {
-        console.log("Root -----------");
-        console.log(values);
+        // console.log("Root -----------");
+        // console.log(values);
 
         //* Process values before dispatching
         let processedValues = Object.keys(values).reduce((acc, key) => {
@@ -82,8 +82,8 @@ const OrderModal = ({ toggle, data, action }) => {
             return acc;
         }, {});
 
-        console.log("process -----------");
-        console.log(processedValues);
+        // console.log("process -----------");
+        // console.log(processedValues);
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
@@ -123,7 +123,7 @@ const OrderModal = ({ toggle, data, action }) => {
                 toggle();
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: actionText }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -136,7 +136,7 @@ const OrderModal = ({ toggle, data, action }) => {
         }
     };
 
-    console.log("Form data", formData);
+    // console.log("Form data", formData);
 
     const flattenedData = formData.orderProducts
         ?.map(({ product, quantity, size }) => ({
@@ -146,7 +146,7 @@ const OrderModal = ({ toggle, data, action }) => {
         }))
         .flat();
 
-    console.log("flattenedData", flattenedData);
+    // console.log("flattenedData", flattenedData);
 
     const handleCancelOrder = async () => {
         const actionText = t("common:action.cancel");
@@ -177,7 +177,7 @@ const OrderModal = ({ toggle, data, action }) => {
                 toggle();
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             toast.error(t("common:action.fail", { type: actionText }), {
                 position: "top-right",
                 autoClose: 5000,
@@ -250,9 +250,9 @@ const OrderModal = ({ toggle, data, action }) => {
                                         <Button
                                             variant="success"
                                             type="submit"
-                                            onClick={() =>
-                                                console.log("submit")
-                                            }
+                                            // onClick={() =>
+                                            //     console.log("submit")
+                                            // }
                                             style={{ margin: "0px" }}
                                             disabled={
                                                 (!isEditAble && !isStaff) ||

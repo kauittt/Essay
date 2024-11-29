@@ -98,7 +98,7 @@ const OrderPage = () => {
     let orders = isStaff
         ? useSelector(selectOrders)
         : currentUser?.orders || [];
-    console.log("Order before", orders);
+    // console.log("Order before", orders);
 
     orders = orders?.map((order) => ({
         ...order,
@@ -114,7 +114,7 @@ const OrderPage = () => {
         invoicePaymentMethod: order.invoice?.paymentMethod,
         tableStatus: statusLabels[order.status],
     }));
-    console.log("orders", orders);
+    // console.log("orders", orders);
 
     //* Add edit/delete Button
     const data = useMemo(() => {
@@ -138,12 +138,30 @@ const OrderPage = () => {
                         action="edit"
                         component="order"
                         data={item}
-                        isDisabled={
-                            item.status == "DONE" || item.status == "CANCEL"
-                        }
+                        // isDisabled={
+                        //     item.status == "DONE" || item.status == "CANCEL"
+                        // }
                     />
 
-                    {/* <Button
+                    {/*//* Modal Feedback  */}
+                    {/* {!isStaff && (
+                        <CustomModal
+                            color="primary"
+                            title={
+                                t("action.detail") +
+                                " " +
+                                t("store:feedback.title")
+                            }
+                            btn={t("store:feedback.title")}
+                            action="new"
+                            component="feedback"
+                            data={item}
+                            isDisabled={item.status != "DONE"}
+                        />
+                    )} */}
+
+                    {/* 
+                    <Button
                         variant="danger"
                         onClick={() => handleDelete(item.id)}
                         style={{ margin: "0" }}
@@ -173,7 +191,7 @@ const OrderPage = () => {
                 });
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             const action = t("common:action.delete");
             toast.error(t("common:action.fail", { type: action }), {
                 position: "top-right",
@@ -220,19 +238,6 @@ const OrderPage = () => {
                                     withPagination={withPagination}
                                     withSearchEngine={withSearchEngine}
                                 />
-
-                                {/*//* Button: New  */}
-                                {/* <CustomModal
-                                color="primary"
-                                title={
-                                    t("action.add") +
-                                    " " +
-                                    t("store:order.title")
-                                }
-                                btn={t("action.add")}
-                                action="new"
-                                component="order"
-                            /> */}
                             </div>
 
                             {/*//* Table  */}

@@ -73,8 +73,8 @@ const VoucherModal = ({ toggle, data, action }) => {
     const enter = t("action.enter");
 
     const submitForm = async (values) => {
-        console.log("Submitted values:", values);
-
+        // console.log("Submitted values:", values);
+        //
         //* Process values before dispatching
         let processedValues = Object.keys(values).reduce((acc, key) => {
             if (
@@ -93,10 +93,10 @@ const VoucherModal = ({ toggle, data, action }) => {
             return acc;
         }, {});
 
-        console.log(
-            "Processed values before additional processing",
-            processedValues
-        );
+        // console.log(
+        //     "Processed values before additional processing",
+        //     processedValues
+        // );
 
         //! Handle Products and Categories Processing
         let selectedProducts = [];
@@ -108,7 +108,7 @@ const VoucherModal = ({ toggle, data, action }) => {
             );
 
             if (matchingCategory) {
-                console.log("Matching category found:", matchingCategory);
+                // console.log("Matching category found:", matchingCategory);
                 const productsInCategory = matchingCategory.products;
 
                 selectedProducts = [
@@ -140,7 +140,7 @@ const VoucherModal = ({ toggle, data, action }) => {
         processedValues.endDate = new Date(processedValues.endDate);
         processedValues.endDate.setDate(processedValues.endDate.getDate() + 1);
 
-        console.log("Final processed values before dispatch:", processedValues);
+        // console.log("Final processed values before dispatch:", processedValues);
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
@@ -184,7 +184,7 @@ const VoucherModal = ({ toggle, data, action }) => {
     };
 
     const validate = (values, t) => {
-        console.log("Validate", values);
+        // console.log("Validate", values);
         const errors = {};
 
         //* Required Fields
@@ -256,7 +256,7 @@ const VoucherModal = ({ toggle, data, action }) => {
             }
         });
 
-        console.log("Products within selected categories:", categoryProductIds);
+        // console.log("Products within selected categories:", categoryProductIds);
         const duplicateProducts = selectedProducts?.filter((productId) =>
             categoryProductIds.includes(productId)
         );
@@ -296,7 +296,7 @@ const VoucherModal = ({ toggle, data, action }) => {
             errors.endDate = t("errors:validation.invalidDate");
         }
 
-        console.log("Validation Errors:", errors);
+        // console.log("Validation Errors:", errors);
 
         return errors;
     };
@@ -420,7 +420,7 @@ const VoucherModal = ({ toggle, data, action }) => {
                                     <Button
                                         variant="success"
                                         type="submit"
-                                        onClick={() => console.log("submit")}
+                                        // onClick={() => console.log("submit")}
                                         style={{ margin: "0px" }}
                                     >
                                         {t("action.save")}

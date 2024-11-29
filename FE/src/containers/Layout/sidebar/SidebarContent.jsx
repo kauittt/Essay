@@ -63,14 +63,7 @@ const SidebarContent = ({
                             route="/pages/client/home"
                         />
                     </SidebarBlock>
-                    {/* //* Products */}
-                    {/* <SidebarBlock collapse={collapse}>
-                        <SidebarLink
-                            title={t("store:product.titles")}
-                            icon="store"
-                            route="/pages/client/products"
-                        />
-                    </SidebarBlock> */}
+
                     {/*//* Cart  */}
                     <SidebarBlock collapse={collapse}>
                         <SidebarLink
@@ -79,12 +72,22 @@ const SidebarContent = ({
                             route="/pages/client/cart"
                         />
                     </SidebarBlock>
+
                     {/*//* Orders */}
                     <SidebarBlock collapse={collapse}>
                         <SidebarLink
                             title={t("store:order.titles")}
                             icon="store"
                             route="/pages/client/orders"
+                        />
+                    </SidebarBlock>
+
+                    {/*//* Feedbacks */}
+                    <SidebarBlock collapse={collapse}>
+                        <SidebarLink
+                            title={t("store:feedback.titles")}
+                            icon="store"
+                            route="/pages/client/feedbacks"
                         />
                     </SidebarBlock>
                 </>

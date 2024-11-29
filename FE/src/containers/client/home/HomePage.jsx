@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
 import "@brainhubeu/react-carousel/lib/style.css";
 import {
@@ -53,7 +52,7 @@ const HomePage = () => {
             title: language == "en" ? category.enName : category.name,
         };
     });
-    console.log("products", products);
+    // console.log("products", products);
 
     //* Tag
     const [currentTag, setCurrentTag] = useState("all");
@@ -72,7 +71,7 @@ const HomePage = () => {
 
     const [selectedPrice, setSelectedPrice] = useState(0);
     const handleSelectedPrice = (value) => {
-        console.log("selectedPrice selected:", value);
+        // console.log("selectedPrice selected:", value);
         setSelectedPrice(value);
     };
     // console.log("selected price", selectedPrice);
@@ -119,7 +118,7 @@ const HomePage = () => {
     //* Star
     const [selectedStar, setSelectedStar] = useState(0);
     const handleStarSelect = (value) => {
-        console.log("Star selected:", value);
+        // console.log("Star selected:", value);
         setSelectedStar(value);
     };
     const starInput = {
@@ -373,7 +372,7 @@ const HomePage = () => {
                                     <div style={{ flex: 1 }}>
                                         <Form
                                             onSubmit={() => {
-                                                console.log("Submit");
+                                                // console.log("Submit");
                                             }}
                                             initialValues={{
                                                 star: selectedStar,
@@ -413,7 +412,7 @@ const HomePage = () => {
                                     <div style={{ flex: 1 }}>
                                         <Form
                                             onSubmit={() => {
-                                                console.log("Submit");
+                                                // console.log("Submit");
                                             }}
                                             initialValues={{
                                                 price: selectedPrice,

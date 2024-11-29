@@ -65,8 +65,8 @@ const ProductPage = () => {
 
     let products = useSelector(selectProducts);
     let categories = useSelector(selectCategories);
-    console.log("Products before", products);
-    console.log("Category", categories);
+    // console.log("Products before", products);
+    // console.log("Category", categories);
 
     const tableCategories = (products = products?.map((product, index) => {
         const joinCategories =
@@ -96,7 +96,7 @@ const ProductPage = () => {
     products = products?.map((product) => {
         return { ...product, totalStock: product.stock };
     });
-    console.log("Products", products);
+    // console.log("Products", products);
 
     //* Add edit/delete Button
     const data = useMemo(() => {
@@ -154,7 +154,7 @@ const ProductPage = () => {
                 });
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             const action = t("common:action.delete");
             toast.error(t("common:action.fail", { type: action }), {
                 position: "top-right",

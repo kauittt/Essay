@@ -5,10 +5,14 @@ import { useTranslation } from "react-i18next";
 import CreateOrderProductHeader from "./product/CreateOrderProductHeader";
 import { useDispatch } from "react-redux";
 import CustomReactTableBase from "@/shared/components/custom/table/CustomReactTableBase";
+import CustomModal from "./../../../../shared/components/custom/modal/CustomModal";
+import { Col } from "react-bootstrap";
 
 const ListProduct = ({ data }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
+    const userLocal = JSON.parse(localStorage.getItem("user")); //* Local
+    const isStaff = userLocal.roles[0] !== "ROLE_USER";
     const enter = t("action.enter");
 
     const reactTableData = CreateOrderProductHeader(t);
@@ -51,7 +55,7 @@ const ListProduct = ({ data }) => {
         };
     });
 
-    console.log(processedData);
+    // console.log(processedData);
 
     return (
         <Collapse title={t("store:product.titles")} className="with-shadow">
