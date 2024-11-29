@@ -70,17 +70,6 @@ public class ProductService {
         return productMapper.toListDTOs(findAllProducts());
     }
 
-//    public List<CategoryProductsDTO> getProductsGroupedByCategory() {
-//        List<ProductResponseDTO> productResponseDTOs = getAllProducts();
-//        Map<String, List<ProductResponseDTO>> groupedProducts = productResponseDTOs.stream()
-//                .filter(product -> product.getCategories() != null)
-//                .collect(Collectors.groupingBy(ProductResponseDTO::getCategories));
-//
-//        return groupedProducts.entrySet().stream()
-//                .map(entry -> new CategoryProductsDTO(entry.getKey(), entry.getValue()))
-//                .collect(Collectors.toList());
-//    }
-
     @Transactional
     public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO) {
         productValidator.validateProductRequest(productRequestDTO);
@@ -134,12 +123,12 @@ public class ProductService {
         Product product = findProductById(id);
         productValidator.validateUpdate(productRequestDTO);
 
-        if(productRequestDTO.getSizes() != null && productRequestDTO.getQuantities() != null) {
+        if (productRequestDTO.getSizes() != null && productRequestDTO.getQuantities() != null) {
             System.out.println("Dang set SIZES");
             updateProductSizes(product, productRequestDTO);
         }
 
-        if(productRequestDTO.getCategories() != null ) {
+        if (productRequestDTO.getCategories() != null) {
             updateProductCategories(product, productRequestDTO);
 
         }

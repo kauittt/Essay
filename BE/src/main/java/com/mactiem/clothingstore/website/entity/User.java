@@ -38,6 +38,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<FeedBack> feedBacks;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Banner> banners;
+
     //-------------------------------
     @Column(name = "username")
     private String username;//---

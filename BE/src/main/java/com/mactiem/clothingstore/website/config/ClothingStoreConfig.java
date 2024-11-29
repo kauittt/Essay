@@ -104,6 +104,11 @@ public class ClothingStoreConfig {
                     authorize.requestMatchers(HttpMethod.PUT, "/orders/**").hasAnyRole("ADMIN", "STAFF"); // Update order
                     authorize.requestMatchers(HttpMethod.DELETE, "/orders/**").hasRole("ADMIN"); // Delete order
 
+                    //* Banner
+                    authorize.requestMatchers(HttpMethod.GET, "/banners").authenticated(); // Get all banners
+                    authorize.requestMatchers(HttpMethod.POST, "/banners").hasAnyRole("ADMIN", "STAFF"); // Add banner
+                    authorize.requestMatchers(HttpMethod.PUT, "/banners/**").hasAnyRole("ADMIN", "STAFF"); // Update banner
+                    authorize.requestMatchers(HttpMethod.DELETE, "/banners/**").hasAnyRole("ADMIN", "STAFF"); // Delete banner
 
                     authorize.anyRequest().authenticated();
                 });
