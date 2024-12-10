@@ -16,9 +16,11 @@ import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -26,6 +28,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -62,6 +65,12 @@ public class UserService {
     public User findUserById(String id) {
         return userRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException(Response.notFound("User", id)));
+    }
+
+    @Named("byUsernameAndEmail")
+    public User findUserByUsernameAndEmail(String username, String email) {
+        return userRepository.findByUsernameAndEmail(username, email)
+                .orElseThrow(() -> new RuntimeException(Response.notFound("User", username)));
     }
 
     //* Methods
@@ -104,7 +113,7 @@ public class UserService {
     public UserResponseDTO update(String id, UserRegistryDTO userRequestDTO) {
         User dbUser = findUserById(id);
 
-        userValidator.validateUpdate(userRequestDTO);
+        userValidator.validateUpdate(userRequestDTO, dbUser);
 
         Field[] fields = userRequestDTO.getClass().getDeclaredFields();
         try {
@@ -142,7 +151,7 @@ public class UserService {
     public UserResponseDTO updateCurrentUser(UserRegistryDTO userRequestDTO) {
         User dbUser = findUserById(SecurityUtils.getCurrentUserId());
 
-        userValidator.validateUpdate(userRequestDTO);
+        userValidator.validateUpdate(userRequestDTO, dbUser);
 
         Field[] fields = userRequestDTO.getClass().getDeclaredFields();
         try {
@@ -174,6 +183,27 @@ public class UserService {
         dbUser.setUpdateDate(LocalDate.now());
 
         return mapUserDTO(userRepository.save(dbUser));
+    }
+
+    @Transactional
+    public String resetUser(UserRegistryDTO userRequestDTO) {
+        String email = userRequestDTO.getEmail();
+        String username = userRequestDTO.getUsername();
+
+        userValidator.validateEmail(email);
+        if (username == null || username.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
+        }
+
+        User dbUser = findUserByUsernameAndEmail(username, email);
+
+        String password = UUID.randomUUID().toString().split("-")[0];
+//        String password = "test";
+        String hashedPassword = passwordEncoder.encode(password);
+        dbUser.setPassword(hashedPassword);
+        dbUser.setUpdateDate(LocalDate.now());
+
+        return password;
     }
 
 

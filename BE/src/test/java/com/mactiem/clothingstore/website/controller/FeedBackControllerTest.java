@@ -77,7 +77,7 @@ public class FeedBackControllerTest {
                 .updateDate(LocalDate.now())
                 .point(4.5)
                 .description("Great product!")
-                .user(1L)
+//                .user(1L)
                 .build();
 
         // Initialize list of FeedBacks
@@ -105,8 +105,8 @@ public class FeedBackControllerTest {
                 .andExpect(jsonPath("$.createDate").value(validResponse.getCreateDate().toString()))
                 .andExpect(jsonPath("$.updateDate").value(validResponse.getUpdateDate().toString()))
                 .andExpect(jsonPath("$.point").value(validResponse.getPoint()))
-                .andExpect(jsonPath("$.description").value(validResponse.getDescription()))
-                .andExpect(jsonPath("$.user").value(validResponse.getUser()));
+                .andExpect(jsonPath("$.description").value(validResponse.getDescription()));
+//                .andExpect(jsonPath("$.user").value(validResponse.getUser()));
         // Add more assertions if needed for nested objects
 
         Mockito.verify(feedBackService, Mockito.times(1)).createFeedBack(eq(validRequest));
@@ -157,7 +157,7 @@ public class FeedBackControllerTest {
                 .updateDate(LocalDate.now())
                 .point(5.0)
                 .description("Excellent product!")
-                .user(1L)
+//                .user(1L)
                 .build();
 
         Mockito.when(feedBackService.updateFeedBack(eq(FEEDBACK_ID+""), eq(updateRequest)))
@@ -173,8 +173,8 @@ public class FeedBackControllerTest {
                 .andExpect(jsonPath("$.createDate").value(updatedResponse.getCreateDate().toString()))
                 .andExpect(jsonPath("$.updateDate").value(updatedResponse.getUpdateDate().toString()))
                 .andExpect(jsonPath("$.point").value(updatedResponse.getPoint()))
-                .andExpect(jsonPath("$.description").value(updatedResponse.getDescription()))
-                .andExpect(jsonPath("$.user").value(updatedResponse.getUser()));
+                .andExpect(jsonPath("$.description").value(updatedResponse.getDescription()));
+//                .andExpect(jsonPath("$.user").value(updatedResponse.getUser()));
         // Add more assertions if needed for nested objects
 
         Mockito.verify(feedBackService, Mockito.times(1)).updateFeedBack(eq(FEEDBACK_ID+""), eq(updateRequest));

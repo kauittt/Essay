@@ -2,8 +2,11 @@ package com.mactiem.clothingstore.website.mapstruct;
 
 import com.mactiem.clothingstore.website.DTO.FeedBackRequestDTO;
 import com.mactiem.clothingstore.website.DTO.FeedBackResponseDTO;
+import com.mactiem.clothingstore.website.DTO.ProductResponseDTO;
+import com.mactiem.clothingstore.website.DTO.UserResponseDTO;
 import com.mactiem.clothingstore.website.entity.FeedBack;
 import com.mactiem.clothingstore.website.entity.GenerateID;
+import com.mactiem.clothingstore.website.entity.Product;
 import com.mactiem.clothingstore.website.service.UserService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -14,18 +17,29 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {UserService.class})
+@Mapper(componentModel = "spring", uses = {UserService.class, UserMapper.class})
 @Component
 public interface FeedBackMapper {
     //* DTO
 //    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "user", expression = "java(mapUser(feedBack))")
+    @Mapping(target = "username", expression = "java(mapUserUsername(feedBack))")
+    @Mapping(target = "avatar", expression = "java(mapUserAvatar(feedBack))")
+    @Mapping(target = "name", expression = "java(mapUserName(feedBack))")
     @Mapping(target = "size", source = "size")
     FeedBackResponseDTO toDTO(FeedBack feedBack);
 
-    default Long mapUser(FeedBack feedback) {
-        return feedback.getUser().getId();
+    default String mapUserUsername(FeedBack feedback) {
+        return feedback.getUser().getUsername();
     }
+
+    default String mapUserAvatar(FeedBack feedback) {
+        return feedback.getUser().getImage();
+    }
+
+    default String mapUserName(FeedBack feedback) {
+        return feedback.getUser().getName();
+    }
+
 
     default List<FeedBackResponseDTO> toListDTOs(List<FeedBack> feedBacks) {
         return feedBacks.stream().map(this::toDTO).toList();

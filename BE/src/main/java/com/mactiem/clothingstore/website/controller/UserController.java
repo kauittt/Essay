@@ -122,4 +122,14 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
+    @PutMapping("/reset")
+    public ResponseEntity<?> resetUser(@RequestBody UserRegistryDTO userRequestDTO) {
+        try {
+            return ResponseEntity.ok(userService.resetUser(userRequestDTO));
+        } catch (Exception e) {
+            Response response = Response.of(HttpStatus.BAD_REQUEST, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }

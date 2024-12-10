@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "sizes_products")
 @Builder
-public class SizeProduct {
+public class  SizeProduct {
     @EmbeddedId
     private SizeProductId id;
 

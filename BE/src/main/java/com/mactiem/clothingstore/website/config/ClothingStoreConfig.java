@@ -67,7 +67,7 @@ public class ClothingStoreConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("/users/login", "/users/register").permitAll();
+                    authorize.requestMatchers("/users/login", "/users/register", "/users/reset").permitAll();
 
                     //* User
                     authorize.requestMatchers("/users/current", "/users/current/**").authenticated(); //*  Update, Get theo token
@@ -75,8 +75,8 @@ public class ClothingStoreConfig {
                     authorize.requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN"); //* Delete
                     authorize.requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN"); //* Update
 
-                    authorize.requestMatchers(HttpMethod.GET, "/users").hasAnyRole("ADMIN", "STAFF"); //* getAll
-                    authorize.requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("ADMIN", "STAFF");//* getById
+                    authorize.requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN"); //* getAll
+                    authorize.requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN");//* getById
 
                     //* Voucher
                     authorize.requestMatchers(HttpMethod.GET, "/vouchers").authenticated(); //* Get all

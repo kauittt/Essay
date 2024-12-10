@@ -45,7 +45,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 CustomAuthenticationToken authenticationToken = new CustomAuthenticationToken(userDetails, null, userDetails.getAuthorities(), userId);
 
 
-
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -68,6 +67,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
-        return path.equals("/users/login") || path.equals("/users/register");
+        return path.equals("/users/login") || path.equals("/users/register") || path.equals("/users/reset");
     }
 }

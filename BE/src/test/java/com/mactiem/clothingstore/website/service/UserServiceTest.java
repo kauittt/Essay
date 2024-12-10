@@ -272,7 +272,7 @@ public class UserServiceTest {
     public void testUpdateUser_whenValidData_thenUserIsUpdated() {
         // GIVEN
         Mockito.when(userRepository.findById(eq(USER_ID))).thenReturn(Optional.of(user));
-        Mockito.doNothing().when(userValidator).validateUpdate(eq(registry));
+        Mockito.doNothing().when(userValidator).validateUpdate(eq(registry), new User());
         Mockito.when(authorityService.getAuthoritiesByNames(eq(registry.getAuthorities())))
                 .thenReturn(List.of(new Authority(1L, "ROLE_USER", new ArrayList<>())));
         Mockito.when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
@@ -289,13 +289,11 @@ public class UserServiceTest {
         assertEquals("admin@gmail.com", result.getEmail());
 
         Mockito.verify(userRepository, Mockito.times(1)).findById(eq(USER_ID));
-        Mockito.verify(userValidator, Mockito.times(1)).validateUpdate(eq(registry));
+        Mockito.verify(userValidator, Mockito.times(1)).validateUpdate(eq(registry), new User());
         Mockito.verify(authorityService).getAuthoritiesByNames(eq(registry.getAuthorities()));
         Mockito.verify(passwordEncoder, Mockito.times(1)).encode(anyString());
         Mockito.verify(userRepository, Mockito.times(1)).save(eq(user));
         Mockito.verify(userMapper, Mockito.times(1)).toDTO(any(User.class));
-
-
     }
 
     @Test
@@ -314,7 +312,7 @@ public class UserServiceTest {
         assertEquals(Response.notFound("User", nonExistentId + ""), exception.getMessage()); // Adjust based on Response.notFound implementation
 
         Mockito.verify(userRepository, Mockito.times(1)).findById(eq(nonExistentId));
-        Mockito.verify(userValidator, Mockito.never()).validateUpdate(any());
+        Mockito.verify(userValidator, Mockito.never()).validateUpdate(any(), any());
         Mockito.verify(userRepository, Mockito.never()).save(any());
     }
 
@@ -323,7 +321,7 @@ public class UserServiceTest {
         // GIVEN
         Mockito.when(userRepository.findById(eq(USER_ID))).thenReturn(Optional.of(user));
         Mockito.doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid registry format"))
-                .when(userValidator).validateUpdate(eq(badRegistry));
+                .when(userValidator).validateUpdate(eq(badRegistry), any());
 
         // WHEN & THEN
         ResponseStatusException exception = assertThrows(
@@ -335,7 +333,7 @@ public class UserServiceTest {
         assertEquals("Invalid registry format", exception.getReason());
 
         Mockito.verify(userRepository, Mockito.times(1)).findById(eq(USER_ID));
-        Mockito.verify(userValidator, Mockito.times(1)).validateUpdate(eq(badRegistry));
+        Mockito.verify(userValidator, Mockito.times(1)).validateUpdate(eq(badRegistry), any());
         Mockito.verify(userRepository, Mockito.never()).save(any());
     }
 

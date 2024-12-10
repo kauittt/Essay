@@ -85,7 +85,7 @@ public class FeedBackServiceTest {
                 .updateDate(LocalDate.now())
                 .point(4.5)
                 .description("Great product!")
-                .user(1L)
+//                .user(1L)
                 .build();
 
         // Initialize list of FeedBacks
@@ -179,7 +179,7 @@ public class FeedBackServiceTest {
                         .updateDate(updatedFeedBack.getUpdateDate())
                         .point(5.0)
                         .description("Excellent product!")
-                        .user(1L)
+//                        .user(1L)
                         .build()
         );
 
