@@ -164,8 +164,8 @@
     },
 
     "banner": {
-        "title": "Tin tức",
-        "titles": "Tin tức",
+        "title": "Thông báo",
+        "titles": "Thông báo",
         "image": "Hình ảnh",
         "upload": "Người Tải Lên"
     },
@@ -182,5 +182,9 @@
 
     "profile": {
         "title": "Thông tin"
+    },
+    "forgetPassword": {
+        "title": "Quên mật khẩu",
+        "modalTitle": "Cấp lại mật khẩu"
     }
 }

@@ -110,7 +110,22 @@ const UserModal = ({ toggle, data, action }) => {
             }
         } catch (e) {
             // console.log(e);
-            toast.error(t("common:action.fail", { type: actionText }), {
+            const message = e.response.data.message;
+            // console.log("message", message);
+
+            const field = message.includes("Email")
+                ? t("store:user.email")
+                : message.includes("Username")
+                ? t("store:user.username")
+                : message.includes("Phone")
+                ? t("store:user.phone")
+                : null;
+
+            const myError = field
+                ? t("errors:validation.fieldExisted", { field: field })
+                : t("common:action.fail", { type: actionText });
+
+            toast.error(myError, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -158,6 +173,12 @@ const UserModal = ({ toggle, data, action }) => {
             errors.email = t("errors:validation.invalidEmail");
         }
 
+        const passwordPattern =
+            /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$/;
+        if (values.password && !passwordPattern.test(values.password)) {
+            errors.password = t("errors:validation.invalidFormatPassword");
+        }
+
         // console.log("Erros", errors);
         return errors;
     };
@@ -182,6 +203,7 @@ const UserModal = ({ toggle, data, action }) => {
             options: [
                 { value: "ROLE_STAFF", label: t("store:user.staff") },
                 { value: "ROLE_ADMIN", label: t("store:user.admin") },
+                { value: "ROLE_USER", label: t("store:user.user") },
             ],
         },
     ];

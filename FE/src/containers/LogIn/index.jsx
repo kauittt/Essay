@@ -49,14 +49,16 @@ const LogIn = () => {
             const isStaff = decoded.user.roles[0] !== "ROLE_USER";
             if (isStaff) {
                 history.push("/pages/admin/dashboard");
+                window.location.reload();
             } else {
                 history.push("/pages/client/home");
+                window.location.reload();
             }
         }
     }, [history]);
 
     const handleLoginFormSubmit = async (values) => {
-        console.log("Submitted Values:", values);
+        // console.log("Submitted Values:", values);
         try {
             const response = await AuthService.postLogin(values);
             const accessToken = response.data.accessToken || null;
@@ -70,8 +72,8 @@ const LogIn = () => {
                 const roles = decoded.user.roles;
                 localStorage.setItem("user", JSON.stringify(decoded.user));
 
-                console.log("decoded", decoded);
-                console.log("ROLE", roles[0]);
+                // console.log("decoded", decoded);
+                // console.log("ROLE", roles[0]);
                 // console.log("Fetch login");
                 //! Redux
                 dispatch(fetchCurrentUser(accessToken));
@@ -100,7 +102,9 @@ const LogIn = () => {
                 });
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
+            // const message = error.response.data.message;
+            // console.log("message", message);
             const action = t("common:action.login");
             toast.error(t("common:action.fail", { type: action }), {
                 position: "top-right",
@@ -115,7 +119,7 @@ const LogIn = () => {
     };
 
     const handleRegisterFormSubmit = async (values) => {
-        console.log("Hello register");
+        // console.log("Hello register");
         const request = { ...values, authorities: ["ROLE_USER"] };
         console.log("request", request);
         try {
@@ -139,9 +143,24 @@ const LogIn = () => {
                 setPurpose("login");
             }
         } catch (error) {
-            console.log(error);
-            toast.error(
-                t("common:action.fail", { type: t("common:action.register") }),
+            // console.log(error);
+            const message = error.response.data.message;
+            // console.log("message", message);
+
+            const field = message.includes("Email")
+                ? t("store:user.email")
+                : message.includes("Username")
+                ? t("store:user.username")
+                : message.includes("Phone")
+                ? t("store:user.phone")
+                : null;
+
+            const action = t("common:action.register");
+
+            const myError = field
+                ? t("errors:validation.fieldExisted", { field: field })
+                : t("common:action.fail", { type: action });
+            toast.error(myError),
                 {
                     position: "top-right",
                     autoClose: 5000,
@@ -150,8 +169,7 @@ const LogIn = () => {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-                }
-            );
+                };
         }
     };
 

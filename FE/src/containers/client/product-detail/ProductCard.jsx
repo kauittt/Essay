@@ -127,7 +127,7 @@ const ProductCard = ({ product = {} }) => {
         };
     }, []);
 
-    console.log("Product at detail ", product);
+    // console.log("Product at detail ", product);
 
     return (
         <Col md={12} lg={12}>

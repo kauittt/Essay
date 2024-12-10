@@ -17,6 +17,7 @@ import { FaStar } from "react-icons/fa";
 import ProductGallery from "../ProductGallery";
 import { useTranslation } from "react-i18next";
 import StarRating from "../../StarRating";
+import Loading from "./../../../../shared/components/Loading";
 
 //* Dùng nếu muốn link tới user đánh giá
 {
@@ -31,15 +32,17 @@ const FeedbackList = ({ data = {} }) => {
 
     if (!user) {
         console.log("User data not loaded or user not found");
-        return <div>Loading user data...</div>;
+        // return <div>Loading user data...</div>;
+        return <Loading></Loading>;
     }
 
     // console.log("Found User", user);
-    // console.log("Feed back", data);
+    console.log("Feed back", data);
     return (
         <FeedbackListWrap>
             <FeedbackListTitle>
-                <UserInfo user={user}></UserInfo>
+                {/* <UserInfo user={user}></UserInfo> */}
+                <UserInfo user={data}></UserInfo>
 
                 <div className="tw-mt-[10px]">
                     <p>{`${t("store:size.title")}: ${data.size}`}</p>

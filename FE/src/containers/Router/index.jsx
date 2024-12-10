@@ -36,6 +36,7 @@ import FeedbackPage from "../client/Feeback/FeedbackPage";
 const Pages = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const isStaff = user?.roles[0] !== "ROLE_USER"; // Xác định vai trò
+    const isAdmin = user?.roles[0] == "ROLE_ADMIN"; // Xác định vai trò
 
     return (
         <Switch>
@@ -67,8 +68,10 @@ const Pages = () => {
             <ProtectedRoute
                 path="/pages/admin/users"
                 component={UserPage}
-                isAllowed={isStaff}
-                redirectTo="/pages/client/home"
+                isAllowed={isAdmin}
+                redirectTo={
+                    isStaff ? "/pages/client/home" : "/pages/admin/dashboard"
+                }
             />
             <ProtectedRoute
                 path="/pages/admin/orders"

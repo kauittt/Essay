@@ -55,6 +55,14 @@ const UserService = {
             },
         });
     },
+    putResetUser: (body) => {
+        return axios.put(`users/reset`, body, {
+            timeout: 5000,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+    },
     deleteUser: (id) => {
         let accessToken = JSON.parse(localStorage.getItem("accessToken"));
         return axios.delete(`users/${id}`, {

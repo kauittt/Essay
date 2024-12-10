@@ -19,6 +19,7 @@ import {
     LoginForm,
 } from "@/shared/components/account/AccountElements";
 import { useTranslation } from "react-i18next";
+import CustomModal from "./../../../shared/components/custom/modal/CustomModal";
 
 const LogInForm = ({ onSubmit, setPurpose }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
@@ -65,15 +66,19 @@ const LogInForm = ({ onSubmit, setPurpose }) => {
                                 className="input-without-border-radius"
                                 keyIcon
                             />
-
-                            {/*//* Forgot password  */}
-                            {/* <AccountForgotPassword>
-                                <NavLink to="/">
-                                    {t("login.forgot_password")}
-                                </NavLink>
-                            </AccountForgotPassword> */}
                         </FormGroupField>
                     </FormGroup>
+
+                    {/*//* Forgot password  */}
+                    <div className="tw-w-[100%] tw-flex tw-justify-end">
+                        <CustomModal
+                            color="secondary"
+                            title={t("store:forgetPassword.modalTitle")}
+                            btn={t("store:forgetPassword.title")}
+                            action="new"
+                            component="forgetPassword"
+                        />
+                    </div>
 
                     {/*//* Sign in  */}
                     <AccountButton

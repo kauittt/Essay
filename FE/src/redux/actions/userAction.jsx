@@ -70,6 +70,19 @@ export const updateCurrentUser = (body) => {
     };
 };
 
+export const updateResetUser = (body) => {
+    return async (dispatch) => {
+        try {
+            const response = await UserService.putResetUser(body);
+            // await dispatch(fetchUsers());
+            // await dispatch(fetchCurrentUser());
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    };
+};
+
 export const removeUser = (id) => {
     return async (dispatch) => {
         try {

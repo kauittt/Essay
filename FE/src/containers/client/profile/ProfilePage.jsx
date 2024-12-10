@@ -106,15 +106,33 @@ const ProfilePage = () => {
             }
         } catch (e) {
             // console.log(e);
-            toast.error(t("common:action.fail", { type: actionText }), {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            const message = e.response.data.message;
+            // console.log("message", message);
+
+            const field = message.includes("Email")
+                ? t("store:user.email")
+                : message.includes("Username")
+                ? t("store:user.username")
+                : message.includes("Phone")
+                ? t("store:user.phone")
+                : null;
+
+            const action = t("common:action.edit");
+
+            const myError = field
+                ? t("errors:validation.fieldExisted", { field: field })
+                : t("common:action.fail", { type: action });
+
+            toast.error(myError),
+                {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                };
         }
     };
 
@@ -144,6 +162,12 @@ const ProfilePage = () => {
 
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
             errors.email = t("errors:validation.invalidEmail");
+        }
+
+        const passwordPattern =
+            /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$/;
+        if (values.password && !passwordPattern.test(values.password)) {
+            errors.password = t("errors:validation.invalidFormatPassword");
         }
 
         // console.log("Erros", errors);

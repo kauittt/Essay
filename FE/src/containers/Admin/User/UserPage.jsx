@@ -29,6 +29,7 @@ const UserPage = () => {
     const roleLabels = {
         ADMIN: t("store:user.admin"),
         STAFF: t("store:user.staff"),
+        USER: t("store:user.user"),
     };
     const reactTableData = CreateUserHeader(t);
 
@@ -65,12 +66,12 @@ const UserPage = () => {
     let users = useSelector(selectTotalUsers);
     // console.log("user before", users);
 
-    users = users?.filter(
-        (user) =>
-            !user.authorities.some(
-                (authority) => authority.authority == "ROLE_USER"
-            )
-    );
+    // users = users?.filter(
+    //     (user) =>
+    //         !user.authorities.some(
+    //             (authority) => authority.authority == "ROLE_USER"
+    //         )
+    // );
 
     users = users?.map((user) => ({
         ...user,
@@ -81,6 +82,19 @@ const UserPage = () => {
             .map((role) => roleLabels[role])
             .join(", "),
     }));
+
+    //* Sort theo role
+    const rolePriority = {
+        ADMIN: 1,
+        STAFF: 2,
+        CUSTOMER: 3,
+    };
+    users = users.sort((a, b) => {
+        const roleA = a.convertedAuthorities.split(",")[0]; // Get the first role
+        const roleB = b.convertedAuthorities.split(",")[0]; // Get the first role
+
+        return rolePriority[roleA] - rolePriority[roleB];
+    });
 
     // console.log("users", users);
 

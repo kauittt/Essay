@@ -31,7 +31,8 @@
         "close": "Close",
         "addToCart": "Add to cart",
         "back": "Back",
-        "purchase": "Purchase"
+        "purchase": "Purchase",
+        "confirm": "Confirm"
     },
     "online_marketing_dashboard": {
         "page_title": "Online Marketing Dashboard",

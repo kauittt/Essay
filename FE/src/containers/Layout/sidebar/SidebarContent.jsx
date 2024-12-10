@@ -20,6 +20,7 @@ const SidebarContent = ({
 
     const user = JSON.parse(localStorage.getItem("user"));
     const isStaff = user?.roles[0] != "ROLE_USER";
+    const isAdmin = user?.roles[0] == "ROLE_ADMIN";
     // console.log("USER", user.roles[0]);
     // console.log("isStaff", isStaff);
 
@@ -138,15 +139,17 @@ const SidebarContent = ({
                     </SidebarBlock>
 
                     {/*//* Users */}
-                    <SidebarBlock collapse={collapse}>
-                        <SidebarLink
-                            title={t("store:manage", {
-                                title: t("store:user.titles").toLowerCase(),
-                            })}
-                            icon="store"
-                            route="/pages/admin/users"
-                        />
-                    </SidebarBlock>
+                    {isAdmin && (
+                        <SidebarBlock collapse={collapse}>
+                            <SidebarLink
+                                title={t("store:manage", {
+                                    title: t("store:user.titles").toLowerCase(),
+                                })}
+                                icon="store"
+                                route="/pages/admin/users"
+                            />
+                        </SidebarBlock>
+                    )}
 
                     {/*//* Categories */}
                     <SidebarBlock collapse={collapse}>

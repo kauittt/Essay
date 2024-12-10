@@ -18,9 +18,11 @@
         "invalidPhone": "Invalid phone format",
         "invalidNumber": "Invalid number",
         "invalidDate": "Invalid date",
+        "invalidFormatPassword": "Password must be 8+ characters with a digit, a lowercase letter, an uppercase letter, and a special character.",
         "negativeNumber": "Negative number is not allowed",
         "positive": "Only positive number (> 0)",
         "greaterThan": "Min quantity: {{quantity}}",
+        "fieldExisted": "{{field}} already existed",
 
         "incorrectPassword": "The password is incorrect",
         "required": "Required",

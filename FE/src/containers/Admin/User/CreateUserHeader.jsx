@@ -5,9 +5,11 @@ const CreateUserHeader = (t) => {
     const getStatusBadge = (text) => {
         const staff = t("store:user.staff");
         const admin = t("store:user.admin");
+        const user = t("store:user.user");
 
-        if (text === staff) return <Badge bg="">{text}</Badge>;
+        if (text === staff) return <Badge bg="primary">{text}</Badge>;
         if (text === admin) return <Badge bg="success">{text}</Badge>;
+        if (text === user) return <Badge bg="">{text}</Badge>;
     };
     const columns = useMemo(
         () => [

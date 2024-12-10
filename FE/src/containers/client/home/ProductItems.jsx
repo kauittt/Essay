@@ -103,8 +103,9 @@ const ProductItems = ({ items = [] }) => {
     //* Fetch lại users
     useEffect(() => {
         return () => {
+            let accessToken = JSON.parse(localStorage.getItem("accessToken"));
             // dispatch(fetchUsers());
-            dispatch(fetchCurrentUser());
+            accessToken && dispatch(fetchCurrentUser());
         };
     }, []);
 

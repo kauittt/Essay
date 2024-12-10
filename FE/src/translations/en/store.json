@@ -182,5 +182,10 @@
 
     "profile": {
         "title": "Profile"
+    },
+
+    "forgetPassword": {
+        "title": "Forgot Password",
+        "modalTitle": "Reset Password"
     }
 }

@@ -18,9 +18,11 @@
         "invalidPhone": "Định dạng số điện thoại không hợp lệ",
         "invalidNumber": "Số không hợp lệ.",
         "invalidDate": "Ngày không hợp lệ.",
+        "invalidFormatPassword": "Mật khẩu ít nhất 8 ký tự, bao gồm chữ cái thường, chữ cái hoa, chữ số và ký tự đặc biệt.",
         "negativeNumber": "Không được phép nhập số âm.",
         "positive": "Chỉ điền số dương (> 0)",
         "greaterThan": "SL tối thiểu: {{quantity}}",
+        "fieldExisted": "{{field}} đã tồn tại",
 
         "incorrectPassword": "Mật khẩu không chính xác",
         "required": "Thông tin bắt buộc",

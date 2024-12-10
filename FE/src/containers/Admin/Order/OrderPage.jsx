@@ -26,6 +26,7 @@ import CreateOrderHeader from "./CreateOrderHeader";
 import { selectOrders } from "@/redux/reducers/orderSlice";
 import { selectUser } from "../../../redux/reducers/userSlice";
 import { current } from "@reduxjs/toolkit";
+import { backgrounds } from "polished";
 
 const formatDate = (date) => {
     const year = date.getFullYear(); // Gets the full year (e.g., 2024)
@@ -93,6 +94,7 @@ const OrderPage = () => {
 
     const userLocal = JSON.parse(localStorage.getItem("user")); //* Local
     const isStaff = userLocal.roles[0] !== "ROLE_USER";
+    const isAdmin = userLocal.roles[0] == "ROLE_ADMIN";
     const currentUser = useSelector(selectUser);
 
     let orders = isStaff
@@ -115,6 +117,21 @@ const OrderPage = () => {
         tableStatus: statusLabels[order.status],
     }));
     // console.log("orders", orders);
+
+    const statusPriority = {
+        CREATED: 1,
+        CONFIRMED: 2,
+        DELIVERING: 3,
+        DONE: 4,
+        CANCEL: 5,
+    };
+
+    orders = orders.sort((a, b) => {
+        const statusA = a.status;
+        const statusB = b.status;
+
+        return statusPriority[statusA] - statusPriority[statusB];
+    });
 
     //* Add edit/delete Button
     const data = useMemo(() => {
@@ -160,14 +177,15 @@ const OrderPage = () => {
                         />
                     )} */}
 
-                    {/* 
-                    <Button
-                        variant="danger"
-                        onClick={() => handleDelete(item.id)}
-                        style={{ margin: "0" }}
-                    >
-                        <span>{t("action.delete")}</span>
-                    </Button> */}
+                    {isAdmin && (
+                        <Button
+                            variant="danger"
+                            onClick={() => handleDelete(item.id)}
+                            style={{ margin: "0" }}
+                        >
+                            <span>{t("action.delete")}</span>
+                        </Button>
+                    )}
                 </Col>
             ),
         }));
@@ -179,7 +197,7 @@ const OrderPage = () => {
             const action = t("common:action.delete");
 
             if (response) {
-                dispatch(fetchVouchers());
+                // dispatch(fetchVouchers());
                 toast.info(t("common:action.success", { type: action }), {
                     position: "top-right",
                     autoClose: 5000,

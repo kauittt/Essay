@@ -31,7 +31,8 @@
         "close": "Đóng",
         "addToCart": "Thêm giỏ hàng",
         "back": "Trở về",
-        "purchase": "Mua hàng"
+        "purchase": "Mua hàng",
+        "confirm": "Xác nhận"
     },
     "online_marketing_dashboard": {
         "page_title": "Bảng điều khiển tiếp thị trực tuyến",

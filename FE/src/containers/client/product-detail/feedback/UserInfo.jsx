@@ -14,7 +14,7 @@ const UserInfo = ({ user = {} }) => {
         <UserInfoWrap>
             <UserInfoAvatarWrap>
                 <img
-                    src={user.image || Ava}
+                    src={user.avatar || Ava}
                     alt="Avatar"
                     className="tw-object-cover"
                 />

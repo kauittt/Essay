@@ -95,6 +95,14 @@ const CustomModal = ({
                 </ModalHeader>
 
                 <ModalBody>
+                    {component == "forgetPassword" && (
+                        <ForgetPasswordModal
+                            action={action}
+                            toggle={toggle}
+                            data={data}
+                        ></ForgetPasswordModal>
+                    )}
+
                     {component == "selectVoucher" && (
                         <SelectVoucherModal
                             action={action}
@@ -198,6 +206,7 @@ const ModalFooter = styled(ButtonToolbar)`
     flex-flow: ${flexFlow} !important;
 `;
 import FeedbackModal from "../../../../containers/client/Feeback/modal/FeedbackModal";
+import ForgetPasswordModal from "../../../../containers/LogIn/components/ForgetPasswordModal";
 
 const ModalTitle = styled.h4`
     margin-top: 10px;

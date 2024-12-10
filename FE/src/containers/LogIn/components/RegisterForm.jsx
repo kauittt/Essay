@@ -21,7 +21,7 @@ const RegisterForm = ({ onSubmit, setPurpose }) => {
     const dispatch = useDispatch();
 
     const validate = (values, t) => {
-        console.log("Validate values", values);
+        // console.log("Validate values", values);
         const errors = {};
 
         const requiredFields = [
@@ -48,7 +48,13 @@ const RegisterForm = ({ onSubmit, setPurpose }) => {
             errors.email = t("errors:validation.invalidEmail");
         }
 
-        console.log("Erros", errors);
+        const passwordPattern =
+            /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$/;
+        if (values.password && !passwordPattern.test(values.password)) {
+            errors.password = t("errors:validation.invalidFormatPassword");
+        }
+
+        // console.log("Erros", errors);
         return errors;
     };
 
