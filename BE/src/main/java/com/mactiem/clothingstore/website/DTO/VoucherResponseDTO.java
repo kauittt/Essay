@@ -15,7 +15,9 @@ import java.util.List;
 public class VoucherResponseDTO {
     private Long id;
     private List<ProductResponseDTO> products;
+    private Double minRequire;
     private Double discountPercentage;
+    private Double maxDiscount; //- input: 10 -> save: 0.1
     private String name;
     private String enName;
     private LocalDate startDate;

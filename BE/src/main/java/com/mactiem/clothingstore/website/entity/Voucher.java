@@ -28,6 +28,12 @@ public class Voucher {
     @Column(name = "discount_percentage")
     private double discountPercentage;//-
 
+    @Column(name = "minRequire")
+    private double minRequire;//-
+
+    @Column(name = "maxDiscount")
+    private double maxDiscount;//-
+
     @Column(name = "name")
     private String name;//-
 

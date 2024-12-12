@@ -29,6 +29,14 @@ public class VoucherValidator {
             validateDiscountPercentage(voucherRequestDTO.getDiscountPercentage());
         }
 
+        if (voucherRequestDTO.getMaxDiscount() != null) {
+            validateMaxDiscount(voucherRequestDTO.getMaxDiscount());
+        }
+
+        if (voucherRequestDTO.getMinRequire() != null) {
+            validateMinRequire(voucherRequestDTO.getMinRequire());
+        }
+
         if (voucherRequestDTO.getEndDate() != null) {
             validateDateRange(voucher.getStartDate(), voucherRequestDTO.getEndDate());
         }
@@ -46,6 +54,8 @@ public class VoucherValidator {
     public void validateVoucherRequest(VoucherRequestDTO voucherRequestDTO) {
         validateName(voucherRequestDTO.getName());
         validateDiscountPercentage(voucherRequestDTO.getDiscountPercentage());
+        validateMaxDiscount(voucherRequestDTO.getMaxDiscount());
+        validateMinRequire(voucherRequestDTO.getMinRequire());
         validateDateRange(voucherRequestDTO.getStartDate(), voucherRequestDTO.getEndDate());
         validateQuantity(voucherRequestDTO.getQuantity());
         validateProducts(voucherRequestDTO.getProducts());
@@ -69,6 +79,23 @@ public class VoucherValidator {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Discount percentage must be positive and not exceed 100");
         }
     }
+
+    public void validateMaxDiscount(Double maxDiscount) {
+        if (maxDiscount == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Max discount is required");
+        } else if (maxDiscount <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Max discount must be positive");
+        }
+    }
+
+    public void validateMinRequire(Double minRequire) {
+        if (minRequire == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Max discount is required");
+        } else if (minRequire < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Max discount must be positive");
+        }
+    }
+
 
     // Validate start and end date
     public void validateDateRange(LocalDate startDate, LocalDate endDate) {

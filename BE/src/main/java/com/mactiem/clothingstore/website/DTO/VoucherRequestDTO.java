@@ -14,7 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class VoucherRequestDTO {
     private List<String> products = new ArrayList<>();
+    private Double minRequire;
     private Double discountPercentage; //- input: 10 -> save: 0.1
+    private Double maxDiscount; //- input: 10 -> save: 0.1
     private String name;
     private String enName;
     private LocalDate startDate;
