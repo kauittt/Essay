@@ -39,7 +39,7 @@ const formatDate = (dateString) => {
     return `${year}-${month}-${day}`;
 };
 
-const bigDecimalFields = ["discountPercentage"];
+const bigDecimalFields = ["discountPercentage", "minRequire", "maxDiscount"];
 const integerFields = ["quantity"];
 
 const bigDecimalRegex = /^\d+(\.\d{1,20})?$/;
@@ -195,6 +195,8 @@ const VoucherModal = ({ toggle, data, action }) => {
             "quantity",
             "startDate",
             "endDate",
+            "minRequire",
+            "maxDiscount",
         ];
         requiredFields.forEach((field) => {
             if (values[field] == null) {
@@ -373,6 +375,18 @@ const VoucherModal = ({ toggle, data, action }) => {
             label: t("store:voucher.endDate") + " (yyyy/MM/dd)",
             name: "endDate",
             type: "datepicker",
+        },
+        {
+            label: t("store:voucher.minRequire"),
+            name: "minRequire",
+            type: "text",
+            placeholder: `${enter} ${t("store:voucher.minRequire")}...`,
+        },
+        {
+            label: t("store:voucher.maxDiscount"),
+            name: "maxDiscount",
+            type: "text",
+            placeholder: `${enter} ${t("store:voucher.maxDiscount")}...`,
         },
     ];
 

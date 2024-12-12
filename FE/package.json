@@ -61,7 +61,8 @@
         "smooth-scrollbar": "^8.8.4",
         "smooth-scrollbar-react": "^2.4.1",
         "styled-components": "^5.3.11",
-        "styled-theming": "^2.2.0"
+        "styled-theming": "^2.2.0",
+        "xlsx": "^0.18.5"
     },
     "devDependencies": {
         "@babel/eslint-parser": "^7.19.1",

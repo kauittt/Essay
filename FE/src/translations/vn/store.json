@@ -73,6 +73,8 @@
         "quantity": "Số lượng",
         "products": "Sản phẩm áp dụng",
         "all": "Tất cả",
+        "minRequire": "Giá trị tối thiểu áp dụng",
+        "maxDiscount": "Giảm giá tối đa",
         "invalidProducts": "Chọn [Tất cả] hoặc [Từng sản phẩm]",
         "invalidCategoryProduct": "Chọn [Danh mục] đại diện hoặc [Từng sản phẩm]",
         "applyProduct": "Sản phẩm áp dụng",
@@ -148,7 +150,11 @@
             },
             "year": "Năm",
             "totalRevenue": "Tổng doanh thu",
+            "totalRevenuePerMonth": "Tổng doanh thu theo tháng",
             "totalQuantity": "Tổng sản phẩm"
+        },
+        "export": {
+            "button": "Xuất báo cáo"
         }
     },
 
@@ -175,7 +181,7 @@
     },
 
     "layout": {
-        "title": "Giao diện",
+        "title": "Chủ đề",
         "light": "Chế độ sáng",
         "dark": "Chế độ tối"
     },

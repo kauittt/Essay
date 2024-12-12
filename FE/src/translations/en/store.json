@@ -73,6 +73,8 @@
         "quantity": "Quantity",
         "products": "Applicable Product",
         "all": "All",
+        "minRequire": "Minimum Purchase Amount",
+        "maxDiscount": "Maximum Discount Amount",
         "invalidProducts": "Select [All] or [Individual Products]",
         "invalidCategoryProduct": "Select either [Category] or [Individual Products]",
         "applyProduct": "Applicable Products",
@@ -148,7 +150,11 @@
             },
             "year": "Year",
             "totalRevenue": "Total Revenue",
+            "totalRevenuePerMonth": "Total Revenue per month",
             "totalQuantity": "Total Quantity"
+        },
+        "export": {
+            "button": "Export Report"
         }
     },
 

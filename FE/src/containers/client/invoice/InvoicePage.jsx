@@ -61,10 +61,14 @@ const InvoicePage = () => {
     const history = useHistory();
     let vouchers = useSelector(selectVouchers);
     const [selectedVoucher, setSelectedVoucher] = useState(null);
+    // console.log("selectedVoucher", selectedVoucher);
 
     const { selectedProducts, subTotal, shippingFee } = location.state || {};
     const discount = selectedVoucher
-        ? subTotal * selectedVoucher.discountPercentage
+        ? subTotal * selectedVoucher.discountPercentage >
+          selectedVoucher.maxDiscount
+            ? selectedVoucher.maxDiscount
+            : subTotal * selectedVoucher.discountPercentage
         : 0;
     const currentUser = useSelector(selectUser);
 
@@ -245,7 +249,11 @@ const InvoicePage = () => {
                     (product) => product.id === item.product.id
                 )
             )
-        );
+        )
+        //! .filter((voucher) => subTotal >= voucher.minRequire);
+        .map((voucher) => {
+            return { ...voucher, disabled: subTotal < voucher.minRequire };
+        });
     // console.log("Vouchers", vouchers);
 
     // console.log("Selected Voucher", selectedVoucher);

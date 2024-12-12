@@ -31,6 +31,8 @@ const TodoItem = ({
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
     const voucher = todoItemData;
+
+    console.log("voucher", voucher);
     const description = voucher.products
         .map((product) => (language == "en" ? product.enName : product.name))
         .join(" | ");
@@ -105,6 +107,22 @@ const TodoItem = ({
                                 <span>{t("store:voucher.discount")}: </span>
                                 <span className="tw-font-semibold">
                                     {voucher.discountPercentage * 100}%
+                                </span>
+                            </TodoPriority>
+                        </TodoAdditional>
+
+                        {/*//* Ràng buộc giảm giá  */}
+                        <TodoAdditional>
+                            <TodoDueDate>
+                                {t("store:voucher.minRequire")}:{" "}
+                                <span className="tw-font-semibold">
+                                    {voucher.minRequire.toLocaleString()} VNĐ
+                                </span>
+                            </TodoDueDate>
+                            <TodoPriority>
+                                <span>{t("store:voucher.maxDiscount")}: </span>
+                                <span className="tw-font-semibold">
+                                    {voucher.maxDiscount.toLocaleString()} VNĐ
                                 </span>
                             </TodoPriority>
                         </TodoAdditional>

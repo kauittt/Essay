@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
     AreaChart,
     Area,
@@ -26,11 +26,27 @@ import { Button } from "@/shared/components/Button";
 import { Form } from "react-final-form";
 import { Card, CardBody } from "@/shared/components/Card";
 import PropTypes from "prop-types";
+import * as XLSX from "xlsx"; // Import thư viện XLSX
 
 const ProductSalesAreaChart = ({ orders, products }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
     const types = ["Quantity", "Money"];
+
+    const [ordersData, setOrdersData] = useState(
+        orders.filter((order) => order.status == "DONE")
+    );
+    const yearRef = useRef(new Date().getFullYear().toString());
+    const handleUpdateYearRef = (year) => {
+        yearRef.current = year;
+    };
+
+    useEffect(() => {
+        setOrdersData(orders.filter((order) => order.status == "DONE"));
+    }, [orders]);
+
+    // console.log("order", orders);
+    console.log("ordersData", ordersData);
 
     const [selectedType, setSelectedType] = useState(types[1]);
     const [selectedProducts, setSelectedProducts] = useState([]);
@@ -53,6 +69,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
 
     const handleYearSelect = (value) => {
         setSelectedYear(value);
+        handleUpdateYearRef(value);
     };
 
     const handleTypeSelect = (value) => {
@@ -113,15 +130,147 @@ const ProductSalesAreaChart = ({ orders, products }) => {
     const salesData = useMemo(
         () =>
             processSalesData(
-                orders,
+                ordersData,
                 products,
                 selectedYear,
                 selectedType,
                 t,
                 language
             ),
-        [orders, products, selectedYear, selectedType, t, language]
+        [ordersData, products, selectedYear, selectedType, t, language]
     );
+
+    const generateExcel = () => {
+        const data = [];
+        let totalRevenue = 0;
+        const month = language == "en" ? "Month" : "Tháng";
+
+        //* Bắt đầu
+        salesData.forEach((item) => {
+            const headerTime = [month, item.name];
+            let totalRevenuePerMonth = 0;
+            data.push(headerTime);
+
+            const header = [
+                t("store:product.productName"),
+                t("store:product.price"),
+                t("store:product.quantity"),
+                t("store:dashboard.chart.totalRevenue"),
+            ];
+            data.push(header);
+
+            filteredProducts.forEach((product) => {
+                const name = language == "en" ? product.enName : product.name;
+                if (item[name] != undefined) {
+                    const row = [
+                        name, // Tên sản phẩm
+                        product.price.toLocaleString() + " VNĐ",
+                        Math.round(item[name] / product.price).toLocaleString(), // Làm tròn số lượng
+                        item[name].toLocaleString() + " VNĐ", // Tổng doanh thu
+                    ];
+                    data.push(row);
+                    totalRevenuePerMonth += item[name];
+                    totalRevenue += item[name];
+                }
+            });
+            const totalPerMonth = [
+                t("store:dashboard.chart.totalRevenuePerMonth"),
+                totalRevenuePerMonth.toLocaleString() + " VNĐ",
+            ];
+            data.push(totalPerMonth);
+
+            const space = [""]; // Thêm khoảng cách
+            data.push(space);
+        });
+        const total = [
+            t("store:dashboard.chart.totalRevenue"),
+            totalRevenue.toLocaleString() + " VNĐ",
+        ];
+        data.push(total);
+
+        // Chuyển dữ liệu thành worksheet
+        const ws = XLSX.utils.aoa_to_sheet(data);
+
+        // Tự mở rộng cột A
+        ws["!cols"] = ws["!cols"] = [
+            { wch: 30 }, // Cột A - tự mở rộng đủ cho tên sản phẩm
+            { wch: 20 }, // Cột B - tự mở rộng cho giá
+            null, // Cột C - không cần mở rộng
+            { wch: 20 }, // Cột D - tự mở rộng cho tổng doanh thu
+        ];
+
+        // Lấy phạm vi dữ liệu trong worksheet
+        const range = XLSX.utils.decode_range(ws["!ref"]);
+
+        const headerStyle = {
+            font: { bold: true, color: { rgb: "FFFFFF" } }, // In đậm, chữ trắng
+            fill: { patternType: "solid", fgColor: { rgb: "4CAF50" } }, // Nền xanh lá
+            border: {
+                top: { style: "thin", color: { rgb: "000000" } },
+                bottom: { style: "thin", color: { rgb: "000000" } },
+                left: { style: "thin", color: { rgb: "000000" } },
+                right: { style: "thin", color: { rgb: "000000" } },
+            },
+        };
+
+        const contentStyle = {
+            border: {
+                top: { style: "thin", color: { rgb: "000000" } },
+                bottom: { style: "thin", color: { rgb: "000000" } },
+                left: { style: "thin", color: { rgb: "000000" } },
+                right: { style: "thin", color: { rgb: "000000" } },
+            },
+        };
+
+        const totalStyle = {
+            font: { bold: true, color: { rgb: "000000" } },
+            fill: { patternType: "solid", fgColor: { rgb: "FFFFE0" } }, // Nền vàng nhạt
+            border: {
+                top: { style: "thin", color: { rgb: "000000" } },
+                bottom: { style: "thin", color: { rgb: "000000" } },
+                left: { style: "thin", color: { rgb: "000000" } },
+                right: { style: "thin", color: { rgb: "000000" } },
+            },
+        };
+
+        // Gắn style cho từng ô
+        for (let R = range.s.r; R <= range.e.r; R++) {
+            for (let C = range.s.c; C <= range.e.c; C++) {
+                const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+                if (!ws[cellAddress]) continue;
+
+                // Style cho header
+                if (
+                    R === 1 ||
+                    (data[R - 1] &&
+                        data[R - 1].includes(t("store:product.productName")))
+                ) {
+                    ws[cellAddress].s = headerStyle;
+                }
+                // Style cho dòng tổng doanh thu theo tháng
+                else if (
+                    data[R - 1] &&
+                    data[R - 1].includes(
+                        t("store:dashboard.chart.totalRevenuePerMonth")
+                    )
+                ) {
+                    ws[cellAddress].s = totalStyle;
+                }
+                // Style cho nội dung
+                else {
+                    ws[cellAddress].s = contentStyle;
+                }
+            }
+        }
+
+        // Tạo workbook và thêm worksheet
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sales Data");
+
+        // Xuất file
+        const fileName = t("store:dashboard.export.button");
+        XLSX.writeFile(wb, `${fileName}-${yearRef.current}.xlsx`);
+    };
 
     //* Form set up
     const submitForm = (values) => {
@@ -133,6 +282,16 @@ const ProductSalesAreaChart = ({ orders, products }) => {
         products: selectedProducts,
         type: selectedType,
     };
+
+    // console.log("products", products);
+    // console.log("salesData", salesData);
+    // console.log("selectedProducts", selectedProducts);
+    const selectedSet = new Set(selectedProducts);
+    const filteredProducts = products.filter((product) =>
+        selectedSet.has(product.id)
+    );
+    // console.log("filteredProducts", filteredProducts);
+    // console.log("-------");
 
     return (
         <Panel lg={12} title={t("store:dashboard.chart.title")}>
@@ -180,6 +339,13 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                                                 ></FormInput>
                                             );
                                         })}
+
+                                        <Button
+                                            variant="primary"
+                                            onClick={generateExcel}
+                                        >
+                                            {t("store:dashboard.export.button")}
+                                        </Button>
                                     </CardBody>
                                 </Card>
                             </Col>

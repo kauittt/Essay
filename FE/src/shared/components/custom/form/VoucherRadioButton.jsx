@@ -37,7 +37,11 @@ const VoucherRadioButton = ({
     // console.log("Voucher display", voucher);
 
     return (
-        <RadioButtonWrap disabled={disabled} styleType={styleType}>
+        <RadioButtonWrap
+            // disabled={disabled} //*Thay đổi
+            disabled={voucher.disabled}
+            styleType={styleType}
+        >
             <RadioButtonInput
                 name={name}
                 type="radio"
