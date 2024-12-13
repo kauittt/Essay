@@ -150,6 +150,8 @@
             },
             "year": "Năm",
             "totalRevenue": "Tổng doanh thu",
+            "totalRealRevenue": "Tổng doanh thu thực tế",
+            "totalDiscount": "Tổng giảm giá",
             "totalRevenuePerMonth": "Tổng doanh thu theo tháng",
             "totalQuantity": "Tổng sản phẩm"
         },

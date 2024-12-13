@@ -150,6 +150,8 @@
             },
             "year": "Year",
             "totalRevenue": "Total Revenue",
+            "totalRealRevenue": "Total Real Revenue",
+            "totalDiscount": "Total Discount",
             "totalRevenuePerMonth": "Total Revenue per month",
             "totalQuantity": "Total Quantity"
         },

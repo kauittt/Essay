@@ -102,21 +102,31 @@ const OrderPage = () => {
         : currentUser?.orders || [];
     // console.log("Order before", orders);
 
-    orders = orders?.map((order) => ({
-        ...order,
-        createDate: formatDate(new Date(order.createDate)),
-        updateDate: formatDate(new Date(order.updateDate)),
-        invoiceId: order.invoice.id,
-        invoiceCreateDate: formatDate(new Date(order.invoice.createDate)),
-        invoiceTotalAmount: `${order?.invoice?.totalAmount?.toLocaleString()} VNĐ`,
-        invoiceDiscountAmount: `${order?.invoice?.discountAmount?.toLocaleString()} VNĐ`,
-        invoiceTotalDue: `${(
-            order.invoice?.totalAmount - order.invoice?.discountAmount
-        ).toLocaleString()} VNĐ`,
-        invoicePaymentMethod: order.invoice?.paymentMethod,
-        tableStatus: statusLabels[order.status],
-    }));
-    // console.log("orders", orders);
+    orders = orders?.map((order) => {
+        const name = order.voucher
+            ? language == "en"
+                ? order.voucher.enName
+                : order.voucher.name
+            : language == "en"
+            ? "Not apply"
+            : "Không áp dụng";
+        return {
+            ...order,
+            voucherName: name,
+            createDate: formatDate(new Date(order.createDate)),
+            updateDate: formatDate(new Date(order.updateDate)),
+            invoiceId: order.invoice.id,
+            invoiceCreateDate: formatDate(new Date(order.invoice.createDate)),
+            invoiceTotalAmount: `${order?.invoice?.totalAmount?.toLocaleString()} VNĐ`,
+            invoiceDiscountAmount: `${order?.invoice?.discountAmount?.toLocaleString()} VNĐ`,
+            invoiceTotalDue: `${(
+                order.invoice?.totalAmount - order.invoice?.discountAmount
+            ).toLocaleString()} VNĐ`,
+            invoicePaymentMethod: order.invoice?.paymentMethod,
+            tableStatus: statusLabels[order.status],
+        };
+    });
+    console.log("orders", orders);
 
     const statusPriority = {
         CREATED: 1,

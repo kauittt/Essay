@@ -57,6 +57,12 @@ const OrderDetail = ({ order = {} }) => {
             disabled: true,
         },
         {
+            label: t("store:voucher.title"),
+            name: "voucherName",
+            type: "text",
+            disabled: true,
+        },
+        {
             label: t("store:order.status.title"),
             name: "status",
             type: "select",

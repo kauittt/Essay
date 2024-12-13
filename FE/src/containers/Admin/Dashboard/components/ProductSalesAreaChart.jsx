@@ -56,13 +56,17 @@ const ProductSalesAreaChart = ({ orders, products }) => {
 
     useEffect(() => {
         setSelectedProducts(
-            products?.map((product) => product.id).concat("total")
+            products
+                ?.map((product) => product.id)
+                .concat("total")
+                .concat("totalDiscount")
+                .concat("totalReal")
         );
     }, [products]);
 
     const handleProductsSelect = (value) => {
         if (value.length >= 2) {
-            value = [...value, "total"];
+            value = [...value, "total", "totalDiscount", "totalReal"];
         }
         setSelectedProducts(value);
     };
@@ -149,8 +153,10 @@ const ProductSalesAreaChart = ({ orders, products }) => {
         salesData.forEach((item) => {
             const headerTime = [month, item.name];
             let totalRevenuePerMonth = 0;
+            //* Tháng
             data.push(headerTime);
 
+            //* Header
             const header = [
                 t("store:product.productName"),
                 t("store:product.price"),
@@ -162,6 +168,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
             filteredProducts.forEach((product) => {
                 const name = language == "en" ? product.enName : product.name;
                 if (item[name] != undefined) {
+                    //* Row
                     const row = [
                         name, // Tên sản phẩm
                         product.price.toLocaleString() + " VNĐ",
@@ -173,15 +180,40 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                     totalRevenue += item[name];
                 }
             });
+            //* Per month
             const totalPerMonth = [
                 t("store:dashboard.chart.totalRevenuePerMonth"),
                 totalRevenuePerMonth.toLocaleString() + " VNĐ",
             ];
             data.push(totalPerMonth);
 
+            //* Total discount per month
+            let totalDiscount = 0;
+            ordersData.map((order) => {
+                if (getMonthYear(order.createDate) == item.name) {
+                    totalDiscount += order.invoice.discountAmount;
+                }
+            });
+            const discount = [
+                t("store:dashboard.chart.totalDiscount"),
+                totalDiscount.toLocaleString() + " VNĐ",
+                ,
+            ];
+            data.push(discount);
+
+            //* Total Real
+            const calcRealRevenue = totalRevenuePerMonth - totalDiscount;
+            const real = [
+                t("store:dashboard.chart.totalRealRevenue"),
+                calcRealRevenue.toLocaleString() + " VNĐ",
+            ];
+            data.push(real);
+
+            //* Space
             const space = [""]; // Thêm khoảng cách
             data.push(space);
         });
+        //* TOTAL
         const total = [
             t("store:dashboard.chart.totalRevenue"),
             totalRevenue.toLocaleString() + " VNĐ",
@@ -191,7 +223,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
         // Chuyển dữ liệu thành worksheet
         const ws = XLSX.utils.aoa_to_sheet(data);
 
-        // Tự mở rộng cột A
+        // Tự mở rộng cột
         ws["!cols"] = ws["!cols"] = [
             { wch: 30 }, // Cột A - tự mở rộng đủ cho tên sản phẩm
             { wch: 20 }, // Cột B - tự mở rộng cho giá
@@ -284,14 +316,14 @@ const ProductSalesAreaChart = ({ orders, products }) => {
     };
 
     // console.log("products", products);
-    // console.log("salesData", salesData);
-    // console.log("selectedProducts", selectedProducts);
+    console.log("salesData", salesData);
+    console.log("selectedProducts", selectedProducts);
     const selectedSet = new Set(selectedProducts);
     const filteredProducts = products.filter((product) =>
         selectedSet.has(product.id)
     );
     // console.log("filteredProducts", filteredProducts);
-    // console.log("-------");
+    console.log("-------");
 
     return (
         <Panel lg={12} title={t("store:dashboard.chart.title")}>
@@ -409,11 +441,15 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                     <Legend />
                     <CartesianGrid strokeDasharray="3 3" />
                     {selectedProducts?.map((productId, idx) => {
-                        const colorIndex = productId % chartColors.length; // Use modulo to cycle through colors
+                        const colorIndex = idx % chartColors.length; // Use modulo to cycle through colors
                         const fieldName =
                             selectedType == types[0]
-                                ? t("store:dashboard.chart.totalQuantity")
-                                : t("store:dashboard.chart.totalRevenue");
+                                ? `[${t(
+                                      "store:dashboard.chart.totalQuantity"
+                                  )}]`
+                                : `[${t(
+                                      "store:dashboard.chart.totalRevenue"
+                                  )}]`;
 
                         if (productId == "total") {
                             return (
@@ -427,6 +463,37 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                                 />
                             );
                         }
+
+                        if (productId == "totalDiscount") {
+                            return (
+                                <Area
+                                    key={idx}
+                                    type="monotone"
+                                    dataKey={`[${t(
+                                        "store:dashboard.chart.totalDiscount"
+                                    )}]`}
+                                    stroke={chartColors[colorIndex]}
+                                    fillOpacity={1}
+                                    fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
+                                />
+                            );
+                        }
+
+                        if (productId == "totalReal") {
+                            return (
+                                <Area
+                                    key={idx}
+                                    type="monotone"
+                                    dataKey={`[${t(
+                                        "store:dashboard.chart.totalRealRevenue"
+                                    )}]`}
+                                    stroke={chartColors[colorIndex]}
+                                    fillOpacity={1}
+                                    fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
+                                />
+                            );
+                        }
+
                         const product = products.find(
                             (p) => p.id === productId
                         );
@@ -455,11 +522,11 @@ const chartColors = [
     "#007bff", // Vivid Blue
     "#28a745", // Green
     "#dc3545", // Red
-    "#ffc107", // Yellow
-    "#000000", // Black
+    "#F8C304", // Yellow
+    "#86a845",
     "#17a2b8", // Cyan
     "#6f42c1", // Purple
-    "#ff00ff", // Orange
+    "#A6522B", // Orange
     "#20c997", // Teal
     "#fa8072", // Indigo
 ];
@@ -535,6 +602,7 @@ const processSalesData = (
     const chartData = monthsForYear.map((monthYear) => {
         let totalMoney = 0;
         const entry = { name: monthYear }; // Create an entry for each month
+
         products?.forEach((product) => {
             const productSales = salesData[product.id]?.[monthYear] || 0; // Set 0 if no sales
             // totalMoney += productSales;
@@ -545,10 +613,28 @@ const processSalesData = (
             entry[productName] = productSales;
         });
 
-        const fieldName =
+        //* Calc voucher amount discounted
+        let totalDiscount = 0;
+        orders.map((order) => {
+            if (getMonthYear(order.createDate) == monthYear) {
+                totalDiscount += order.invoice.discountAmount;
+            }
+        });
+
+        let fieldName = "";
+
+        if (selectedType === "Money") {
+            fieldName = `[${t("store:dashboard.chart.totalDiscount")}]`;
+            entry[fieldName] = totalDiscount;
+
+            fieldName = `[${t("store:dashboard.chart.totalRealRevenue")}]`;
+            entry[fieldName] = totalMoney - totalDiscount;
+        }
+
+        fieldName =
             selectedType == types[0]
-                ? t("store:dashboard.chart.totalQuantity")
-                : t("store:dashboard.chart.totalRevenue");
+                ? `[${t("store:dashboard.chart.totalQuantity")}]`
+                : `[${t("store:dashboard.chart.totalRevenue")}]`;
         entry[fieldName] = totalMoney;
         return entry;
     });
