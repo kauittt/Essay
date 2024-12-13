@@ -7,6 +7,7 @@ import com.mactiem.clothingstore.website.entity.Size;
 import com.mactiem.clothingstore.website.entity.SizeProduct;
 import com.mactiem.clothingstore.website.repository.ProductRepository;
 import com.mactiem.clothingstore.website.repository.SizeRepository;
+import com.mactiem.clothingstore.website.repository.VoucherRepository;
 import com.mactiem.clothingstore.website.service.ProductService;
 import com.mactiem.clothingstore.website.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,15 @@ public class OrderValidator {
     private final UserService userService;
     private final SizeRepository sizeRepository;
     private final ProductRepository productRepository;
+    private final VoucherRepository voucherRepository;
 
     @Autowired
-    public OrderValidator(ProductService productService, UserService userService, SizeRepository sizeRepository, ProductRepository productRepository) {
+    public OrderValidator(ProductService productService, UserService userService, SizeRepository sizeRepository, ProductRepository productRepository, VoucherRepository voucherRepository) {
         this.productService = productService;
         this.userService = userService;
         this.sizeRepository = sizeRepository;
         this.productRepository = productRepository;
+        this.voucherRepository = voucherRepository;
     }
 
     public void validateUpdate(OrderRequestDTO orderRequestDTO) {
@@ -173,4 +176,6 @@ public class OrderValidator {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Status cannot be empty");
         }
     }
+
+
 }

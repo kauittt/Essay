@@ -19,37 +19,42 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;//-==...
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
-    private User user;//-==...
+    private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderProduct> orderProducts;//-==...
+    private List<OrderProduct> orderProducts;
+
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "voucher_id")
+    private Voucher voucher;
 
     @OneToOne(mappedBy = "order",
             cascade = CascadeType.ALL)
     private Invoice invoice;
 
     @Column(name = "create_date")
-    private LocalDateTime createDate;//-==...
+    private LocalDateTime createDate;
 
     @Column(name = "update_date")
-    private LocalDateTime updateDate;//-==...
+    private LocalDateTime updateDate;
 
     @Column(name = "status")
-    private String status;//-==...
+    private String status;
 
     @Column(name = "name")
-    private String name;//-==...
+    private String name;
 
     @Column(name = "phone")
-    private String phone;//-==...
+    private String phone;
 
     @Column(name = "address")
-    private String address;//-==...
+    private String address;
 
     public User getUser() {
         if (user == null) {

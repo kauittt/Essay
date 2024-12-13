@@ -26,16 +26,18 @@ public class OrderService {
     private final OrderValidator orderValidator;
     private final ProductService productService;
     private final InvoiceService invoiceService;
+    private final VoucherService voucherService;
 
     @Autowired
     @Lazy
     public OrderService(OrderMapper orderMapper, OrderRepository orderRepository
-            , OrderValidator orderValidator, ProductService productService, InvoiceService invoiceService) {
+            , OrderValidator orderValidator, ProductService productService, InvoiceService invoiceService, VoucherService voucherService) {
         this.orderMapper = orderMapper;
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
         this.invoiceService = invoiceService;
         this.productService = productService;
+        this.voucherService = voucherService;
     }
 
     //* Helper
@@ -72,6 +74,11 @@ public class OrderService {
         order.setUpdateDate(LocalDateTime.now());
         orderMapper.mapOrderProductsEntity(order, orderRequestDTO, productService);
 
+        if (orderRequestDTO.getVoucher() != null) {
+            Voucher voucher = voucherService.findVoucherById(orderRequestDTO.getVoucher());
+            order.setVoucher(voucher);
+        }
+
         Order savedOrder = orderRepository.save(order);
 
         return orderMapper.toDTO(savedOrder);
@@ -101,7 +108,7 @@ public class OrderService {
             }
         }
 
-        order.setUpdateDate(LocalDateTime.now());
+//        order.setUpdateDate(LocalDateTime.now());
         return orderMapper.toDTO(orderRepository.save(order));
     }
 

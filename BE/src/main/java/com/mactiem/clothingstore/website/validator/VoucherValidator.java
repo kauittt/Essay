@@ -25,6 +25,10 @@ public class VoucherValidator {
     }
 
     public void validateForUpdate(VoucherRequestDTO voucherRequestDTO, Voucher voucher) {
+        if (voucherRequestDTO.getName() != null) {
+            validateName(voucherRequestDTO.getName());
+        }
+
         if (voucherRequestDTO.getDiscountPercentage() != null) {
             validateDiscountPercentage(voucherRequestDTO.getDiscountPercentage());
         }
@@ -95,7 +99,6 @@ public class VoucherValidator {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Max discount must be positive");
         }
     }
-
 
     // Validate start and end date
     public void validateDateRange(LocalDate startDate, LocalDate endDate) {

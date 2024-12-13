@@ -19,35 +19,38 @@ public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;//-
+    private Long id;
 
     @ManyToMany(mappedBy = "vouchers",
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    private List<Product> products;//-
+    private List<Product> products;
+
+    @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
 
     @Column(name = "discount_percentage")
-    private double discountPercentage;//-
+    private double discountPercentage;
 
     @Column(name = "minRequire")
-    private double minRequire;//-
+    private double minRequire;
 
     @Column(name = "maxDiscount")
-    private double maxDiscount;//-
+    private double maxDiscount;
 
     @Column(name = "name")
-    private String name;//-
+    private String name;
 
     @Column(name = "en_name")
-    private String enName;//-
+    private String enName;
 
     @Column(name = "start_date")
-    private LocalDate startDate;//-
+    private LocalDate startDate;
 
     @Column(name = "end_date")
-    private LocalDate endDate;//-
+    private LocalDate endDate;
 
     @Column(name = "quantity")
-    private int quantity;//-
+    private int quantity;
 
     public List<Product> getProducts() {
         if (products == null) {

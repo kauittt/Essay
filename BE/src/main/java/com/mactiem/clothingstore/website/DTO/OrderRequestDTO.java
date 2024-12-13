@@ -22,9 +22,10 @@ public class OrderRequestDTO {
     private List<String> sizes;
     private List<String> products;
     private List<String> quantities;
+    private String voucher;
 
 
-//    private LocalDateTime createDate;
+    //    private LocalDateTime createDate;
     private String status; //- Update
     private String name; //- Update
     private String phone; //- Update

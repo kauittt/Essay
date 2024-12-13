@@ -18,7 +18,8 @@ import java.util.*;
         ProductMapper.class
         , UserService.class
         , ProductService.class
-        , InvoiceMapper.class})
+        , InvoiceMapper.class
+        , VoucherMapper.class})
 @Component
 public interface OrderMapper {
     //* DTO
@@ -40,12 +41,18 @@ public interface OrderMapper {
         orderResponseDTO.setInvoice(invoiceMapper.toDTO(order.getInvoice()));
     }
 
+    @AfterMapping
+    default void mapVoucher(@MappingTarget OrderResponseDTO orderResponseDTO, Order order, VoucherMapper voucherMapper) {
+        orderResponseDTO.setVoucher(voucherMapper.toDTO(order.getVoucher()));
+    }
+
     default List<OrderResponseDTO> toListDTOs(List<Order> orders) {
         return orders.stream().map(this::toDTO).toList();
     }
 
     //* Entity
     @Mapping(target = "user", source = "user", qualifiedByName = "byId")
+    @Mapping(target = "voucher", source = "voucher", ignore = true)
     Order toEntity(OrderRequestDTO orderRequestDTO);
 
 //    @AfterMapping

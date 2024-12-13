@@ -118,8 +118,8 @@ public class VoucherService {
             throw new RuntimeException("Error updating fields", e);
         }
 
-        if (voucherRequestDTO.getEnName() == null || voucherRequestDTO.getEnName().trim().isEmpty()) {
-            voucher.setEnName(voucherRequestDTO.getName());
+        if (voucher.getEnName() == null || voucher.getEnName().trim().isEmpty()) {
+            voucher.setEnName(voucher.getName());
         }
 
         if (voucherRequestDTO.getDiscountPercentage() != null) {

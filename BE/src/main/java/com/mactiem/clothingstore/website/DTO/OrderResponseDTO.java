@@ -26,6 +26,7 @@ public class OrderResponseDTO {
     private LocalDateTime updateDate;
     private List<OrderProductDTO> orderProducts;
     private InvoiceResponseDTO invoice;
+    private VoucherResponseDTO voucher;
 
     public InvoiceResponseDTO getInvoice() {
         if (invoice == null) {
