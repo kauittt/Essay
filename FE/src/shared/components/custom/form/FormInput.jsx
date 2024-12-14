@@ -116,6 +116,7 @@ const FormInput = ({ data, style = {} }) => {
                         removeSelected={false}
                         value={data.value}
                         onChange={data.onChange}
+                        disabled={data.disabled}
                     />
                 )}
                 {data.type === "datepicker" && (

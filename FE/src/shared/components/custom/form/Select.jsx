@@ -40,7 +40,7 @@ export const SelectField = React.forwardRef(
             : options.find((option) => option.value === value);
 
         const handleChange = (selectedOption) => {
-            console.log(selectedOption);
+            // console.log(selectedOption);
             const newValue = Array.isArray(selectedOption)
                 ? selectedOption.map((option) => option.value)
                 : selectedOption.value;

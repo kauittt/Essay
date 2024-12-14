@@ -151,6 +151,7 @@
             "year": "Năm",
             "totalRevenue": "Tổng doanh thu",
             "totalRealRevenue": "Tổng doanh thu thực tế",
+            "totalDiscountPerMonth": "Tổng giảm giá theo tháng",
             "totalDiscount": "Tổng giảm giá",
             "totalRevenuePerMonth": "Tổng doanh thu theo tháng",
             "totalQuantity": "Tổng sản phẩm"

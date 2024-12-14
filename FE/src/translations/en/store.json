@@ -152,6 +152,7 @@
             "totalRevenue": "Total Revenue",
             "totalRealRevenue": "Total Real Revenue",
             "totalDiscount": "Total Discount",
+            "totalDiscountPerMonth": "Total Discount Per Month",
             "totalRevenuePerMonth": "Total Revenue per month",
             "totalQuantity": "Total Quantity"
         },

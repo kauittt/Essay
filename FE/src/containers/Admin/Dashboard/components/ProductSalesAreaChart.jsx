@@ -27,32 +27,27 @@ import { Form } from "react-final-form";
 import { Card, CardBody } from "@/shared/components/Card";
 import PropTypes from "prop-types";
 import * as XLSX from "xlsx"; // Import thư viện XLSX
+import { selectVouchers } from "@/redux/reducers/voucherSlice";
 
 const ProductSalesAreaChart = ({ orders, products }) => {
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
-    const types = ["Quantity", "Money"];
-
-    const [ordersData, setOrdersData] = useState(
-        orders.filter((order) => order.status == "DONE")
-    );
+    const types = ["Quantity", "Money", "Voucher"];
+    const vouchers = useSelector(selectVouchers);
     const yearRef = useRef(new Date().getFullYear().toString());
+
     const handleUpdateYearRef = (year) => {
         yearRef.current = year;
     };
 
+    const [vouchersData, setVouchersData] = useState([]);
+    const [ordersData, setOrdersData] = useState(
+        orders.filter((order) => order.status == "DONE")
+    );
+
     useEffect(() => {
         setOrdersData(orders.filter((order) => order.status == "DONE"));
     }, [orders]);
-
-    // console.log("order", orders);
-    console.log("ordersData", ordersData);
-
-    const [selectedType, setSelectedType] = useState(types[1]);
-    const [selectedProducts, setSelectedProducts] = useState([]);
-    const [selectedYear, setSelectedYear] = useState(
-        new Date().getFullYear().toString()
-    );
 
     useEffect(() => {
         setSelectedProducts(
@@ -64,11 +59,39 @@ const ProductSalesAreaChart = ({ orders, products }) => {
         );
     }, [products]);
 
+    useEffect(() => {
+        setVouchersData(vouchers);
+        setSelectedVouchers(
+            vouchers?.map((voucher) => voucher.id).concat("total")
+        );
+    }, [vouchers]);
+
+    // console.log("order", orders);
+    // console.log("ordersData", ordersData);
+
+    const [selectedType, setSelectedType] = useState(types[1]);
+    const [selectedProducts, setSelectedProducts] = useState([]); //* Init bằng useEffect
+    const [selectedVouchers, setSelectedVouchers] = useState([]); //* Init bằng useEffect
+    const [selectedYear, setSelectedYear] = useState(
+        new Date().getFullYear().toString()
+    );
+
     const handleProductsSelect = (value) => {
-        if (value.length >= 2) {
+        if (value.length == products.length) {
             value = [...value, "total", "totalDiscount", "totalReal"];
+        } else if (value.length >= 2) {
+            value = [...value, "total"];
         }
+
         setSelectedProducts(value);
+    };
+
+    const handleVouchersSelect = (value) => {
+        if (value.length >= 2) {
+            value = [...value, "total"];
+        }
+
+        setSelectedVouchers(value);
     };
 
     const handleYearSelect = (value) => {
@@ -105,6 +128,10 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                     value: "Quantity",
                     label: t("store:dashboard.chart.type.sold"),
                 },
+                {
+                    value: "Voucher",
+                    label: t("store:voucher.title"),
+                },
             ],
         },
         {
@@ -117,16 +144,24 @@ const ProductSalesAreaChart = ({ orders, products }) => {
             })),
         },
         {
-            label: t("store:product.titles"),
-            name: "products",
+            label:
+                selectedType === "Voucher"
+                    ? t("store:voucher.titles")
+                    : t("store:product.titles"),
+            name: "items",
             type: "multiSelect",
-            options: products?.map((product) => {
-                const name = language == "en" ? product.enName : product.name;
-                return {
-                    value: product.id,
-                    label: name,
-                };
-            }),
+            options:
+                selectedType === types[2]
+                    ? vouchersData?.map((voucher) => ({
+                          value: voucher.id,
+                          label:
+                              language === "en" ? voucher.enName : voucher.name,
+                      }))
+                    : products?.map((product) => ({
+                          value: product.id,
+                          label:
+                              language === "en" ? product.enName : product.name,
+                      })),
         },
     ];
 
@@ -139,21 +174,47 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                 selectedYear,
                 selectedType,
                 t,
-                language
+                language,
+                selectedProducts,
+                selectedVouchers,
+                vouchersData
             ),
-        [ordersData, products, selectedYear, selectedType, t, language]
+        [
+            ordersData,
+            products,
+            selectedYear,
+            selectedType,
+            t,
+            language,
+            selectedProducts,
+            selectedVouchers,
+            vouchersData,
+        ]
     );
 
     const generateExcel = () => {
         const data = [];
+        const voucherData = [];
         let totalRevenue = 0;
         const month = language == "en" ? "Month" : "Tháng";
+        // const isFull = filteredProducts.length == products.length;
 
-        //* Bắt đầu
-        salesData.forEach((item) => {
-            const headerTime = [month, item.name];
+        //! Product data
+        let dataExport = processSalesData(
+            ordersData,
+            products,
+            selectedYear,
+            types[1],
+            t,
+            language,
+            products.map((product) => product.id),
+            selectedVouchers,
+            vouchersData
+        );
+        dataExport.forEach((item) => {
             let totalRevenuePerMonth = 0;
             //* Tháng
+            const headerTime = [month, item.name];
             data.push(headerTime);
 
             //* Header
@@ -165,7 +226,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
             ];
             data.push(header);
 
-            filteredProducts.forEach((product) => {
+            products.forEach((product) => {
                 const name = language == "en" ? product.enName : product.name;
                 if (item[name] != undefined) {
                     //* Row
@@ -187,6 +248,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
             ];
             data.push(totalPerMonth);
 
+            // if (isFull) {
             //* Total discount per month
             let totalDiscount = 0;
             ordersData.map((order) => {
@@ -208,6 +270,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                 calcRealRevenue.toLocaleString() + " VNĐ",
             ];
             data.push(real);
+            // }
 
             //* Space
             const space = [""]; // Thêm khoảng cách
@@ -220,9 +283,60 @@ const ProductSalesAreaChart = ({ orders, products }) => {
         ];
         data.push(total);
 
-        // Chuyển dữ liệu thành worksheet
-        const ws = XLSX.utils.aoa_to_sheet(data);
+        //! Voucher Data
+        dataExport = processSalesData(
+            ordersData,
+            products,
+            selectedYear,
+            types[2],
+            t,
+            language,
+            selectedProducts,
+            vouchersData.map((voucher) => voucher.id),
+            vouchersData
+        );
+        dataExport.forEach((item) => {
+            let totalDiscountPerMonth = 0;
+            //* Voucher Data Header
+            const headerTime = [month, item.name];
+            voucherData.push(headerTime);
 
+            //* Voucher Header Row
+            const header = [
+                t("store:voucher.tableName"),
+                t("store:dashboard.chart.totalDiscount"),
+            ];
+            voucherData.push(header);
+
+            // const selectedSet = new Set(selectedVouchers);
+            // const filteredVouchers = vouchersData.filter((voucher) =>
+            //     selectedSet.has(voucher.id)
+            // );
+
+            // filteredVouchers.forEach((voucher) => {
+            vouchersData.forEach((voucher) => {
+                const name = language == "en" ? voucher.enName : voucher.name;
+                const discount = item[name] || 0;
+                voucherData.push([name, discount.toLocaleString() + " VNĐ"]);
+
+                totalDiscountPerMonth += discount;
+            });
+
+            //* Total discount per month
+            const discountPerMonth = [
+                t("store:dashboard.chart.totalDiscountPerMonth"),
+                totalDiscountPerMonth.toLocaleString() + " VNĐ",
+                ,
+            ];
+            voucherData.push(discountPerMonth);
+
+            //* Add Space
+            const space = [""];
+            voucherData.push(space);
+        });
+
+        //* Create Product Worksheet
+        const ws = XLSX.utils.aoa_to_sheet(data);
         // Tự mở rộng cột
         ws["!cols"] = ws["!cols"] = [
             { wch: 30 }, // Cột A - tự mở rộng đủ cho tên sản phẩm
@@ -230,6 +344,10 @@ const ProductSalesAreaChart = ({ orders, products }) => {
             null, // Cột C - không cần mở rộng
             { wch: 20 }, // Cột D - tự mở rộng cho tổng doanh thu
         ];
+
+        //* Create Voucher Worksheet
+        const wsVouchers = XLSX.utils.aoa_to_sheet(voucherData);
+        wsVouchers["!cols"] = [{ wch: 30 }, { wch: 20 }];
 
         // Lấy phạm vi dữ liệu trong worksheet
         const range = XLSX.utils.decode_range(ws["!ref"]);
@@ -298,6 +416,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
         // Tạo workbook và thêm worksheet
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sales Data");
+        XLSX.utils.book_append_sheet(wb, wsVouchers, "Voucher Data");
 
         // Xuất file
         const fileName = t("store:dashboard.export.button");
@@ -311,13 +430,15 @@ const ProductSalesAreaChart = ({ orders, products }) => {
 
     let initValue = {
         year: selectedYear,
-        products: selectedProducts,
+        items: selectedType == types[2] ? selectedVouchers : selectedProducts,
         type: selectedType,
     };
 
     // console.log("products", products);
-    console.log("salesData", salesData);
+    // console.log("salesData", salesData);
     console.log("selectedProducts", selectedProducts);
+    console.log("selectedVouchers", selectedVouchers);
+
     const selectedSet = new Set(selectedProducts);
     const filteredProducts = products.filter((product) =>
         selectedSet.has(product.id)
@@ -333,25 +454,48 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                     useEffect(() => {
                         const unsubscribe = form.subscribe(
                             ({ values }) => {
-                                {
-                                    /* console.log("values change", values); */
-                                }
+                                console.log("values change", values);
+
                                 if (values.year != selectedYear) {
                                     handleYearSelect(values.year);
-                                }
-                                if (values.products != selectedProducts) {
-                                    handleProductsSelect(values.products);
                                 }
 
                                 if (values.type != selectedType) {
                                     handleTypeSelect(values.type);
+                                    if (values.type == types[2]) {
+                                        setSelectedVouchers(
+                                            vouchers
+                                                ?.map((voucher) => voucher.id)
+                                                .concat("total")
+                                        );
+                                    } else {
+                                        setSelectedProducts(
+                                            products
+                                                ?.map((product) => product.id)
+                                                .concat("total")
+                                                .concat("totalDiscount")
+                                                .concat("totalReal")
+                                        );
+                                    }
+                                }
+
+                                if (selectedType != types[2]) {
+                                    if (values.items != selectedProducts) {
+                                        handleProductsSelect(values.items);
+                                    }
+                                }
+
+                                if (selectedType == types[2]) {
+                                    if (values.items != selectedVouchers) {
+                                        handleVouchersSelect(values.items);
+                                    }
                                 }
                             },
                             {
                                 values: {
                                     type: true,
                                     year: true,
-                                    products: true,
+                                    items: true,
                                 },
                             }
                         );
@@ -394,7 +538,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                     {/* //* Define the gradient for the area chart */}
                     <defs>
                         {selectedProducts?.map((productId, idx) => {
-                            const colorIndex = productId % chartColors.length;
+                            const colorIndex = idx % chartColors.length;
                             return (
                                 <linearGradient
                                     id={`colorGrad${idx}`}
@@ -440,78 +584,126 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                     />
                     <Legend />
                     <CartesianGrid strokeDasharray="3 3" />
-                    {selectedProducts?.map((productId, idx) => {
-                        const colorIndex = idx % chartColors.length; // Use modulo to cycle through colors
-                        const fieldName =
-                            selectedType == types[0]
-                                ? `[${t(
-                                      "store:dashboard.chart.totalQuantity"
-                                  )}]`
-                                : `[${t(
-                                      "store:dashboard.chart.totalRevenue"
-                                  )}]`;
+                    {selectedType != types[2] &&
+                        selectedProducts?.map((productId, idx) => {
+                            const colorIndex = idx % chartColors.length; // Use modulo to cycle through colors
+                            const fieldName =
+                                selectedType == types[0]
+                                    ? `[${t(
+                                          "store:dashboard.chart.totalQuantity"
+                                      )}]`
+                                    : `[${t(
+                                          "store:dashboard.chart.totalRevenue"
+                                      )}]`;
 
-                        if (productId == "total") {
+                            if (productId == "total") {
+                                return (
+                                    <Area
+                                        key={idx}
+                                        type="monotone"
+                                        dataKey={fieldName}
+                                        stroke={chartColors[colorIndex]}
+                                        fillOpacity={1}
+                                        fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
+                                    />
+                                );
+                            }
+
+                            if (productId == "totalDiscount") {
+                                return (
+                                    <Area
+                                        key={idx}
+                                        type="monotone"
+                                        dataKey={`[${t(
+                                            "store:dashboard.chart.totalDiscount"
+                                        )}]`}
+                                        stroke={chartColors[colorIndex]}
+                                        fillOpacity={1}
+                                        fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
+                                    />
+                                );
+                            }
+
+                            if (productId == "totalReal") {
+                                return (
+                                    <Area
+                                        key={idx}
+                                        type="monotone"
+                                        dataKey={`[${t(
+                                            "store:dashboard.chart.totalRealRevenue"
+                                        )}]`}
+                                        stroke={chartColors[colorIndex]}
+                                        fillOpacity={1}
+                                        fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
+                                    />
+                                );
+                            }
+
+                            const product = products.find(
+                                (p) => p.id === productId
+                            );
+
+                            const productName =
+                                language === "en"
+                                    ? product.enName
+                                    : product.name;
+
                             return (
                                 <Area
                                     key={idx}
                                     type="monotone"
-                                    dataKey={fieldName}
+                                    dataKey={productName}
                                     stroke={chartColors[colorIndex]}
                                     fillOpacity={1}
                                     fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
                                 />
                             );
-                        }
+                        })}
 
-                        if (productId == "totalDiscount") {
+                    {selectedType == types[2] &&
+                        selectedVouchers?.map((voucherId, idx) => {
+                            const colorIndex = idx % chartColors.length; // Use modulo to cycle through colors
+                            const fieldName = `[${t(
+                                "store:dashboard.chart.totalDiscount"
+                            )}]`;
+
+                            if (voucherId == "total") {
+                                return (
+                                    <Area
+                                        key={idx}
+                                        type="monotone"
+                                        dataKey={fieldName}
+                                        stroke={chartColors[colorIndex]}
+                                        fillOpacity={1}
+                                        fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
+                                    />
+                                );
+                            }
+
+                            const voucher = vouchersData.find(
+                                (v) => v.id === voucherId
+                            );
+
+                            {
+                                /* if (!voucher) return; */
+                            }
+
+                            const voucherName =
+                                language === "en"
+                                    ? voucher.enName
+                                    : voucher.name;
+
                             return (
                                 <Area
                                     key={idx}
                                     type="monotone"
-                                    dataKey={`[${t(
-                                        "store:dashboard.chart.totalDiscount"
-                                    )}]`}
+                                    dataKey={voucherName}
                                     stroke={chartColors[colorIndex]}
                                     fillOpacity={1}
                                     fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
                                 />
                             );
-                        }
-
-                        if (productId == "totalReal") {
-                            return (
-                                <Area
-                                    key={idx}
-                                    type="monotone"
-                                    dataKey={`[${t(
-                                        "store:dashboard.chart.totalRealRevenue"
-                                    )}]`}
-                                    stroke={chartColors[colorIndex]}
-                                    fillOpacity={1}
-                                    fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
-                                />
-                            );
-                        }
-
-                        const product = products.find(
-                            (p) => p.id === productId
-                        );
-
-                        const productName =
-                            language === "en" ? product.enName : product.name;
-
-                        return (
-                            <Area
-                                key={idx}
-                                type="monotone"
-                                dataKey={productName}
-                                stroke={chartColors[colorIndex]}
-                                fillOpacity={1}
-                                fill={`url(#colorGrad${idx})`} // Referencing the defined gradient ID
-                            />
-                        );
-                    })}
+                        })}
                 </AreaChart>
             </DashboardAreaChartContainer>
         </Panel>
@@ -568,33 +760,59 @@ const processSalesData = (
     selectedYear,
     selectedType,
     t,
-    language
+    language,
+    selectedProducts,
+    selectedVouchers,
+    vouchers
 ) => {
-    const types = ["Quantity", "Money"];
+    const types = ["Quantity", "Money", "Voucher"];
     const salesData = {}; // { productId: { 'month-year': salesCount or salesMoney } }
 
     orders?.forEach((order) => {
-        order.orderProducts.forEach((orderProduct) => {
-            const productId = orderProduct.product.id;
-            const monthYear = getMonthYear(order.createDate);
-            const product = products.find((p) => p.id === productId);
+        const monthYear = getMonthYear(order.createDate);
 
-            if (!salesData[productId]) {
-                salesData[productId] = {}; // Initialize product entry
+        //* Voucher
+        if (selectedType === types[2]) {
+            const voucherId = order?.voucher?.id || null;
+
+            if (!voucherId) return;
+
+            if (!salesData[voucherId]) {
+                salesData[voucherId] = {}; // Initialize product entry
             }
-            if (!salesData[productId][monthYear]) {
-                salesData[productId][monthYear] = 0; // Initialize month entry
+            if (!salesData[voucherId][monthYear]) {
+                salesData[voucherId][monthYear] = 0; // Initialize month entry
             }
 
-            //* Check xem cần render count/money
-            if (selectedType === "Money") {
-                salesData[productId][monthYear] +=
-                    orderProduct.quantity * product.price;
-            } else {
-                salesData[productId][monthYear] += orderProduct.quantity;
-            }
-        });
+            salesData[voucherId][monthYear] +=
+                order?.invoice?.discountAmount || 0;
+        } else {
+            order.orderProducts.forEach((orderProduct) => {
+                const productId = orderProduct.product.id;
+                const product = products.find((p) => p.id === productId);
+
+                if (!salesData[productId]) {
+                    salesData[productId] = {}; // Initialize product entry
+                }
+                if (!salesData[productId][monthYear]) {
+                    salesData[productId][monthYear] = 0; // Initialize month entry
+                }
+
+                //* Check xem cần render count/money
+                //* Money
+                if (selectedType === types[1]) {
+                    salesData[productId][monthYear] +=
+                        orderProduct.quantity * product.price;
+                }
+                //* Quantity
+                else if (selectedType === types[0]) {
+                    salesData[productId][monthYear] += orderProduct.quantity;
+                }
+            });
+        }
     });
+
+    // console.log("salesData", salesData);
 
     const monthsForYear = getMonthsForYear(selectedYear);
 
@@ -603,39 +821,69 @@ const processSalesData = (
         let totalMoney = 0;
         const entry = { name: monthYear }; // Create an entry for each month
 
-        products?.forEach((product) => {
-            const productSales = salesData[product.id]?.[monthYear] || 0; // Set 0 if no sales
-            // totalMoney += productSales;
-            // entry[product.name] = productSales;
-            const productName =
-                language === "en" ? product.enName : product.name;
-            totalMoney += productSales;
-            entry[productName] = productSales;
-        });
+        //* Voucher
+        if (selectedType === types[2]) {
+            const selectedSet = new Set(selectedVouchers);
+            const filteredVouchers = vouchers.filter((voucher) =>
+                selectedSet.has(voucher.id)
+            );
 
-        //* Calc voucher amount discounted
-        let totalDiscount = 0;
-        orders.map((order) => {
-            if (getMonthYear(order.createDate) == monthYear) {
-                totalDiscount += order.invoice.discountAmount;
+            filteredVouchers?.forEach((voucher) => {
+                const voucherSales = salesData[voucher.id]?.[monthYear] || 0; // Set 0 if no sales
+                // totalMoney += productSales;
+                // entry[product.name] = productSales;
+                const voucherName =
+                    language === "en" ? voucher.enName : voucher.name;
+                totalMoney += voucherSales;
+                entry[voucherName] = voucherSales;
+            });
+
+            //* Total
+            let fieldName = `[${t("store:dashboard.chart.totalDiscount")}]`;
+            entry[fieldName] = totalMoney;
+        }
+        //* Product
+        else {
+            const selectedSet = new Set(selectedProducts);
+            const filteredProducts = products.filter((product) =>
+                selectedSet.has(product.id)
+            );
+
+            filteredProducts?.forEach((product) => {
+                const productSales = salesData[product.id]?.[monthYear] || 0; // Set 0 if no sales
+                // totalMoney += productSales;
+                // entry[product.name] = productSales;
+                const productName =
+                    language === "en" ? product.enName : product.name;
+                totalMoney += productSales;
+                entry[productName] = productSales;
+            });
+
+            //* Calc voucher amount discounted
+            let totalDiscount = 0;
+            orders.map((order) => {
+                if (getMonthYear(order.createDate) == monthYear) {
+                    totalDiscount += order.invoice.discountAmount;
+                }
+            });
+
+            let fieldName = "";
+
+            if (selectedType === types[1]) {
+                fieldName = `[${t("store:dashboard.chart.totalDiscount")}]`;
+                entry[fieldName] = totalDiscount;
+
+                fieldName = `[${t("store:dashboard.chart.totalRealRevenue")}]`;
+                entry[fieldName] = totalMoney - totalDiscount;
             }
-        });
 
-        let fieldName = "";
-
-        if (selectedType === "Money") {
-            fieldName = `[${t("store:dashboard.chart.totalDiscount")}]`;
-            entry[fieldName] = totalDiscount;
-
-            fieldName = `[${t("store:dashboard.chart.totalRealRevenue")}]`;
-            entry[fieldName] = totalMoney - totalDiscount;
+            fieldName =
+                selectedType == types[0]
+                    ? `[${t("store:dashboard.chart.totalQuantity")}]`
+                    : `[${t("store:dashboard.chart.totalRevenue")}]`;
+            entry[fieldName] = totalMoney;
         }
 
-        fieldName =
-            selectedType == types[0]
-                ? `[${t("store:dashboard.chart.totalQuantity")}]`
-                : `[${t("store:dashboard.chart.totalRevenue")}]`;
-        entry[fieldName] = totalMoney;
         return entry;
     });
 
