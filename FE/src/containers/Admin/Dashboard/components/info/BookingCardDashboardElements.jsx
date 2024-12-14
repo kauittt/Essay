@@ -46,6 +46,7 @@ export const DashboardBookingDescription = styled.h5`
     font-weight: 500;
     line-height: normal;
     color: ${(props) => (props.theme === "dark" ? colorDustyWhite : colorGray)};
-    margin-top: 3px;
+    margin-top: 4px;
+    margin-bottom: 8px;
     text-transform: uppercase;
 `;

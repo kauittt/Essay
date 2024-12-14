@@ -136,6 +136,7 @@
         "title": "Dashboard",
         "info": {
             "monthlyRevenue": "Revenue / Month (VNĐ)",
+            "monthlyActualRevenue": "Actual Revenue / Month (VNĐ)",
             "monthlyOrders": "Orders / Month",
             "newCustomers": "New Customers",
             "totalProducts": "Total Products"
@@ -150,7 +151,7 @@
             },
             "year": "Year",
             "totalRevenue": "Total Revenue",
-            "totalRealRevenue": "Total Real Revenue",
+            "totalRealRevenue": "Total Actual Revenue",
             "totalDiscount": "Total Discount",
             "totalDiscountPerMonth": "Total Discount Per Month",
             "totalRevenuePerMonth": "Total Revenue per month",

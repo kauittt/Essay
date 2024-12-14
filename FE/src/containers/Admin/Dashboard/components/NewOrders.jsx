@@ -125,7 +125,7 @@ const NewOrders = () => {
             }));
     }
 
-    // console.log("newOrder", newOrder);
+    console.log("newOrder", newOrder);
 
     return (
         <Panel
@@ -142,7 +142,8 @@ const NewOrders = () => {
                         <th className="stock">{t("store:product.stock")}</th>
                         <th className="size">{t("store:size.title")}</th>
                         <th className="sold">{t("store:product.sold")}</th>
-                        <th>{t("store:product.totalPrice")}</th>
+                        {/* <th>{t("store:product.totalPrice")}</th> */}
+                        <th>{t("store:dashboard.chart.totalRevenue")}</th>
                         {/* <th aria-label="dashboard__table" /> */}
                     </tr>
                 </thead>

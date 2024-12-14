@@ -4,7 +4,7 @@ import { initReactI18next } from "react-i18next";
 
 export const config = {
     resources,
-    lng: "en",
+    lng: "vn",
     fallbackLng: "en",
     ns: ["common", "errors", "store"],
     defaultNS: "common",

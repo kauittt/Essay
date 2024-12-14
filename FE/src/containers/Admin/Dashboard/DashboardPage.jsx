@@ -32,11 +32,14 @@ const DashboardPage = () => {
     const products = useSelector(selectProducts);
     const orders = useSelector(selectOrders);
     const users = useSelector(selectTotalUsers);
-    // console.log("order", orders);
+    console.log("order", orders);
     // console.log("Products", products);
     // console.log("Users", users);
     let currentRevenue = 0;
     let revenuePercent = 0;
+
+    let currentActualRevenue = 0;
+    let actualRevenuePercent = 0;
 
     let currentOrdersCount = 0;
     let orderPercent = 0;
@@ -46,14 +49,28 @@ const DashboardPage = () => {
 
     ///* Revenue
     const calculateRevenue = (month, year) => {
-        return orders?.reduce((total, order) => {
-            const orderMonth = moment(order.createDate).month() + 1;
-            const orderYear = moment(order.createDate).year();
-            if (orderMonth === month && orderYear === year) {
-                return total + (order.invoice.totalAmount || 0);
-            }
-            return total;
-        }, 0);
+        return orders && orders.length > 0
+            ? orders
+                  .filter((order) => order.status === "DONE")
+                  .reduce((total, order) => {
+                      const orderMonth = moment(order.createDate).month() + 1;
+                      const orderYear = moment(order.createDate).year();
+                      if (orderMonth === month && orderYear === year) {
+                          let totalAmount = 0;
+                          order.orderProducts.map(
+                              (orderProduct) =>
+                                  (totalAmount +=
+                                      orderProduct.quantity *
+                                      orderProduct.product.price)
+                          );
+                          return (
+                              total + totalAmount
+                              //    - order.invoice.discountAmount
+                          );
+                      }
+                      return total;
+                  }, 0)
+            : 0;
     };
 
     const getRevenuePercent = () => {
@@ -76,6 +93,61 @@ const DashboardPage = () => {
 
         currentRevenue = currentRevenue?.toLocaleString();
         revenuePercent = percentageChange;
+    };
+
+    //* Actual Revenue
+    const calculateActualRevenue = (month, year) => {
+        return orders && orders.length > 0
+            ? orders
+                  .filter((order) => order.status === "DONE")
+                  .reduce((total, order) => {
+                      const orderMonth = moment(order.createDate).month() + 1;
+                      const orderYear = moment(order.createDate).year();
+                      if (orderMonth === month && orderYear === year) {
+                          let totalAmount = 0;
+                          order.orderProducts.map(
+                              (orderProduct) =>
+                                  (totalAmount +=
+                                      orderProduct.quantity *
+                                      orderProduct.product.price)
+                          );
+                          return (
+                              total + totalAmount - order.invoice.discountAmount
+                          );
+                      }
+                      return total;
+                  }, 0)
+            : 0;
+    };
+
+    const getActualRevenuePercent = () => {
+        currentActualRevenue = calculateActualRevenue(
+            currentMonth,
+            currentYear
+        );
+        const previousActualRevenue = calculateActualRevenue(
+            previousMonth,
+            previousYear
+        );
+
+        // console.log("currentActualRevenue", currentActualRevenue);
+        // console.log("previousActualRevenue", previousActualRevenue);
+
+        let percentageChange;
+        if (previousActualRevenue == 0 && currentActualRevenue == 0)
+            percentageChange = 0;
+        else if (previousActualRevenue == 0) percentageChange = 100;
+        else if (currentActualRevenue == 0) percentageChange = 0;
+        else {
+            percentageChange =
+                (currentActualRevenue / previousActualRevenue) * 100;
+            if (percentageChange % 10 != 0) {
+                percentageChange = percentageChange.toFixed(2);
+            }
+        }
+
+        currentActualRevenue = currentActualRevenue?.toLocaleString();
+        actualRevenuePercent = percentageChange;
     };
 
     //* Orders
@@ -152,6 +224,7 @@ const DashboardPage = () => {
     };
 
     getRevenuePercent();
+    getActualRevenuePercent();
     getOrdersPercent();
     getUsersPercent();
 
@@ -169,6 +242,26 @@ const DashboardPage = () => {
                     color="colorBlue"
                 />
 
+                {/* Actual Revenue */}
+                <MonthlyInfo
+                    title={currentActualRevenue}
+                    description={t("store:dashboard.info.monthlyActualRevenue")}
+                    percent={actualRevenuePercent}
+                    gradient="yellow"
+                    color="colorYellow"
+                />
+
+                {/* User */}
+                <MonthlyInfo
+                    title={currentMonthUsers}
+                    description={t("store:dashboard.info.newCustomers")}
+                    percent={userPercent}
+                    // gradient="yellow"
+                    // color="colorYellow"
+                    color="colorRed"
+                    gradient="pink"
+                />
+
                 {/* Order */}
                 <MonthlyInfo
                     title={currentOrdersCount}
@@ -177,26 +270,6 @@ const DashboardPage = () => {
                     color="colorAccent"
                     gradient="turquoise"
                 />
-
-                {/* User */}
-                <MonthlyInfo
-                    title={currentMonthUsers}
-                    description={t("store:dashboard.info.newCustomers")}
-                    percent={userPercent}
-                    gradient="yellow"
-                    color="colorYellow"
-                />
-
-                {/* Product */}
-                <MonthlyInfo
-                    title={products?.length || 0}
-                    description={t("store:dashboard.info.totalProducts")}
-                    percent={100}
-                    color="colorRed"
-                    gradient="pink"
-                    noPercent={true}
-                />
-                {/* </div> */}
             </Row>
 
             <Row>

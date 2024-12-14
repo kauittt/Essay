@@ -122,7 +122,8 @@ const TopSellingProducts = ({ dir }) => {
                         <Pie
                             data={dataWithColors}
                             dataKey="value"
-                            cy={180}
+                            // cy={180}
+                            cy={185}
                             innerRadius={130}
                             outerRadius={160}
                             label

@@ -136,6 +136,7 @@
         "title": "Thống kê",
         "info": {
             "monthlyRevenue": "Doanh thu / tháng (VNĐ)",
+            "monthlyActualRevenue": "Doanh thu thực tế/ tháng (VNĐ)",
             "monthlyOrders": "Đơn hàng / tháng",
             "newCustomers": "Khách hàng mới",
             "totalProducts": "Tổng sản phẩm"

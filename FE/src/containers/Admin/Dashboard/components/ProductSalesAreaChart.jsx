@@ -436,15 +436,15 @@ const ProductSalesAreaChart = ({ orders, products }) => {
 
     // console.log("products", products);
     // console.log("salesData", salesData);
-    console.log("selectedProducts", selectedProducts);
-    console.log("selectedVouchers", selectedVouchers);
+    // console.log("selectedProducts", selectedProducts);
+    // console.log("selectedVouchers", selectedVouchers);
 
     const selectedSet = new Set(selectedProducts);
     const filteredProducts = products.filter((product) =>
         selectedSet.has(product.id)
     );
     // console.log("filteredProducts", filteredProducts);
-    console.log("-------");
+    // console.log("-------");
 
     return (
         <Panel lg={12} title={t("store:dashboard.chart.title")}>
@@ -454,7 +454,9 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                     useEffect(() => {
                         const unsubscribe = form.subscribe(
                             ({ values }) => {
-                                console.log("values change", values);
+                                {
+                                    /* console.log("values change", values); */
+                                }
 
                                 if (values.year != selectedYear) {
                                     handleYearSelect(values.year);
