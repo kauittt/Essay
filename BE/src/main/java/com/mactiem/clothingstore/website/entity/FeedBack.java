@@ -48,6 +48,9 @@ public class FeedBack {
     @Column(name = "size")
     private String size;
 
+    @Column(name = "orderId")
+    private Long     orderId;
+
     public User getUser() {
         if (user == null) {
             user = new User();

@@ -21,6 +21,6 @@ public class FeedBackResponseDTO {
     private String avatar;
     private String username;
     private String name;
-
+    private Long orderId;
 //    private Product product;
 }
