@@ -31,13 +31,13 @@ const FeedbackList = ({ data = {} }) => {
     const user = useSelector(selectUser);
 
     if (!user) {
-        console.log("User data not loaded or user not found");
+        // console.log("User data not loaded or user not found");
         // return <div>Loading user data...</div>;
         return <Loading></Loading>;
     }
 
     // console.log("Found User", user);
-    console.log("Feed back", data);
+    // console.log("Feed back", data);
     return (
         <FeedbackListWrap>
             <FeedbackListTitle>
@@ -46,6 +46,9 @@ const FeedbackList = ({ data = {} }) => {
 
                 <div className="tw-mt-[10px]">
                     <p>{`${t("store:size.title")}: ${data.size}`}</p>
+                    {/* <div className="tw-flex tw-gap-[20px]"> */}
+                    {/* <p>{`${t("store:product.quantity")}: ${data.size}`}</p> */}
+                    {/* </div> */}
                     <StarRating rating={data.point} />
                 </div>
             </FeedbackListTitle>
@@ -53,10 +56,12 @@ const FeedbackList = ({ data = {} }) => {
             <div className="tw-flex tw-flex-col tw-gap-[10px]">
                 <FeedbackListPreview>{data.description}</FeedbackListPreview>
 
-                <ProductGallery
-                    image={data.image}
-                    alt="feedback-image"
-                ></ProductGallery>
+                {data.image && (
+                    <ProductGallery
+                        image={data.image}
+                        alt="feedback-image"
+                    ></ProductGallery>
+                )}
             </div>
         </FeedbackListWrap>
     );

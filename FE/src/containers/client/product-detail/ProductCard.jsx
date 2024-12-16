@@ -122,7 +122,7 @@ const ProductCard = ({ product = {} }) => {
     //* Fetch lại users
     useEffect(() => {
         return () => {
-            dispatch(fetchUsers());
+            // dispatch(fetchUsers());
             dispatch(fetchCurrentUser());
         };
     }, []);

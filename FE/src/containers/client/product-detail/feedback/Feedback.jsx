@@ -36,6 +36,7 @@ const Feedback = ({ product = {} }) => {
     const [selectedRating, setSelectedRating] = useState(0);
 
     // Calculate filtered and paginated feedbacks
+    // console.log("product", product);
     const filteredFeedbacks = useMemo(() => {
         return product.feedBacks
             .filter((feedback) =>

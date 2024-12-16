@@ -31,14 +31,20 @@ const FeedbackModal = ({ toggle, data, action }) => {
     const dispatch = useDispatch();
 
     const user = useSelector(selectUser);
+    // console.log("User", user);
 
     const enter = t("action.enter");
     // console.log("Data", data);
     //! Handle load feedback
-    const currentFeedback = data.feedBacks.find(
-        (feedback) => feedback.user == user.id
+    let currentFeedback = data.feedBacks.find(
+        (feedback) =>
+            feedback.username == user.username &&
+            feedback.orderId == data.orderId &&
+            feedback.size == data.size
     );
     const apiAction = currentFeedback ? "edit" : "new";
+    currentFeedback = { ...currentFeedback, orderId: data.orderId };
+    // console.log("apiAction", apiAction);
 
     // console.log("currentFeedback", currentFeedback);
     const [formData, setFormData] = useState(currentFeedback);
@@ -123,7 +129,8 @@ const FeedbackModal = ({ toggle, data, action }) => {
         // console.log("validate", values);
         const errors = {};
 
-        const requiredFields = ["image", "description", "point"];
+        const requiredFields = ["description", "point"];
+        // ("image");
 
         requiredFields.forEach((field) => {
             if (!values[field]) {

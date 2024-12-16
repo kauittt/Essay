@@ -7,6 +7,7 @@ import { selectProducts } from "@/redux/reducers/productSlice";
 import { useParams } from "react-router-dom/cjs/react-router-dom";
 import { Card, CardBody } from "@/shared/components/Card";
 import Feedback from "./feedback/Feedback";
+import Loading from "../../../shared/components/Loading";
 
 const DetailPage = () => {
     const { id } = useParams();
@@ -14,7 +15,7 @@ const DetailPage = () => {
     const product = products?.filter((product) => product.id == id)[0];
 
     if (!product) {
-        return <div>No product data available.</div>;
+        return <Loading></Loading>;
     }
 
     return (

@@ -126,7 +126,7 @@ const OrderPage = () => {
             tableStatus: statusLabels[order.status],
         };
     });
-    console.log("orders", orders);
+    // console.log("orders", orders);
 
     const statusPriority = {
         CREATED: 1,

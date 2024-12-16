@@ -71,9 +71,17 @@ const FeedbackPage = () => {
 
     let currentUser = useSelector(selectUser);
     let orders = currentUser?.orders;
+
+    orders = orders?.filter((order) => order.status === "DONE"); // Lọc các đơn hàng đã hoàn thành
+    // console.log("Before", orders);
+
     orders = orders
-        ?.filter((order) => order.status === "DONE") // Lọc các đơn hàng đã hoàn thành
-        .map((order) => order.orderProducts) // Lấy orderProducts từ mỗi đơn hàng
+        ?.map((order) =>
+            order.orderProducts.map((orderProduct) => ({
+                ...orderProduct,
+                orderId: order.id, // Thêm orderId vào mỗi orderProduct
+            }))
+        )
         .flat();
     orders = orders?.map((order, index) => ({
         ...order,
@@ -109,6 +117,7 @@ const FeedbackPage = () => {
         }));
     }, [orders, t]);
 
+    // console.log("-----");
     return (
         <Container>
             <Row>

@@ -32,7 +32,7 @@ const TodoItem = ({
     let language = i18n.language;
     const voucher = todoItemData;
 
-    console.log("voucher", voucher);
+    // console.log("voucher", voucher);
     const description = voucher.products
         .map((product) => (language == "en" ? product.enName : product.name))
         .join(" | ");
