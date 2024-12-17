@@ -36,8 +36,21 @@ import { borderRadius, shadow } from "@/utils/styles";
 import StarRating from "../StarRating";
 import BasicCarousel from "./BasicCarousel";
 import { selectBanners } from "../../../redux/reducers/bannerSlice";
+import {
+    useHistory,
+    useLocation,
+} from "react-router-dom/cjs/react-router-dom.min";
+import OrderService from "../../../services/OrderService";
+import InvoiceService from "../../../services/InvoiceService";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { updateVoucher } from "../../../redux/actions/voucherAction";
+import { fetchProducts } from "../../../redux/actions/productAction";
 
 const HomePage = () => {
+    const location = useLocation();
+    const history = useHistory();
+    const dispatch = useDispatch();
     const products = useSelector(selectProducts) || [];
     const categories = useSelector(selectCategories) || [];
 
@@ -45,6 +58,95 @@ const HomePage = () => {
     let language = i18n.language;
     const [pageSize, setPageSize] = useState(8); //! Size
     const [currentPage, setCurrentPage] = useState(0);
+
+    ///! Handle thanh toán re-direct
+    useEffect(() => {
+        // console.log("Thanh toán re-direct");
+        const queryParams = new URLSearchParams(location.search);
+
+        // Kiểm tra nếu VNPay trả về kết quả
+        if (queryParams.has("vnp_ResponseCode")) {
+            const responseCode = queryParams.get("vnp_ResponseCode");
+
+            if (responseCode === "00") {
+                // Thanh toán thành công
+                handleVNPaySuccess();
+            } else {
+                // Thanh toán thất bại
+                toast.error("Thanh toán không thành công!");
+                // history.push("/pages/client/invoice");
+            }
+        }
+    }, [location, history]);
+
+    const handleVNPaySuccess = async () => {
+        const orderRequest = JSON.parse(localStorage.getItem("orderRequest"));
+        let invoiceRequest = JSON.parse(localStorage.getItem("invoiceRequest"));
+        let selectedVoucher = JSON.parse(
+            localStorage.getItem("selectedVoucher")
+        );
+
+        try {
+            let response = null;
+            // Gọi API tạo đơn hàng
+            const order = await OrderService.postOrder(orderRequest);
+
+            // Gọi API tạo hóa đơn
+            invoiceRequest = { ...invoiceRequest, order: order.data.id };
+
+            response = await InvoiceService.postInvoice(invoiceRequest);
+
+            // Xóa dữ liệu tạm thời
+            localStorage.removeItem("orderRequest");
+            localStorage.removeItem("invoiceRequest");
+            localStorage.removeItem("selectedVoucher");
+            if (response) {
+                toast.info(
+                    t("common:action.success", {
+                        type: t("action.purchase"),
+                    }),
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+
+                dispatch(fetchProducts());
+                if (selectedVoucher) {
+                    const requestVoucher = {
+                        quantity: selectedVoucher.quantity - 1,
+                    };
+
+                    dispatch(updateVoucher(selectedVoucher.id, requestVoucher));
+                }
+                history.push("/pages/client/home");
+            }
+            // history.push("/pages/client/orders");
+        } catch (e) {
+            console.error(e);
+            toast.error(
+                t("common:action.fail", {
+                    type: t("action.purchase"),
+                }),
+                {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            );
+        }
+    };
+
+    //! -------
 
     const tags = categories?.map((category) => {
         return {

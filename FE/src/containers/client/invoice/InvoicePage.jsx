@@ -29,6 +29,8 @@ import { fetchProducts } from "./../../../redux/actions/productAction";
 import { selectVouchers } from "../../../redux/reducers/voucherSlice";
 import CustomModal from "./../../../shared/components/custom/modal/CustomModal";
 import { updateVoucher } from "../../../redux/actions/voucherAction";
+import PaymentMethod from "./components/PaymentMethod";
+import PaymentService from "../../../services/PaymentService";
 
 const formatDate = (date) => {
     const year = date.getFullYear(); // Gets the full year (e.g., 2024)
@@ -120,6 +122,13 @@ const InvoicePage = () => {
         },
     ];
 
+    //! ----------------------------TEST-------------------------
+    // Ngân hàng NCB
+    // Số thẻ	9704198526191432198
+    // Tên chủ thẻ	NGUYEN VAN A
+    // Ngày phát hành	07/15
+    // Mật khẩu OTP	123456
+
     const submitForm = async (values) => {
         values.status = CREATED;
         values.user = currentUser.id;
@@ -130,14 +139,48 @@ const InvoicePage = () => {
             values.voucher = selectedVoucher.id;
         }
 
-        console.log("Submit values", values);
+        // console.log("Submit values", values);
         // console.log("Order request", values);
         // console.log("Product list", selectedProducts);
-        console.log("-----------");
+        // console.log("-----------");
 
         try {
             let response;
 
+            //! VNPay
+            if (values.paymentMethod == "VNPay") {
+                const paymentResponse = await PaymentService.createPayment({
+                    amount: subTotal + shippingFee - discount,
+                    returnUrl: "http://localhost:5173/pages/client/home",
+                });
+
+                // console.log("paymentResponse", paymentResponse);
+
+                if (paymentResponse.data.url) {
+                    localStorage.setItem(
+                        "orderRequest",
+                        JSON.stringify(values)
+                    );
+                    localStorage.setItem(
+                        "invoiceRequest",
+                        JSON.stringify({
+                            createDate: createDate,
+                            discountAmount: discount,
+                            totalAmount: subTotal + shippingFee,
+                            paymentMethod: values.paymentMethod,
+                        })
+                    );
+                    localStorage.setItem(
+                        "selectedVoucher",
+                        JSON.stringify(selectedVoucher)
+                    );
+                    // window.location.href = paymentResponse.data.url;
+                    window.open(paymentResponse.data.url, "_blank");
+                    return;
+                }
+            }
+
+            //! COD
             const orderId = await OrderService.postOrder(values);
             // console.log("orderId", orderId);
 
@@ -146,7 +189,7 @@ const InvoicePage = () => {
                 createDate: createDate,
                 discountAmount: discount,
                 totalAmount: subTotal + shippingFee,
-                paymentMethod: paymentMethod,
+                paymentMethod: values.paymentMethod,
             };
 
             // console.log("invoiceRequest", invoiceRequest);
@@ -165,7 +208,10 @@ const InvoicePage = () => {
                 //* Fetch
                 // dispatch(fetchOrders());
                 dispatch(fetchProducts());
-                history.push("/pages/client/home");
+
+                if (values.paymentMethod == "COD")
+                    history.push("/pages/client/home");
+
                 toast.info(
                     t("common:action.success", {
                         type: t("action.purchase"),
@@ -210,6 +256,7 @@ const InvoicePage = () => {
         email: currentUser?.email,
         phone: currentUser?.phone,
         address: currentUser?.address,
+        paymentMethod: paymentMethod,
     };
 
     const validate = (values, t) => {
@@ -425,55 +472,64 @@ const InvoicePage = () => {
 
                                             {/*//* Total  */}
                                             <InvoiceTotal>
-                                                {/*//* Sub-total  */}
-                                                <Subtotal>
-                                                    {t("store:cart.subTotal")}:{" "}
-                                                    <span className="tw-font-semibold">
-                                                        {subTotal.toLocaleString()}{" "}
-                                                        VNĐ
-                                                    </span>
-                                                </Subtotal>
+                                                <div className="tw-flex tw-justify-between">
+                                                    <div>
+                                                        <PaymentMethod></PaymentMethod>
+                                                    </div>
+                                                    <div>
+                                                        {/*//* Sub-total  */}
+                                                        <Subtotal>
+                                                            {t(
+                                                                "store:cart.subTotal"
+                                                            )}
+                                                            :{" "}
+                                                            <span className="tw-font-semibold">
+                                                                {subTotal.toLocaleString()}{" "}
+                                                                VNĐ
+                                                            </span>
+                                                        </Subtotal>
 
-                                                {/*//* Discount  */}
-                                                <Subtotal>
-                                                    {t(
-                                                        "store:invoice.discountAmount"
-                                                    )}
-                                                    :{" "}
-                                                    <span className="tw-font-semibold">
-                                                        {discount.toLocaleString()}{" "}
-                                                        VNĐ
-                                                    </span>
-                                                </Subtotal>
+                                                        {/*//* Discount  */}
+                                                        <Subtotal>
+                                                            {t(
+                                                                "store:invoice.discountAmount"
+                                                            )}
+                                                            :{" "}
+                                                            <span className="tw-font-semibold">
+                                                                {discount.toLocaleString()}{" "}
+                                                                VNĐ
+                                                            </span>
+                                                        </Subtotal>
 
-                                                {/*//* Shipping  */}
-                                                <p>
-                                                    {t(
-                                                        "store:invoice.shippingFee"
-                                                    )}
-                                                    :{" "}
-                                                    <span className="tw-font-semibold">
-                                                        {shippingFee.toLocaleString()}{" "}
-                                                        VNĐ
-                                                    </span>
-                                                </p>
+                                                        {/*//* Shipping  */}
+                                                        <p>
+                                                            {t(
+                                                                "store:invoice.shippingFee"
+                                                            )}
+                                                            :{" "}
+                                                            <span className="tw-font-semibold">
+                                                                {shippingFee.toLocaleString()}{" "}
+                                                                VNĐ
+                                                            </span>
+                                                        </p>
 
-                                                {/*//* Total  */}
-                                                <InvoiceGrandTotal>
-                                                    {t(
-                                                        "store:invoice.totalDue"
-                                                    )}
-                                                    :{" "}
-                                                    <span className="tw-font-semibold">
-                                                        {(
-                                                            subTotal +
-                                                            shippingFee -
-                                                            discount
-                                                        ).toLocaleString()}{" "}
-                                                        VNĐ
-                                                    </span>
-                                                </InvoiceGrandTotal>
-
+                                                        {/*//* Total  */}
+                                                        <InvoiceGrandTotal>
+                                                            {t(
+                                                                "store:invoice.totalDue"
+                                                            )}
+                                                            :{" "}
+                                                            <span className="tw-font-semibold">
+                                                                {(
+                                                                    subTotal +
+                                                                    shippingFee -
+                                                                    discount
+                                                                ).toLocaleString()}{" "}
+                                                                VNĐ
+                                                            </span>
+                                                        </InvoiceGrandTotal>
+                                                    </div>
+                                                </div>
                                                 {/*//* Button  */}
                                                 <InvoiceToolbar>
                                                     <FormButtonToolbar
