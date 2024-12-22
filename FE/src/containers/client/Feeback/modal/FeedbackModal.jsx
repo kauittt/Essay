@@ -146,13 +146,13 @@ const FeedbackModal = ({ toggle, data, action }) => {
             label: t("store:feedback.description"),
             name: "description",
             type: "text",
-            placeholder: `${enter} ${t("store:feedback.description")}...`,
+            placeholder: `${enter} ${t("store:feedback.description")}`,
         },
         {
             label: t("store:feedback.image"),
             name: "image",
             type: "importFile",
-            placeholder: `${enter} ${t("store:feedback.image")}...`,
+            placeholder: `${enter} ${t("store:feedback.image")}`,
         },
     ];
 

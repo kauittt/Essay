@@ -224,25 +224,25 @@ const ProductModal = ({ toggle, data, action }) => {
             label: t("store:product.name"),
             name: "name",
             type: "text",
-            placeholder: `${enter} ${t("store:product.name")}...`,
+            placeholder: `${enter} ${t("store:product.name")}`,
         },
         {
             label: t("store:product.enName"),
             name: "enName",
             type: "text",
-            placeholder: `${enter} ${t("store:product.enName")}...`,
+            placeholder: `${enter} ${t("store:product.enName")}`,
         },
         {
             label: t("store:product.description"),
             name: "description",
             type: "text",
-            placeholder: `${enter} ${t("store:product.description")}...`,
+            placeholder: `${enter} ${t("store:product.description")}`,
         },
         {
             label: t("store:product.enDescription"),
             name: "enDescription",
             type: "text",
-            placeholder: `${enter} ${t("store:product.enDescription")}...`,
+            placeholder: `${enter} ${t("store:product.enDescription")}`,
         },
     ];
 
@@ -251,13 +251,13 @@ const ProductModal = ({ toggle, data, action }) => {
             label: t("store:product.price"),
             name: "price",
             type: "text",
-            placeholder: `${enter} ${t("store:product.price")}...`,
+            placeholder: `${enter} ${t("store:product.price")}`,
         },
         // {
         //     label: t("store:product.stock"),
         //     name: "stock",
         //     type: "text",
-        //     placeholder: `${enter} ${t("store:product.stock")}...`,
+        //     placeholder: `${enter} ${t("store:product.stock")}`,
         // },
         {
             label: t("store:product.category"),
@@ -272,7 +272,7 @@ const ProductModal = ({ toggle, data, action }) => {
             label: t("store:product.image"),
             name: "image",
             type: "importFile",
-            placeholder: `${enter} ${t("store:product.image")}...`,
+            placeholder: `${enter} ${t("store:product.image")}`,
         },
     ];
 

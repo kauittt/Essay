@@ -111,13 +111,13 @@ const CategoryModal = ({ toggle, data, action }) => {
             label: t("store:category.name"),
             name: "name",
             type: "text",
-            placeholder: `${enter} ${t("store:category.name")}...`,
+            placeholder: `${enter} ${t("store:category.name")}`,
         },
         {
             label: t("store:category.enName"),
             name: "enName",
             type: "text",
-            placeholder: `${enter} ${t("store:category.enName")}...`,
+            placeholder: `${enter} ${t("store:category.enName")}`,
         },
     ];
 

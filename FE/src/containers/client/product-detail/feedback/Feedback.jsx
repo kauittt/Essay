@@ -111,7 +111,7 @@ const Feedback = ({ product = {} }) => {
                                         "tables.customizer.search.search"
                                     )} ${t(
                                         "store:feedback.titles"
-                                    ).toLowerCase()}...`}
+                                    ).toLowerCase()} ...`}
                                     dataLength={product.feedBacks.length}
                                 />
                             </div>

@@ -315,19 +315,19 @@ const VoucherModal = ({ toggle, data, action }) => {
             label: t("store:voucher.name"),
             name: "name",
             type: "text",
-            placeholder: `${enter} ${t("store:voucher.name")}...`,
+            placeholder: `${enter} ${t("store:voucher.name")}`,
         },
         {
             label: t("store:voucher.enName"),
             name: "enName",
             type: "text",
-            placeholder: `${enter} ${t("store:voucher.enName")}...`,
+            placeholder: `${enter} ${t("store:voucher.enName")}`,
         },
         {
             label: t("store:voucher.discountPercentage"),
             name: "discountPercentage",
             type: "text",
-            placeholder: `${enter} ${t("store:voucher.discountPercentage")}...`,
+            placeholder: `${enter} ${t("store:voucher.discountPercentage")}`,
         },
         {
             label: t("store:voucher.products"),
@@ -363,7 +363,7 @@ const VoucherModal = ({ toggle, data, action }) => {
             label: t("store:voucher.quantity"),
             name: "quantity",
             type: "text",
-            placeholder: `${enter} ${t("store:voucher.quantity")}...`,
+            placeholder: `${enter} ${t("store:voucher.quantity")}`,
         },
         {
             label: t("store:voucher.startDate") + " (yyyy/MM/dd)",
@@ -380,13 +380,13 @@ const VoucherModal = ({ toggle, data, action }) => {
             label: t("store:voucher.minRequire"),
             name: "minRequire",
             type: "text",
-            placeholder: `${enter} ${t("store:voucher.minRequire")}...`,
+            placeholder: `${enter} ${t("store:voucher.minRequire")}`,
         },
         {
             label: t("store:voucher.maxDiscount"),
             name: "maxDiscount",
             type: "text",
-            placeholder: `${enter} ${t("store:voucher.maxDiscount")}...`,
+            placeholder: `${enter} ${t("store:voucher.maxDiscount")}`,
         },
     ];
 

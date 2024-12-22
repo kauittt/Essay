@@ -132,7 +132,7 @@ const ForgetPasswordModal = ({ toggle, data, action }) => {
             label: t("store:user.username"),
             name: "username",
             type: "text",
-            placeholder: `${enter} ${t("store:user.username")}...`,
+            placeholder: `${enter} ${t("store:user.username")}`,
         },
     ];
 
@@ -141,7 +141,7 @@ const ForgetPasswordModal = ({ toggle, data, action }) => {
             label: t("store:user.email"),
             name: "email",
             type: "text",
-            placeholder: `${enter} ${t("store:user.email")}...`,
+            placeholder: `${enter} ${t("store:user.email")}`,
         },
     ];
 

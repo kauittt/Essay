@@ -83,15 +83,22 @@ const UserPage = () => {
             .join(", "),
     }));
 
+    // console.log("users", users);
+
     //* Sort theo role
     const rolePriority = {
         ADMIN: 1,
         STAFF: 2,
-        CUSTOMER: 3,
+        // CUSTOMER: 3,
+        USER: 3,
     };
+
     users = users.sort((a, b) => {
-        const roleA = a.convertedAuthorities.split(",")[0]; // Get the first role
-        const roleB = b.convertedAuthorities.split(",")[0]; // Get the first role
+        // const roleA = a.convertedAuthorities.split(",")[0];
+        // const roleB = b.convertedAuthorities.split(",")[0];
+
+        const roleA = a.authorities[0].replace("ROLE_", "");
+        const roleB = b.authorities[0].replace("ROLE_", "");
 
         return rolePriority[roleA] - rolePriority[roleB];
     });
