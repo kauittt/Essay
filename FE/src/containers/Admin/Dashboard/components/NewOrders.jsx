@@ -125,7 +125,7 @@ const NewOrders = () => {
             }));
     }
 
-    console.log("newOrder", newOrder);
+    // console.log("newOrder", newOrder);
 
     return (
         <Panel

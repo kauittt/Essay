@@ -233,6 +233,7 @@ const TodoAdditionalWrapper = styled.div`
 
 const TodoAdditional = styled.div`
     display: flex;
+    flex-wrap: wrap; //* New
     margin: 0 0 10px 0;
     white-space: nowrap;
     ${marginLeft}: 0;

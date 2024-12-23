@@ -43,6 +43,11 @@ import { TableContainer, Paper } from "@mui/material";
 import { colorBackground, colorBorder } from "@/utils/palette";
 
 const CartPage = () => {
+    //* Responsive
+    const sidebar = useSelector((state) => state.sidebar);
+    // console.log("sidebar", sidebar);
+    const isCollapsed = sidebar.collapse;
+
     const { t, i18n } = useTranslation(["common", "errors", "store"]);
     let language = i18n.language;
     const dispatch = useDispatch();
@@ -620,7 +625,7 @@ const CartPage = () => {
                         //* Handle việc select No/Name
                         return (
                             <FormContainer onSubmit={handleSubmit}>
-                                <Col lg={10} md={12} sm={12}>
+                                <Col lg={10} md={9} sm={12}>
                                     <Card
                                         style={{
                                             marginBottom: "0px",
@@ -650,7 +655,7 @@ const CartPage = () => {
 
                                             <CustomTableContainer
                                                 component={CustomPaper}
-                                                style={{ maxHeight: 525 }}
+                                                // style={{ maxHeight: 525 }}
                                             >
                                                 <Table stickyHeader>
                                                     <MatTableHead
@@ -679,7 +684,7 @@ const CartPage = () => {
                                                             cartItems.length
                                                         }
                                                     />
-                                                    <StyledTableBody className="tw-background-red">
+                                                    <StyledTableBody className="">
                                                         {sortedCartItems.map(
                                                             (item, index) => {
                                                                 const isItemSelected =
@@ -909,7 +914,7 @@ const CartPage = () => {
                                                                                         //6px
                                                                                         marginBottom:
                                                                                             "6px",
-                                                                                        width: "90px",
+                                                                                        width: "50px",
                                                                                     }}
                                                                                 ></FormInput>
 
@@ -1012,7 +1017,8 @@ const CartPage = () => {
                                     </Card>
                                 </Col>
 
-                                <Col lg={2} md={12} sm={12}>
+                                {/*//* Sub-total  */}
+                                <Col lg={2} md={3} sm={12}>
                                     <Card
                                         style={{
                                             marginBottom: "0px",
@@ -1021,11 +1027,13 @@ const CartPage = () => {
                                     >
                                         <CardBody>
                                             <CartSubTotal>
-                                                {t("store:cart.subTotal")}:{" "}
+                                                {t("store:cart.subTotal") +
+                                                    ": "}
                                                 {subTotal
                                                     ? `${subTotal.toLocaleString()} VNĐ`
                                                     : `0 VNĐ`}
                                             </CartSubTotal>
+
                                             <CartPurchase
                                                 subTotal={subTotal}
                                                 shippingFee={shippingFee}
@@ -1104,6 +1112,10 @@ export default CartPage;
 export const CustomTableContainer = styled(TableContainer)`
     && {
         /* box-shadow: none;  */
+        max-height: calc(
+            100vh - 200px
+        ); /* 150px là chiều cao trừ đi (ví dụ header, footer) */
+        overflow-y: auto; /* Đảm bảo bảng có thanh cuộn nếu cần */
     }
 `;
 

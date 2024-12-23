@@ -188,13 +188,13 @@ const UserModal = ({ toggle, data, action }) => {
             label: t("store:user.username"),
             name: "username",
             type: "text",
-            placeholder: `${enter} ${t("store:user.username")}...`,
+            placeholder: `${enter} ${t("store:user.username")}`,
         },
         {
             label: t("store:user.password"),
             name: "password",
             type: "text",
-            placeholder: `${update} ${t("store:user.password")}...`,
+            placeholder: `${update} ${t("store:user.password")}`,
         },
         {
             label: t("store:user.authorities"),
@@ -213,25 +213,25 @@ const UserModal = ({ toggle, data, action }) => {
             label: t("store:user.email"),
             name: "email",
             type: "text",
-            placeholder: `${enter} ${t("store:user.email")}...`,
+            placeholder: `${enter} ${t("store:user.email")}`,
         },
         {
             label: t("store:user.name"),
             name: "name",
             type: "text",
-            placeholder: `${enter} ${t("store:user.name")}...`,
+            placeholder: `${enter} ${t("store:user.name")}`,
         },
         {
             label: t("store:user.phone"),
             name: "phone",
             type: "text",
-            placeholder: `${enter} ${t("store:user.phone")}...`,
+            placeholder: `${enter} ${t("store:user.phone")}`,
         },
         {
             label: t("store:user.address"),
             name: "address",
             type: "text",
-            placeholder: `${enter} ${t("store:user.address")}...`,
+            placeholder: `${enter} ${t("store:user.address")}`,
         },
     ];
 

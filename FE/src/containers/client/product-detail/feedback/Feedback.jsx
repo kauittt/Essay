@@ -100,7 +100,7 @@ const Feedback = ({ product = {} }) => {
                     >
                         <div className="tw-flex tw-justify-between tw-items-center tw-gap-[50px]">
                             {/* Search by Description */}
-                            <div style={{ flex: 2 }}>
+                            <div style={{ flex: 1 }}>
                                 <CustomReactTableFilter
                                     style={{ marginBottom: "5px" }}
                                     customWidth={{ maxWidth: "90%" }}

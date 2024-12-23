@@ -44,7 +44,7 @@ const CartPurchase = ({ subTotal = 0, shippingFee = 0 }) => {
                 </CartDeliveryField>
             </FormGroup>
             <CartTotal>
-                {t("store:cart.total")}:{" "}
+                {t("store:cart.total")}{" "}
                 <p className="tw-font-bold">
                     {(subTotal + shippingFee).toLocaleString()} VNĐ
                 </p>

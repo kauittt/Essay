@@ -142,7 +142,7 @@ const VoucherPage = () => {
         };
     });
 
-    console.log("Voucher after", vouchers);
+    // console.log("Voucher after", vouchers);
 
     //* Add edit/delete Button
     const data = useMemo(() => {
@@ -210,7 +210,7 @@ const VoucherPage = () => {
         }
     };
 
-    console.log("----------");
+    // console.log("----------");
 
     return (
         <Container>
