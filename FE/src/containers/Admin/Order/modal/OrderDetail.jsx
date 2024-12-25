@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Collapse from "@/shared/components/Collapse";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import CustomForm from "@/shared/components/custom/form/CustomForm";
 import { values } from "regenerator-runtime";
 import { CANCEL, CREATED, DONE } from "../../../ConstKey";
+import axios from "@/utils/axiosConfig";
 
 const OrderDetail = ({ order = {} }) => {
     const { t } = useTranslation(["common", "errors", "store"]);
@@ -15,6 +16,51 @@ const OrderDetail = ({ order = {} }) => {
     const isAdmin = userLocal.roles[0] == "ROLE_ADMIN";
     const isEditAble = order.status == CREATED;
     const isCompleted = order.status == DONE || order.status == CANCEL;
+
+    //! Location
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
+
+    useEffect(() => {
+        if (!order) return;
+
+        const fetchProvinces = async () => {
+            try {
+                const response = await axios.get(
+                    "https://provinces.open-api.vn/api/p/"
+                );
+                setProvinces(response.data);
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+            }
+        };
+        const fetchDistricts = async () => {
+            try {
+                const response = await axios.get(
+                    `https://provinces.open-api.vn/api/p/${order.province}?depth=2`
+                );
+                setDistricts(response.data.districts);
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+            }
+        };
+        const fetchWards = async () => {
+            try {
+                const response = await axios.get(
+                    `https://provinces.open-api.vn/api/d/${order.district}?depth=2`
+                );
+                setWards(response.data.wards); // Lưu wards từ API
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+            }
+        };
+
+        fetchProvinces();
+        order.district && fetchDistricts();
+        order.ward && fetchWards();
+    }, [order]);
+    //! ---------------------
 
     const leftFields = [
         {
@@ -34,27 +80,6 @@ const OrderDetail = ({ order = {} }) => {
             name: "phone",
             type: "text",
             disabled: isStaff || !isEditAble,
-        },
-        {
-            label: t("store:order.address"),
-            name: "address",
-            type: "text",
-            disabled: true,
-        },
-    ];
-
-    const rightFields = [
-        {
-            label: t("store:order.createDate"),
-            name: "createDate",
-            type: "datepicker",
-            disabled: true,
-        },
-        {
-            label: t("store:order.updateDate"),
-            name: "updateDate",
-            type: "datepicker",
-            disabled: true,
         },
         {
             label: t("store:voucher.title"),
@@ -84,6 +109,54 @@ const OrderDetail = ({ order = {} }) => {
         },
     ];
 
+    const rightFields = [
+        {
+            label: t("store:order.createDate"),
+            name: "createDate",
+            type: "datepicker",
+            disabled: true,
+        },
+        {
+            label: t("store:order.updateDate"),
+            name: "updateDate",
+            type: "datepicker",
+            disabled: true,
+        },
+        {
+            label: t("store:location.province"),
+            name: "province",
+            type: "select",
+            options: provinces.map((province) => {
+                return { value: province.code + "", label: province.name };
+            }),
+            disabled: true,
+        },
+        {
+            label: t("store:location.district"),
+            name: "district",
+            type: "select",
+            options: districts.map((district) => {
+                return { value: district.code + "", label: district.name };
+            }),
+            disabled: true,
+        },
+        {
+            label: t("store:location.ward"),
+            name: "ward",
+            type: "select",
+            options: wards.map((ward) => {
+                return { value: ward.code + "", label: ward.name };
+            }),
+            disabled: true,
+        },
+        {
+            label: t("store:order.address"),
+            name: "address",
+            type: "text",
+            disabled: true,
+        },
+    ];
+
     return (
         <Collapse
             title={t("store:order.detail")}
@@ -93,8 +166,8 @@ const OrderDetail = ({ order = {} }) => {
             <CustomForm
                 leftFields={leftFields}
                 rightFields={rightFields}
-                min={4}
-                max={4}
+                min={99}
+                max={99}
                 isButton={false}
             />
         </Collapse>

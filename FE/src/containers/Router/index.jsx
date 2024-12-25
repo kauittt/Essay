@@ -179,37 +179,6 @@ const Router = () => {
         }
     }, []);
 
-    // useEffect(() => {
-    //     const tokenUpdate = JSON.parse(localStorage.getItem("accessToken"));
-    //     if (!tokenUpdate) {
-    //         history.push("/log_in");
-    //     }
-    // }, []);
-
-    // let accessToken = JSON.parse(localStorage.getItem("accessToken"));
-
-    // useEffect(() => {
-    //     console.log("Fetch again");
-    //     if (accessToken) {
-    //         const user = JSON.parse(localStorage.getItem("user"));
-    //         const isStaff = user.roles[0] != "ROLE_USER";
-
-    //         dispatch(fetchCurrentUser(accessToken));
-    //         dispatch(fetchProducts(accessToken));
-    //         dispatch(fetchVouchers(accessToken));
-    //         dispatch(fetchCategories(accessToken));
-    //         dispatch(fetchBanners(accessToken));
-
-    //         if (isStaff) {
-    //             dispatch(fetchUsers(accessToken));
-    //             dispatch(fetchOrders(accessToken));
-    //         } else {
-    //         }
-    //     } else {
-    //         console.log("No accessToken found in localStorage");
-    //     }
-    // }, []);
-
     return (
         <MainWrapper>
             <main>

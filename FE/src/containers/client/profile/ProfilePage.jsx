@@ -21,6 +21,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "@/redux/reducers/userSlice";
 import { updateCurrentUser } from "../../../redux/actions/userAction";
 import Loading from "./../../../shared/components/Loading";
+import axios from "@/utils/axiosConfig";
 
 const ProfilePage = () => {
     const { t } = useTranslation(["common", "errors", "store"]);
@@ -30,14 +31,91 @@ const ProfilePage = () => {
     const dispatch = useDispatch();
 
     let user = useSelector(selectUser);
-    const [formData, setFormData] = useState(null);
 
+    //! User data
     useEffect(() => {
         const authorities = user?.authorities[0]?.authority;
         setFormData({ ...user, authorities });
     }, [user]);
+    //! -----------------------
 
-    if (!user) {
+    const [formData, setFormData] = useState(null);
+
+    //! Location
+    const [provinces, setProvinces] = useState(null);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
+
+    const handleProvinceChange = async (e) => {
+        const provinceCode = e;
+
+        try {
+            const response = await axios.get(
+                `https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`
+            );
+            // console.log("response", response);
+            setDistricts(response.data.districts);
+            setWards([]);
+        } catch (error) {
+            console.error("Error fetching districts:", error);
+        }
+    };
+
+    const handleDistrictChange = async (e) => {
+        const districtCode = e;
+
+        // Fetch wards based on selected district
+        try {
+            const response = await axios.get(
+                `https://provinces.open-api.vn/api/d/${districtCode}?depth=2`
+            );
+            setWards(response.data.wards); // Lưu wards từ API
+        } catch (error) {
+            console.error("Error fetching wards:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchProvinces = async () => {
+            try {
+                const response = await axios.get(
+                    "https://provinces.open-api.vn/api/p/"
+                );
+                setProvinces(response.data);
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+            }
+        };
+        const fetchDistricts = async () => {
+            try {
+                const response = await axios.get(
+                    `https://provinces.open-api.vn/api/p/${user.province}?depth=2`
+                );
+                setDistricts(response.data.districts);
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+            }
+        };
+        const fetchWards = async () => {
+            try {
+                const response = await axios.get(
+                    `https://provinces.open-api.vn/api/d/${user.district}?depth=2`
+                );
+                setWards(response.data.wards); // Lưu wards từ API
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+            }
+        };
+
+        fetchProvinces();
+        user.district && fetchDistricts();
+        user.ward && fetchWards();
+    }, [user]);
+    //! ---------------------
+
+    if (!user || !provinces) {
         return <Loading></Loading>;
     }
 
@@ -65,6 +143,8 @@ const ProfilePage = () => {
             return acc;
         }, {});
 
+        // console.log("processedValues 1", processedValues);
+
         processedValues = {
             id: processedValues.id,
 
@@ -75,12 +155,17 @@ const ProfilePage = () => {
 
             name: processedValues.name,
             phone: processedValues.phone,
+
             address: processedValues.address,
+            province: processedValues.province,
+            district: processedValues.district,
+            ward: processedValues.ward,
+
             image: processedValues.image,
         };
 
         // console.log("process -----------");
-        // console.log(processedValues);
+        // console.log("processedValues 2", processedValues);
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
@@ -147,6 +232,9 @@ const ProfilePage = () => {
             "phone",
             "address",
             "image",
+            "province",
+            "district",
+            "ward",
         ];
         //* Empty
         requiredFields.forEach((field) => {
@@ -204,9 +292,6 @@ const ProfilePage = () => {
             type: "text",
             placeholder: `${enter} ${t("store:user.email")}`,
         },
-    ];
-
-    const rightFields = [
         {
             label: t("store:user.name"),
             name: "name",
@@ -218,6 +303,35 @@ const ProfilePage = () => {
             name: "phone",
             type: "text",
             placeholder: `${enter} ${t("store:user.phone")}`,
+        },
+    ];
+
+    const rightFields = [
+        {
+            label: t("store:location.province"),
+            name: "province",
+            type: "select",
+            options: provinces.map((province) => {
+                return { value: province.code + "", label: province.name };
+            }),
+            myOnChange: handleProvinceChange,
+        },
+        {
+            label: t("store:location.district"),
+            name: "district",
+            type: "select",
+            options: districts.map((district) => {
+                return { value: district.code + "", label: district.name };
+            }),
+            myOnChange: handleDistrictChange,
+        },
+        {
+            label: t("store:location.ward"),
+            name: "ward",
+            type: "select",
+            options: wards.map((ward) => {
+                return { value: ward.code + "", label: ward.name };
+            }),
         },
         {
             label: t("store:user.address"),
@@ -233,6 +347,9 @@ const ProfilePage = () => {
         },
     ];
 
+    // console.log("provinces", provinces);
+    // console.log("districts", districts);
+    // console.log("wards", wards);
     // console.log("-----");
     return (
         <Container>
@@ -255,8 +372,8 @@ const ProfilePage = () => {
                                         <CustomForm
                                             leftFields={leftFields}
                                             rightFields={rightFields}
-                                            min={4}
-                                            max={4}
+                                            min={99}
+                                            max={99}
                                             isButton={false}
                                         ></CustomForm>
 

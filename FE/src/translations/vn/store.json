@@ -196,5 +196,10 @@
     "forgetPassword": {
         "title": "Quên mật khẩu",
         "modalTitle": "Cấp lại mật khẩu"
+    },
+    "location": {
+        "province": "Tỉnh/Thành phố",
+        "district": "Quận/Huyện",
+        "ward": "Phường/Xã"
     }
 }

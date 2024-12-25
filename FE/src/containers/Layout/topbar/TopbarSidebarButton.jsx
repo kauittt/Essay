@@ -7,10 +7,20 @@ const icon = `${import.meta.env.BASE_URL}img/burger.svg`;
 
 const TopbarSidebarButton = ({ onClickDesktop, onClickMobile }) => (
     <div>
-        <TopbarDesktopButton onClick={onClickDesktop} type="button">
+        <TopbarDesktopButton
+            onClick={() => {
+                onClickDesktop();
+            }}
+            type="button"
+        >
             <TopbarButtonIcon src={icon} alt="" />
         </TopbarDesktopButton>
-        <TopbarMobileButton onClick={onClickMobile} type="button">
+        <TopbarMobileButton
+            onClick={() => {
+                onClickMobile();
+            }}
+            type="button"
+        >
             <TopbarButtonIcon src={icon} alt="" />
         </TopbarMobileButton>
     </div>

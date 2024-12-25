@@ -31,6 +31,8 @@ import CustomModal from "./../../../shared/components/custom/modal/CustomModal";
 import { updateVoucher } from "../../../redux/actions/voucherAction";
 import PaymentMethod from "./components/PaymentMethod";
 import PaymentService from "../../../services/PaymentService";
+import axios from "@/utils/axiosConfig";
+import Loading from "../../../shared/components/Loading";
 
 const formatDate = (date) => {
     const year = date.getFullYear(); // Gets the full year (e.g., 2024)
@@ -82,7 +84,82 @@ const InvoicePage = () => {
     // console.log("currentUser", currentUser);
     // console.log("selectedProducts at Invoice", selectedProducts);
     // console.log("shippingFee", shippingFee);
+    //! Location
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
 
+    const handleProvinceChange = async (e) => {
+        const provinceCode = e;
+
+        try {
+            const response = await axios.get(
+                `https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`
+            );
+            // console.log("response", response);
+            setDistricts(response.data.districts);
+            setWards([]);
+        } catch (error) {
+            console.error("Error fetching districts:", error);
+        }
+    };
+
+    const handleDistrictChange = async (e) => {
+        const districtCode = e;
+
+        // Fetch wards based on selected district
+        try {
+            const response = await axios.get(
+                `https://provinces.open-api.vn/api/d/${districtCode}?depth=2`
+            );
+            setWards(response.data.wards); // Lưu wards từ API
+        } catch (error) {
+            console.error("Error fetching wards:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (!currentUser) return;
+
+        const fetchProvinces = async () => {
+            try {
+                const response = await axios.get(
+                    "https://provinces.open-api.vn/api/p/"
+                );
+                setProvinces(response.data);
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+            }
+        };
+        const fetchDistricts = async () => {
+            try {
+                const response = await axios.get(
+                    `https://provinces.open-api.vn/api/p/${currentUser.province}?depth=2`
+                );
+                setDistricts(response.data.districts);
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+            }
+        };
+        const fetchWards = async () => {
+            try {
+                const response = await axios.get(
+                    `https://provinces.open-api.vn/api/d/${currentUser.district}?depth=2`
+                );
+                setWards(response.data.wards); // Lưu wards từ API
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+            }
+        };
+
+        fetchProvinces();
+        currentUser.district && fetchDistricts();
+        currentUser.ward && fetchWards();
+    }, [currentUser]);
+
+    if (!user || !provinces) {
+        return <Loading></Loading>;
+    }
     //! Form
     const leftFields = [
         {
@@ -99,9 +176,6 @@ const InvoicePage = () => {
             type: "text",
             placeholder: `${enter} ${t("store:user.email")}`,
         },
-    ];
-
-    const rightFields = [
         {
             label: t("store:user.name"),
             name: "name",
@@ -113,6 +187,35 @@ const InvoicePage = () => {
             name: "phone",
             type: "text",
             placeholder: `${enter} ${t("store:user.phone")}`,
+        },
+    ];
+
+    const rightFields = [
+        {
+            label: t("store:location.province"),
+            name: "province",
+            type: "select",
+            options: provinces.map((province) => {
+                return { value: province.code + "", label: province.name };
+            }),
+            myOnChange: handleProvinceChange,
+        },
+        {
+            label: t("store:location.district"),
+            name: "district",
+            type: "select",
+            options: districts.map((district) => {
+                return { value: district.code + "", label: district.name };
+            }),
+            myOnChange: handleDistrictChange,
+        },
+        {
+            label: t("store:location.ward"),
+            name: "ward",
+            type: "select",
+            options: wards.map((ward) => {
+                return { value: ward.code + "", label: ward.name };
+            }),
         },
         {
             label: t("store:user.address"),
@@ -250,6 +353,7 @@ const InvoicePage = () => {
     const createDate = new Date();
     // const discountAmount = 0;
     const paymentMethod = "COD";
+    // console.log("Current USer", currentUser);
     const initValue = {
         createDate: formatDate(createDate),
         name: currentUser?.name,
@@ -257,13 +361,24 @@ const InvoicePage = () => {
         phone: currentUser?.phone,
         address: currentUser?.address,
         paymentMethod: paymentMethod,
+        province: currentUser.province,
+        district: currentUser.district,
+        ward: currentUser.ward,
     };
 
     const validate = (values, t) => {
         // console.log("Validate values", values);
         const errors = {};
 
-        const requiredFields = ["email", "name", "phone", "address"];
+        const requiredFields = [
+            "email",
+            "name",
+            "phone",
+            "address",
+            "province",
+            "district",
+            "ward",
+        ];
 
         //* Required
         requiredFields.forEach((field) => {
@@ -308,6 +423,11 @@ const InvoicePage = () => {
 
     // console.log("Selected Voucher", selectedVoucher);
     // console.log("----");
+
+    // console.log("provinces", provinces);
+    // console.log("districts", districts);
+    // console.log("wards", wards);
+    // console.log("-----");
 
     // <InvoiceLogo />
 

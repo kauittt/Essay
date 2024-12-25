@@ -197,5 +197,11 @@
     "forgetPassword": {
         "title": "Forgot Password",
         "modalTitle": "Reset Password"
+    },
+
+    "location": {
+        "province": "Province",
+        "district": "District",
+        "ward": "Ward"
     }
 }
