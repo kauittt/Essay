@@ -21,6 +21,9 @@ public class OrderResponseDTO {
     private String name;
     private String phone;
     private String address;
+    private String province;
+    private String district;
+    private String ward;
     private String status;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;

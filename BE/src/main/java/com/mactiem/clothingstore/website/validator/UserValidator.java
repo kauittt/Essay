@@ -69,7 +69,12 @@ public class UserValidator {
         validateEmail(userRequestDTO.getEmail());
         validateName(userRequestDTO.getName());
         validatePhone(userRequestDTO.getPhone());
+
         validateAddress(userRequestDTO.getAddress());
+        validateProvince(userRequestDTO.getProvince());
+        validateDistrict(userRequestDTO.getDistrict());
+        validateWard(userRequestDTO.getWard());
+
         validateAuthorities(userRequestDTO.getAuthorities());
 //         validateImage(userRequestDTO.getImage());
     }
@@ -137,6 +142,24 @@ public class UserValidator {
     public void validateAddress(String address) {
         if (address == null || address.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Address is required");
+        }
+    }
+
+    public void validateProvince(String province) {
+        if (province == null || province.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Province is required");
+        }
+    }
+
+    public void validateDistrict(String district) {
+        if (district == null || district.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "District is required");
+        }
+    }
+
+    public void validateWard(String ward) {
+        if (ward == null || ward.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ward is required");
         }
     }
 

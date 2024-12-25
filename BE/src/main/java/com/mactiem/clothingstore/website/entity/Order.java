@@ -56,6 +56,15 @@ public class Order {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "province")
+    private String province;//---
+
+    @Column(name = "district")
+    private String district;//---
+
+    @Column(name = "ward")
+    private String ward;//---
+
     public User getUser() {
         if (user == null) {
             user = new User();

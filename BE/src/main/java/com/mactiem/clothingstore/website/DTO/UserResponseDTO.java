@@ -24,6 +24,10 @@ public class UserResponseDTO {
 
     private String address;
 
+    private String province;
+    private String district;
+    private String ward;
+
     private String image;
 
     private LocalDate createDate;

@@ -22,7 +22,7 @@ import java.util.List;
         , AuthorityService.class
         , CartMapper.class
         , OrderMapper.class
-        ,ProductMapper.class})
+        , ProductMapper.class})
 @Component
 public interface UserMapper {
     //* DTO

@@ -30,6 +30,9 @@ public class OrderRequestDTO {
     private String name; //- Update
     private String phone; //- Update
     private String address;
+    private String province;
+    private String district;
+    private String ward;
 
 //    private String id;
 //    private LocalDate createDate;
