@@ -54,6 +54,7 @@ const ForgetPasswordModal = ({ toggle, data, action }) => {
             return acc;
         }, {});
 
+        // console.log("processedValues", processedValues);
         try {
             let response = await dispatch(updateResetUser(processedValues));
             const newPassword = response.data;
