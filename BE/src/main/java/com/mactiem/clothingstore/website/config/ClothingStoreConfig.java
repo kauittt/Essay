@@ -75,8 +75,8 @@ public class ClothingStoreConfig {
                     authorize.requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN"); //* Delete
                     authorize.requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN"); //* Update
 
-                    authorize.requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN"); //* getAll
-                    authorize.requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN");//* getById
+                    authorize.requestMatchers(HttpMethod.GET, "/users").hasAnyRole("ADMIN", "STAFF"); //* getAll
+                    authorize.requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("ADMIN", "STAFF");//* getById
 
                     //* Voucher
                     authorize.requestMatchers(HttpMethod.GET, "/vouchers").authenticated(); //* Get all
