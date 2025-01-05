@@ -273,16 +273,16 @@ const DashboardPage = () => {
             </Row>
 
             <Row>
+                <TopSellingProducts dir={rtl.direction} />
+
+                <NewOrders />
+            </Row>
+
+            <Row>
                 <ProductSalesAreaChart
                     orders={orders}
                     products={products}
                 ></ProductSalesAreaChart>
-            </Row>
-
-            <Row>
-                <TopSellingProducts dir={rtl.direction} />
-
-                <NewOrders />
             </Row>
         </Container>
     );

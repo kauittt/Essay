@@ -419,27 +419,7 @@ const InvoicePage = () => {
         .map((voucher) => {
             return { ...voucher, disabled: subTotal < voucher.minRequire };
         });
-    // console.log("Vouchers", vouchers);
 
-    // console.log("Selected Voucher", selectedVoucher);
-    // console.log("----");
-
-    // console.log("provinces", provinces);
-    // console.log("districts", districts);
-    // console.log("wards", wards);
-    // console.log("-----");
-
-    // <InvoiceLogo />
-
-    // <InvoiceHeadRight>
-    //     <InvoiceLogo />
-    //     <h4>Invoice #2308</h4>
-    //     <InvoiceDate>{formatDate()}</InvoiceDate>
-    //     <p className="tw-text-sm">{currentUser?.name}</p>
-    //     <p className="tw-text-sm">{currentUser?.address}</p>
-    //     <p className="tw-text-sm">{currentUser?.phone}</p>
-    //     <p className="tw-text-sm">{currentUser?.email}</p>
-    // </InvoiceHeadRight>;
     return (
         <Container>
             <Form

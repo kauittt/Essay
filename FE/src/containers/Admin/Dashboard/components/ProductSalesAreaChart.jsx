@@ -583,6 +583,7 @@ const ProductSalesAreaChart = ({ orders, products }) => {
                                 selectedType == types[1] ? "VNĐ" : ""
                             }`;
                         }}
+                        wrapperStyle={{ marginTop: "-60px" }} // Dịch tooltip lên trên
                     />
                     <Legend />
                     <CartesianGrid strokeDasharray="3 3" />

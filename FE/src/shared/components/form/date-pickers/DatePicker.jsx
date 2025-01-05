@@ -8,7 +8,7 @@ import { DatePickerWrap } from "./DatePickerElements";
 const DatePickerField = ({ onChange, ...other }) => {
     const [startDate, setStartDate] = useState(null);
     const handleChange = (date) => {
-        console.log(date);
+        // console.log(date);
         setStartDate(date);
         onChange(date);
     };
@@ -22,6 +22,7 @@ const DatePickerField = ({ onChange, ...other }) => {
                 dropDownMode="select"
                 popperPlacement="center"
                 withPortal={isMobileOnly}
+                autoComplete="off"
                 {...other}
             />
         </DatePickerWrap>

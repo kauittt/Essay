@@ -82,8 +82,8 @@ const OrderModal = ({ toggle, data, action }) => {
             return acc;
         }, {});
 
-        // console.log("process -----------");
-        // console.log(processedValues);
+        console.log("process -----------");
+        console.log(processedValues);
 
         const actionText =
             action === "new" ? t("common:action.add") : t("common:action.edit");
@@ -93,7 +93,9 @@ const OrderModal = ({ toggle, data, action }) => {
             if (action === "edit") {
                 if (isStaff) {
                     response = await dispatch(
-                        updateOrder(processedValues.id, processedValues)
+                        updateOrder(processedValues.id, {
+                            status: processedValues.status,
+                        })
                     );
                 } else {
                     response = await dispatch(
