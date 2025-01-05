@@ -25,9 +25,9 @@ public class VoucherValidator {
     }
 
     public void validateForUpdate(VoucherRequestDTO voucherRequestDTO, Voucher voucher) {
-        if (voucherRequestDTO.getName() != null) {
-            validateName(voucherRequestDTO.getName());
-        }
+//        if (voucherRequestDTO.getName() != null) {
+//            validateName(voucherRequestDTO.getName());
+//        }
 
         if (voucherRequestDTO.getDiscountPercentage() != null) {
             validateDiscountPercentage(voucherRequestDTO.getDiscountPercentage());
